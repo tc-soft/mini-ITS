@@ -5,5 +5,14 @@
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
     }
+  },
+  "DatabaseOptions": {
+    "DataSource": "localhost",
+    "InitialCatalog": "mini_ITS_Demo",
+    "PersistSecurityInfo": true,
+    "IntegratedSecurity": false,
+    "UserId": "yourUserName",
+    "Password": "yourPassword",
+    "ConnectTimeout": 10
   }
 }

@@ -234,3 +234,6 @@ _Pvt_Extensions
 # appsettings.json
 mini-ITS.Web/appsettings.json
 mini-ITS.Web/appsettings.Development.json
+
+# TestController
+mini-ITS.Web/Controllers/TestController.cs

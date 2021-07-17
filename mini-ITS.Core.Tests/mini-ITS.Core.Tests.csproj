@@ -25,4 +25,8 @@
     <ProjectReference Include="..\mini-ITS.Core\mini-ITS.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repository\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,9 @@
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
+using Dapper;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Repository
 {
@@ -10,6 +15,15 @@ namespace mini_ITS.Core.Repository
         {
             _connectionString = sqlConnectionString.ConnectionString;
         }
- 
+        public async Task<IEnumerable<Users>> GetAsync()
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Users>()
+                    .WithSort(nameof(Users.Login), "ASC");
+                var users = await sqlConnection.QueryAsync<Users>(sqlQueryBuilder.GetSelectQuery());
+                return users;
+            }
+        }
     }
 }

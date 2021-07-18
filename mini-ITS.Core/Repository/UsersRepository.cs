@@ -25,5 +25,35 @@ namespace mini_ITS.Core.Repository
                 return users;
             }
         }
+        public async Task<IEnumerable<Users>> GetAsync(string department, string role)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Users>()
+                    .WithFilter(
+                        new List<SqlQueryCondition>()
+                        {
+                            role == null ? null :
+                            new SqlQueryCondition
+                            {
+                                Name = "Role",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(role)
+
+                            },
+                            department == null ? null :
+                            new SqlQueryCondition
+                            {
+                                Name = "Department",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(department)
+                            }
+                        }
+                    )
+                    .WithSort(nameof(Users.Login), "ASC");
+                var users = await sqlConnection.QueryAsync<Users>(sqlQueryBuilder.GetSelectQuery());
+                return users;
+            }
+        }
     }
 }

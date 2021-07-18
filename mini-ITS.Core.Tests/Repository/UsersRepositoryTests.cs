@@ -72,5 +72,27 @@ namespace mini_ITS.Core.Tests.Repository
                 }
             }
         }
+        [Test, Combinatorial]
+        public async Task GetAsync_CheckDepartmentRole(
+            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestRole))] string role)
+        {
+            var users = await _usersRepository.GetAsync(department, role);
+            TestContext.Out.WriteLine($"Number of records: {users.Count()}");
+            TestContext.Out.WriteLine($"{("Login").PadRight(15)}{("FirstName").PadRight(20)}{("LastName").PadRight(20)}{("Department").PadRight(20)}{("Email").PadRight(40)}{("Role").PadRight(20)}");
+
+            Assert.That(users.Count() > 0, "ERROR - users is empty");
+            Assert.That(users, Is.TypeOf<List<Users>>(), "ERROR - return type");
+            Assert.That(users, Is.All.InstanceOf<Users>(), "ERROR - all instance is not of <Users>()");
+            Assert.That(users, Is.Ordered.Ascending.By("Login"), "ERROR - sort");
+            Assert.That(users, Is.Unique);
+
+            foreach (var item in users)
+            {
+                TestContext.Out.WriteLine($"{item.Login,-15}{item.FirstName,-20}{item.LastName,-20}{item.Department,-20}{item.Email,-40}{item.Role,-20}");
+                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), "ERROR - Department is not equal");
+                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), "ERROR - Role is not equal");
+            }
+        }
     }
 }

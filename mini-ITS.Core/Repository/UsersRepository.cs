@@ -55,5 +55,18 @@ namespace mini_ITS.Core.Repository
                 return users;
             }
         }
+        public async Task<IEnumerable<Users>> GetAsync(List<SqlQueryCondition> sqlQueryConditionList)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Users>()
+                    .WithFilter(
+                        sqlQueryConditionList
+                    )
+                    .WithSort(nameof(Users.Login), "ASC");
+                var users = await sqlConnection.QueryAsync<Users>(sqlQueryBuilder.GetSelectQuery());
+                return users;
+            }
+        }
     }
 }

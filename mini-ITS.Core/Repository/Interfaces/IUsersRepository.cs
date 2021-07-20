@@ -10,5 +10,6 @@ namespace mini_ITS.Core.Repository
         Task<IEnumerable<Users>> GetAsync();
         Task<IEnumerable<Users>> GetAsync(string department, string role);
         Task<IEnumerable<Users>> GetAsync(List<SqlQueryCondition> sqlQueryConditionList);
+        Task<SqlPagedResult<Users>> GetAsync(SqlPagedQuery<Users> sqlPagedQuery);
     }
 }

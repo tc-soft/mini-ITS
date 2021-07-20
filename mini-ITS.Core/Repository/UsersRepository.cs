@@ -68,5 +68,15 @@ namespace mini_ITS.Core.Repository
                 return users;
             }
         }
+        public async Task<SqlPagedResult<Users>> GetAsync(SqlPagedQuery<Users> sqlPagedQuery)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Users>(sqlPagedQuery);
+                var users = await sqlConnection.QueryAsync<Users>(sqlQueryBuilder.GetSelectQuery());
+                var count = await sqlConnection.QueryFirstAsync<int>(sqlQueryBuilder.GetCountQuery());
+                return SqlPagedResult<Users>.Create(users, sqlPagedQuery, count);
+            }
+        }
     }
 }

@@ -286,6 +286,10 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"Phone        : {user.Phone}");
             TestContext.Out.WriteLine($"Role         : {user.Role}");
             TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            await _usersRepository.DeleteAsync(user.Id);
+            user = await _usersRepository.GetAsync(users.Id);
+            if (user is not null) Assert.Fail("ERROR - delete user");
         }
         [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
         public async Task UpdateAsync(Users users)
@@ -360,6 +364,20 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"Phone        : {user.Phone}");
             TestContext.Out.WriteLine($"Role         : {user.Role}");
             TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            await _usersRepository.DeleteAsync(user.Id);
+            user = await _usersRepository.GetAsync(users.Id);
+            if (user is not null) Assert.Fail("ERROR - delete user");
+        }
+        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
+        public async Task DeleteAsync(Users users)
+        {
+            await _usersRepository.CreateAsync(users);
+            var user = await _usersRepository.GetAsync(users.Id);
+
+            await _usersRepository.DeleteAsync(user.Id);
+            user = await _usersRepository.GetAsync(users.Id);
+            if (user is not null) Assert.Fail("ERROR - delete user");
         }
     }
 }

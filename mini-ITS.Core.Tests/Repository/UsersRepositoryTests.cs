@@ -260,5 +260,32 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"Role         : {user.Role}");
             TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
         }
+        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
+        public async Task CreateAsync(Users users)
+        {
+            await _usersRepository.CreateAsync(users);
+            var user = await _usersRepository.GetAsync(users.Id);
+
+            Assert.That(user, Is.TypeOf<Users>(), "ERROR - return type");
+            Assert.That(user.Id, Is.EqualTo(users.Id), $"ERROR - {nameof(user.Id)} is not equal");
+            Assert.That(user.Login, Is.EqualTo(users.Login), $"ERROR - {nameof(user.Login)} is not equal");
+            Assert.That(user.FirstName, Is.EqualTo(users.FirstName), $"ERROR - {nameof(user.FirstName)} is not equal");
+            Assert.That(user.LastName, Is.EqualTo(users.LastName), $"ERROR - {nameof(user.LastName)} is not equal");
+            Assert.That(user.Department, Is.EqualTo(users.Department), $"ERROR - {nameof(user.Department)} is not equal");
+            Assert.That(user.Email, Is.EqualTo(users.Email), $"ERROR - {nameof(user.Email)} is not equal");
+            Assert.That(user.Phone, Is.EqualTo(users.Phone), $"ERROR - {nameof(user.Phone)} is not equal");
+            Assert.That(user.Role, Is.EqualTo(users.Role), $"ERROR - {nameof(user.Role)} is not equal");
+            Assert.That(user.PasswordHash, Is.EqualTo(users.PasswordHash), $"ERROR - {nameof(user.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {user.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {user.LastName}");
+            TestContext.Out.WriteLine($"Department   : {user.Department}");
+            TestContext.Out.WriteLine($"Email        : {user.Email}");
+            TestContext.Out.WriteLine($"Phone        : {user.Phone}");
+            TestContext.Out.WriteLine($"Role         : {user.Role}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+        }
     }
 }

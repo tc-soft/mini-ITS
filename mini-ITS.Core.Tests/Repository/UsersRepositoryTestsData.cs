@@ -173,5 +173,59 @@ namespace mini_ITS.Core.Tests.Repository
                 };
             }
         }
+        public static IEnumerable<Users> CRUDCases
+        {
+            get
+            {
+                yield return new Users
+                {
+                    Id = new Guid("c3569307-57f3-4bc1-9564-95db73ca1129"),
+                    Login = "gerbaemm",
+                    FirstName = "Emma",
+                    LastName = "Gerbani",
+                    Department = "IT",
+                    Email = "emma.gerbani@example.com",
+                    Phone = "501XXX501",
+                    Role = "Manager",
+                    PasswordHash = "h0/j39An8jLlkgMdBZoXrSP/8q8+dEidDOwPODsrcZI+pQ7FnwQJ9KMf7OD/VI3AXdRQC49HXhZGn9migzcYyQ=="
+                };
+                yield return new Users
+                {
+                    Id = new Guid("652338db-2158-4c51-af55-5c1bbb7809c8"),
+                    Login = "trembays",
+                    FirstName = "Ayse",
+                    LastName = "Tremblay",
+                    Department = "Research",
+                    Email = "ayse.tremblay@example.com",
+                    Phone = "502XXX502",
+                    Role = "User",
+                    PasswordHash = "2kov5qxCAdANgqnZNWQJMGxNA+03lr6pXbHr80zRsy84okFaUYi403nWWKMod+NPbnxuXfpvmBJPS+epYbAuGQ=="
+                };
+                yield return new Users
+                {
+                    Id = new Guid("98bdc61f-180e-46a1-ac1e-e6d147abebac"),
+                    Login = "gagnowil",
+                    FirstName = "William",
+                    LastName = "Gagnon",
+                    Department = "Development",
+                    Email = "william.gagnon@example.com",
+                    Phone = "503XXX503",
+                    Role = "Manager",
+                    PasswordHash = "fbd7kluq04gbZ77GxkKccYeM9PajsiKeS2wYmIczlsF3V51eYdiNC0f7YbR9LnsSfy9xa2ZYv2JuEWT9xq7+3w=="
+                };
+                yield return new Users
+                {
+                    Id = new Guid("83cc1f1b-e901-421e-b7be-858e091979a9"),
+                    Login = "mortojac",
+                    FirstName = "Jack",
+                    LastName = "Morton",
+                    Department = "Sales",
+                    Email = "jack.morton@example.com",
+                    Phone = "504XXX504",
+                    Role = "Manager",
+                    PasswordHash = "ECs22TDv0tnZqSdytxkhl3dli3BkZNkYBM1tsCFppYsb1O3j5pHPIsGzMBEHqV7+a808svugByEe7rR0DVgBwg=="
+                };
+            }
+        }
     }
 }

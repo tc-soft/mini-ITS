@@ -16,5 +16,6 @@ namespace mini_ITS.Core.Repository
         Task<Users> GetAsync(string login);
 
         Task CreateAsync(Users user);
+        Task UpdateAsync(Users user);
     }
 }

@@ -18,5 +18,7 @@ namespace mini_ITS.Core.Repository
         Task CreateAsync(Users user);
         Task UpdateAsync(Users user);
         Task DeleteAsync(Guid id);
+
+        Task SetPasswordAsync(Guid id, string passwordHash);
     }
 }

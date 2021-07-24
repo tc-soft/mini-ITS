@@ -379,5 +379,28 @@ namespace mini_ITS.Core.Tests.Repository
             user = await _usersRepository.GetAsync(users.Id);
             if (user is not null) Assert.Fail("ERROR - delete user");
         }
+        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.UsersCases))]
+        public async Task SetPasswordAsync(Users users)
+        {
+            var user = await _usersRepository.GetAsync(users.Id);
+            Assert.That(user, Is.TypeOf<Users>(), "ERROR - return type");
+            Assert.That(user.PasswordHash, Is.EqualTo(users.PasswordHash), $"ERROR - {nameof(user.PasswordHash)} is not equal");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            var caesarHelper = new CaesarHelper();
+            var passwordHash = caesarHelper.Encrypt(user.PasswordHash);
+            await _usersRepository.SetPasswordAsync(user.Id, passwordHash);
+            user = await _usersRepository.GetAsync(users.Id);
+            Assert.That(user.PasswordHash, Is.EqualTo(passwordHash), $"ERROR - {nameof(user.PasswordHash)} is not equal");
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            passwordHash = caesarHelper.Decrypt(user.PasswordHash);
+            await _usersRepository.SetPasswordAsync(user.Id, passwordHash);
+            user = await _usersRepository.GetAsync(users.Id);
+            Assert.That(user.PasswordHash, Is.EqualTo(users.PasswordHash), $"ERROR - {nameof(user.PasswordHash)} is not equal");
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+        }
     }
 }

@@ -1,5 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Repository;
 
@@ -16,6 +20,11 @@ namespace mini_ITS.Core.Services
             _usersRepository = usersRepository;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+        }
+        public async Task<IEnumerable<UsersDto>> GetAsync()
+        {
+            var users = await _usersRepository.GetAsync();
+            return users?.Select(x => _mapper.Map<UsersDto>(x));
         }
     }
 }

@@ -26,5 +26,10 @@ namespace mini_ITS.Core.Services
             var users = await _usersRepository.GetAsync();
             return users?.Select(x => _mapper.Map<UsersDto>(x));
         }
+        public async Task<IEnumerable<UsersDto>> GetAsync(string department, string role)
+        {
+            var users = await _usersRepository.GetAsync(department, role);
+            return users?.Select(x => _mapper.Map<UsersDto>(x));
+        }
     }
 }

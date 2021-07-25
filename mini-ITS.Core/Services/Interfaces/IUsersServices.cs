@@ -7,5 +7,6 @@ namespace mini_ITS.Core.Services
     public interface IUsersServices
     {
         Task<IEnumerable<UsersDto>> GetAsync();
+        Task<IEnumerable<UsersDto>> GetAsync(string department, string role);
     }
 }

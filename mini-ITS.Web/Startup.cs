@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using mini_ITS.Core.Database;
 using mini_ITS.Core.Options;
+using mini_ITS.Core.Repository;
 
 namespace mini_ITS.Web
 {
@@ -22,6 +24,9 @@ namespace mini_ITS.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<DatabaseOptions>(Configuration.GetSection("DatabaseOptions"));
+
+            services.AddSingleton<ISqlConnectionString, SqlConnectionString>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
 
             services.AddControllersWithViews();
 

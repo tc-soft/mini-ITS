@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="Options\" />
+    <Folder Include="Repository\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

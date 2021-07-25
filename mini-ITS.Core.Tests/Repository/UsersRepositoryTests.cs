@@ -89,8 +89,8 @@ namespace mini_ITS.Core.Tests.Repository
             foreach (var item in users)
             {
                 UsersRepositoryTestsHelper.Check(item);
-                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), "ERROR - Department is not equal");
-                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), "ERROR - Role is not equal");
+                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), $"ERROR - {nameof(item.Department)} is not equal");
+                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), $"ERROR - {nameof(item.Role)} is not equal");
                 UsersRepositoryTestsHelper.PrintRecord(item);
             }
         }
@@ -123,8 +123,8 @@ namespace mini_ITS.Core.Tests.Repository
             foreach (var item in users)
             {
                 UsersRepositoryTestsHelper.Check(item);
-                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), "ERROR - Department is not equal");
-                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), "ERROR - Role is not equal");
+                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), $"ERROR - {nameof(item.Department)} is not equal");
+                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), $"ERROR - {nameof(item.Role)} is not equal");
                 UsersRepositoryTestsHelper.PrintRecord(item);
             }
         }
@@ -132,6 +132,7 @@ namespace mini_ITS.Core.Tests.Repository
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Users> sqlPagedQuery)
         {
             var usersList = await _usersRepository.GetAsync(sqlPagedQuery);
+            Assert.That(usersList.Results.Count() > 0, "ERROR - users is empty");
 
             for (int i = 1; i <= usersList.TotalPages; i++)
             {
@@ -147,7 +148,11 @@ namespace mini_ITS.Core.Tests.Repository
                         filterString += $" {x.Name}={x.Value}";
                 });
 
-                TestContext.Out.WriteLine($"\nPage {users.Page}/{usersList.TotalPages} - ResultsPerPage={users.ResultsPerPage}, TotalResults={users.TotalResults}{filterString}");
+                TestContext.Out.WriteLine($"\n" +
+                    $"Page {users.Page}/{usersList.TotalPages} - ResultsPerPage={users.ResultsPerPage}, " +
+                    $"TotalResults={users.TotalResults}{filterString}, " +
+                    $"Sort={sqlPagedQuery.SortColumnName}, " +
+                    $"Sort direction={sqlPagedQuery.SortDirection}");
                 UsersRepositoryTestsHelper.PrintRecordHeader();
 
                 Assert.That(users.Results.Count() > 0, "ERROR - users is empty");

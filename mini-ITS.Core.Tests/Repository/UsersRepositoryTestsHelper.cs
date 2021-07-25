@@ -13,7 +13,7 @@ namespace mini_ITS.Core.Tests.Repository
             Assert.That(users, Is.TypeOf<List<Users>>(), "ERROR - return type");
             Assert.That(users, Is.All.InstanceOf<Users>(), "ERROR - all instance is not of <Users>()");
             Assert.That(users, Is.Ordered.Ascending.By("Login"), "ERROR - sort");
-            Assert.That(users, Is.Unique);
+            Assert.That(users, Is.Unique, "ERROR - is not unique");
         }
         public static void Check(Users users)
         {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Repository;
@@ -29,6 +30,11 @@ namespace mini_ITS.Core.Services
         public async Task<IEnumerable<UsersDto>> GetAsync(string department, string role)
         {
             var users = await _usersRepository.GetAsync(department, role);
+            return users?.Select(x => _mapper.Map<UsersDto>(x));
+        }
+        public async Task<IEnumerable<UsersDto>> GetAsync(List<SqlQueryCondition> sqlQueryConditionList)
+        {
+            var users = await _usersRepository.GetAsync(sqlQueryConditionList);
             return users?.Select(x => _mapper.Map<UsersDto>(x));
         }
     }

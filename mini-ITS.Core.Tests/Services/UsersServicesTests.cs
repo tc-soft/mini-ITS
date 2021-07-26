@@ -129,5 +129,65 @@ namespace mini_ITS.Core.Tests.Services
                     $"{item.Role,-20}");
             }
         }
+        [Test, Combinatorial]
+        public async Task GetAsync_CheckSqlQueryCondition(
+            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestRole))] string role)
+        {
+            var sqlQueryConditionList = new List<SqlQueryCondition>()
+            {
+                new SqlQueryCondition
+                {
+                    Name = "Role",
+                    Operator = SqlQueryOperator.Equal,
+                    Value = role
+                },
+                new SqlQueryCondition
+                {
+                    Name = "Department",
+                    Operator = SqlQueryOperator.Equal,
+                    Value = department
+                }
+            };
+
+            var users = await _usersServices.GetAsync(sqlQueryConditionList);
+            TestContext.Out.WriteLine($"Number of records: {users.Count()}");
+            TestContext.Out.WriteLine($"" +
+                $"{"Login",-15}" +
+                $"{"FirstName",-20}" +
+                $"{"LastName",-20}" +
+                $"{"Department",-20}" +
+                $"{"Email",-40}" +
+                $"{"Role",-20}");
+
+            Assert.That(users.Count() > 0, "ERROR - users is empty");
+            Assert.That(users, Is.InstanceOf<IEnumerable<UsersDto>>(), "ERROR - return type");
+            Assert.That(users, Is.All.InstanceOf<UsersDto>(), "ERROR - all instance is not of <UsersDto>()");
+            Assert.That(users, Is.Ordered.Ascending.By("Login"), "ERROR - sort");
+            Assert.That(users, Is.Unique, "ERROR - is not unique");
+
+            foreach (var item in users)
+            {
+                Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
+                Assert.IsNotNull(item.Login, $"ERROR - {nameof(item.Login)} is null");
+                Assert.IsNotNull(item.FirstName, $"ERROR - {nameof(item.FirstName)} is null");
+                Assert.IsNotNull(item.LastName, $"ERROR - {nameof(item.LastName)} is null");
+                Assert.IsNotNull(item.Department, $"ERROR - {nameof(item.Department)} is null");
+                Assert.IsNotNull(item.Email, $"ERROR - {nameof(item.Email)} is null");
+                Assert.IsNotNull(item.Role, $"ERROR - {nameof(item.Role)} is null");
+                Assert.IsNotNull(item.PasswordHash, $"ERROR - {nameof(item.PasswordHash)} is null");
+
+                if (department is not null) Assert.That(item.Department, Is.EqualTo(department), $"ERROR - {nameof(item.Department)} is not equal");
+                if (role is not null) Assert.That(item.Role, Is.EqualTo(role), $"ERROR - {nameof(item.Role)} is not equal");
+
+                TestContext.Out.WriteLine($"" +
+                    $"{item.Login,-15}" +
+                    $"{item.FirstName,-20}" +
+                    $"{item.LastName,-20}" +
+                    $"{item.Department,-20}" +
+                    $"{item.Email,-40}" +
+                    $"{item.Role,-20}");
+            }
+        }
     }
 }

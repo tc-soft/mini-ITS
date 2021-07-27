@@ -189,5 +189,89 @@ namespace mini_ITS.Core.Tests.Services
                     $"{item.Role,-20}");
             }
         }
+        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.SqlPagedQueryCases))]
+        public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Users> sqlPagedQuery)
+        {
+            var usersList = await _usersServices.GetAsync(sqlPagedQuery);
+            Assert.That(usersList.Results.Count() > 0, "ERROR - users is empty");
+
+            for (int i = 1; i <= usersList.TotalPages; i++)
+            {
+                sqlPagedQuery.Page = i;
+                var users = await _usersServices.GetAsync(sqlPagedQuery);
+
+                string filterString = null;
+                sqlPagedQuery.Filter.ForEach(x =>
+                {
+                    if (x == sqlPagedQuery.Filter.First() || x == sqlPagedQuery.Filter.Last())
+                        filterString += $", {x.Name}={x.Value}";
+                    else
+                        filterString += $" {x.Name}={x.Value}";
+                });
+
+                TestContext.Out.WriteLine($"\n" +
+                    $"Page {users.Page}/{usersList.TotalPages} - ResultsPerPage={users.ResultsPerPage}, " +
+                    $"TotalResults={users.TotalResults}{filterString}, " +
+                    $"Sort={sqlPagedQuery.SortColumnName}, " +
+                    $"Sort direction={sqlPagedQuery.SortDirection}");
+                TestContext.Out.WriteLine($"" +
+                    $"{"Login",-15}" +
+                    $"{"FirstName",-20}" +
+                    $"{"LastName",-20}" +
+                    $"{"Department",-20}" +
+                    $"{"Email",-40}" +
+                    $"{"Role",-20}");
+
+                Assert.That(users.Results.Count() > 0, "ERROR - users.Results is empty");
+                Assert.That(users, Is.InstanceOf<SqlPagedResult<UsersDto>>(), "ERROR - return type");
+                Assert.That(users.Results, Is.All.InstanceOf<UsersDto>(), "ERROR - all instance is not of <UsersDto>()");
+
+                switch (sqlPagedQuery.SortDirection)
+                {
+                    case "ASC":
+                        Assert.That(users.Results, Is.Ordered.Ascending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    case "DESC":
+                        Assert.That(users.Results, Is.Ordered.Descending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    default:
+                        Assert.Fail("ERROR - SortDirection is not T-SQL");
+                        break;
+                };
+
+                Assert.That(users.Results, Is.Unique);
+
+                foreach (var item in users.Results)
+                {
+                    Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
+                    Assert.IsNotNull(item.Login, $"ERROR - {nameof(item.Login)} is null");
+                    Assert.IsNotNull(item.FirstName, $"ERROR - {nameof(item.FirstName)} is null");
+                    Assert.IsNotNull(item.LastName, $"ERROR - {nameof(item.LastName)} is null");
+                    Assert.IsNotNull(item.Department, $"ERROR - {nameof(item.Department)} is null");
+                    Assert.IsNotNull(item.Email, $"ERROR - {nameof(item.Email)} is null");
+                    Assert.IsNotNull(item.Role, $"ERROR - {nameof(item.Role)} is null");
+                    Assert.IsNotNull(item.PasswordHash, $"ERROR - {nameof(item.PasswordHash)} is null");
+
+                    sqlPagedQuery.Filter.ForEach(x =>
+                    {
+                        if (x.Value is not null)
+                        {
+                            Assert.That(
+                                item.GetType().GetProperty(x.Name).GetValue(item, null),
+                                Is.EqualTo(x.Value),
+                                $"ERROR - Filter {x.Name} is not equal");
+                        }
+                    });
+
+                    TestContext.Out.WriteLine($"" +
+                        $"{item.Login,-15}" +
+                        $"{item.FirstName,-20}" +
+                        $"{item.LastName,-20}" +
+                        $"{item.Department,-20}" +
+                        $"{item.Email,-40}" +
+                        $"{item.Role,-20}");
+                }
+            }
+        }
     }
 }

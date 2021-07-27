@@ -37,5 +37,11 @@ namespace mini_ITS.Core.Services
             var users = await _usersRepository.GetAsync(sqlQueryConditionList);
             return users?.Select(x => _mapper.Map<UsersDto>(x));
         }
+        public async Task<SqlPagedResult<UsersDto>> GetAsync(SqlPagedQuery<Users> sqlPagedQuery)
+        {
+            var result = await _usersRepository.GetAsync(sqlPagedQuery);
+            var users = result.Results.Select(x => _mapper.Map<UsersDto>(x));
+            return users == null ? null : SqlPagedResult<UsersDto>.From(result, users);
+        }
     }
 }

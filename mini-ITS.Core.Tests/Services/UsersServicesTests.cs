@@ -273,5 +273,31 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
+        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.UsersCases))]
+        public async Task GetAsync_CheckId(Users users)
+        {
+            var user = await _usersRepository.GetAsync(users.Id);
+            Assert.That(user, Is.TypeOf<Users>(), "ERROR - return type");
+
+            Assert.That(user.Id, Is.EqualTo(users.Id), $"ERROR - {nameof(users.Id)} is not equal");
+            Assert.That(user.Login, Is.EqualTo(users.Login), $"ERROR - {nameof(users.Login)} is not equal");
+            Assert.That(user.FirstName, Is.EqualTo(users.FirstName), $"ERROR - {nameof(users.FirstName)} is not equal");
+            Assert.That(user.LastName, Is.EqualTo(users.LastName), $"ERROR - {nameof(users.LastName)} is not equal");
+            Assert.That(user.Department, Is.EqualTo(users.Department), $"ERROR - {nameof(users.Department)} is not equal");
+            Assert.That(user.Email, Is.EqualTo(users.Email), $"ERROR - {nameof(users.Email)} is not equal");
+            Assert.That(user.Phone, Is.EqualTo(users.Phone), $"ERROR - {nameof(users.Phone)} is not equal");
+            Assert.That(user.Role, Is.EqualTo(users.Role), $"ERROR - {nameof(users.Role)} is not equal");
+            Assert.That(user.PasswordHash, Is.EqualTo(users.PasswordHash), $"ERROR - {nameof(users.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {users.Id}");
+            TestContext.Out.WriteLine($"Login        : {users.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {users.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {users.LastName}");
+            TestContext.Out.WriteLine($"Department   : {users.Department}");
+            TestContext.Out.WriteLine($"Email        : {users.Email}");
+            TestContext.Out.WriteLine($"Phone        : {users.Phone}");
+            TestContext.Out.WriteLine($"Role         : {users.Role}");
+            TestContext.Out.WriteLine($"PasswordHash : {users.PasswordHash}");
+        }
     }
 }

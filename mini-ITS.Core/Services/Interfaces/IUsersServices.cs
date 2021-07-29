@@ -14,5 +14,6 @@ namespace mini_ITS.Core.Services
         Task<IEnumerable<UsersDto>> GetAsync(List<SqlQueryCondition> sqlQueryConditionList);
         Task<SqlPagedResult<UsersDto>> GetAsync(SqlPagedQuery<Users> sqlPagedQuery);
         Task<UsersDto> GetAsync(Guid id);
+        Task<UsersDto> GetAsync(string login);
     }
 }

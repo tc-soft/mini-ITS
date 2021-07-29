@@ -49,5 +49,10 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(id);
             return user == null ? null : _mapper.Map<UsersDto>(user);
         }
+        public async Task<UsersDto> GetAsync(string login)
+        {
+            var user = await _usersRepository.GetAsync(login);
+            return user == null ? null : _mapper.Map<UsersDto>(user);
+        }
     }
 }

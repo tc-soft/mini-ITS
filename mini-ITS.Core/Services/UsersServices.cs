@@ -54,5 +54,27 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(login);
             return user == null ? null : _mapper.Map<UsersDto>(user);
         }
+
+        public async Task CreateAsync(UsersDto usersDto)
+        {
+            var existingUser = await _usersRepository.GetAsync(usersDto.Login);
+            if (existingUser != null)
+            {
+                throw new Exception($"UsersServices: '{usersDto.Login}' exist.");
+            }
+
+            var newUser = new Users(
+                usersDto.Id == Guid.Empty ? Guid.NewGuid() : usersDto.Id,
+                usersDto.Login,
+                usersDto.FirstName,
+                usersDto.LastName,
+                usersDto.Department,
+                usersDto.Email,
+                usersDto.Phone,
+                usersDto.Role,
+                usersDto.PasswordHash);
+            newUser.PasswordHash = _passwordHasher.HashPassword(newUser, usersDto.PasswordHash);
+            await _usersRepository.CreateAsync(newUser);
+        }
     }
 }

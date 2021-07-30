@@ -15,5 +15,7 @@ namespace mini_ITS.Core.Services
         Task<SqlPagedResult<UsersDto>> GetAsync(SqlPagedQuery<Users> sqlPagedQuery);
         Task<UsersDto> GetAsync(Guid id);
         Task<UsersDto> GetAsync(string login);
+
+        Task CreateAsync(UsersDto usersDto);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Services
@@ -170,6 +171,52 @@ namespace mini_ITS.Core.Tests.Services
                     Phone = "509XXX509",
                     Role = "User",
                     PasswordHash = "SY1O1aLA3Ii7mvPeWy0535B1cwspmPjvrL94FmYlpgWGpIx81yUzD/JToTjdQvUQm4HeQUw7ZaQ7xwxTGMYF7Q=="
+                };
+            }
+        }
+        public static IEnumerable<UsersDto> CRUDCases
+        {
+            get
+            {
+                yield return new UsersDto
+                {
+                    Login = "gerbaemm",
+                    FirstName = "Emma",
+                    LastName = "Gerbani",
+                    Department = "IT",
+                    Email = "emma.gerbani@example.com",
+                    Phone = "501XXX501",
+                    Role = "Manager",
+                };
+                yield return new UsersDto
+                {
+                    Login = "trembays",
+                    FirstName = "Ayse",
+                    LastName = "Tremblay",
+                    Department = "Research",
+                    Email = "ayse.tremblay@example.com",
+                    Phone = "502XXX502",
+                    Role = "User",
+                };
+                yield return new UsersDto
+                {
+                    Login = "gagnowil",
+                    FirstName = "William",
+                    LastName = "Gagnon",
+                    Department = "Development",
+                    Email = "william.gagnon@example.com",
+                    Phone = "503XXX503",
+                    Role = "Manager",
+                };
+                yield return new UsersDto
+                {
+                    Login = "mortojac",
+                    FirstName = "Jack",
+                    LastName = "Morton",
+                    Department = "Sales",
+                    Email = "jack.morton@example.com",
+                    Phone = "504XXX504",
+                    Role = "Manager",
                 };
             }
         }

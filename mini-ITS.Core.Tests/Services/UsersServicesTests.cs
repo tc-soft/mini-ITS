@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -324,6 +325,41 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Phone        : {users.Phone}");
             TestContext.Out.WriteLine($"Role         : {users.Role}");
             TestContext.Out.WriteLine($"PasswordHash : {users.PasswordHash}");
+        }
+        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
+        public async Task CreateAsync(UsersDto usersDto)
+        {
+            usersDto.Id = Guid.NewGuid();
+            usersDto.PasswordHash = $"" +
+                $"{char.ToUpper(usersDto.Login[0]) + usersDto.Login[1..]}" +
+                $"{DateTime.Now.ToString("yyyy")}" +
+                $"#";
+
+            await _usersServices.CreateAsync(usersDto);
+            var user = await _usersServices.GetAsync(usersDto.Login);
+
+            Assert.That(user, Is.TypeOf<UsersDto>(), "ERROR - return type");
+            Assert.That(user.Id, Is.EqualTo(usersDto.Id), $"ERROR - {nameof(usersDto.Id)} is not equal");
+            Assert.That(user.Login, Is.EqualTo(usersDto.Login), $"ERROR - {nameof(usersDto.Login)} is not equal");
+            Assert.That(user.FirstName, Is.EqualTo(usersDto.FirstName), $"ERROR - {nameof(usersDto.FirstName)} is not equal");
+            Assert.That(user.LastName, Is.EqualTo(usersDto.LastName), $"ERROR - {nameof(usersDto.LastName)} is not equal");
+            Assert.That(user.Department, Is.EqualTo(usersDto.Department), $"ERROR - {nameof(usersDto.Department)} is not equal");
+            Assert.That(user.Email, Is.EqualTo(usersDto.Email), $"ERROR - {nameof(usersDto.Email)} is not equal");
+            Assert.That(user.Phone, Is.EqualTo(usersDto.Phone), $"ERROR - {nameof(usersDto.Phone)} is not equal");
+            Assert.That(user.Role, Is.EqualTo(usersDto.Role), $"ERROR - {nameof(usersDto.Role)} is not equal");
+            Assert.That(_passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user), user.PasswordHash, usersDto.PasswordHash),
+                        Is.EqualTo(PasswordVerificationResult.Success), $"ERROR - {nameof(usersDto.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {user.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {user.LastName}");
+            TestContext.Out.WriteLine($"Department   : {user.Department}");
+            TestContext.Out.WriteLine($"Email        : {user.Email}");
+            TestContext.Out.WriteLine($"Phone        : {user.Phone}");
+            TestContext.Out.WriteLine($"Role         : {user.Role}");
+            TestContext.Out.WriteLine($"Password     : {usersDto.PasswordHash}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
         }
     }
 }

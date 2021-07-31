@@ -17,5 +17,6 @@ namespace mini_ITS.Core.Services
         Task<UsersDto> GetAsync(string login);
 
         Task CreateAsync(UsersDto usersDto);
+        Task UpdateAsync(UsersDto usersDto);
     }
 }

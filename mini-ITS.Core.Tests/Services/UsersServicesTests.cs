@@ -361,5 +361,113 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Password     : {usersDto.PasswordHash}");
             TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
         }
+        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
+        public async Task UpdateAsync(UsersDto usersDto)
+        {
+            usersDto.Id = Guid.NewGuid();
+            var passwordPlain = $"" +
+                $"{char.ToUpper(usersDto.Login[0]) + usersDto.Login[1..]}" +
+                $"{DateTime.Now.ToString("yyyy")}" +
+                $"#";
+            usersDto.PasswordHash = passwordPlain;
+
+            await _usersServices.CreateAsync(usersDto);
+            var user = await _usersServices.GetAsync(usersDto.Id);
+
+            Assert.IsNotNull(user.Id, $"ERROR - {nameof(user.Id)} is null");
+            Assert.IsNotNull(user.Login, $"ERROR - {nameof(user.Login)} is null");
+            Assert.IsNotNull(user.FirstName, $"ERROR - {nameof(user.FirstName)} is null");
+            Assert.IsNotNull(user.LastName, $"ERROR - {nameof(user.LastName)} is null");
+            Assert.IsNotNull(user.Department, $"ERROR - {nameof(user.Department)} is null");
+            Assert.IsNotNull(user.Email, $"ERROR - {nameof(user.Email)} is null");
+            Assert.IsNotNull(user.Role, $"ERROR - {nameof(user.Role)} is null");
+            Assert.IsNotNull(user.PasswordHash, $"ERROR - {nameof(user.PasswordHash)} is null");
+            Assert.That(_passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user), user.PasswordHash, passwordPlain),
+                        Is.EqualTo(PasswordVerificationResult.Success), $"ERROR - {nameof(usersDto.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {user.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {user.LastName}");
+            TestContext.Out.WriteLine($"Department   : {user.Department}");
+            TestContext.Out.WriteLine($"Email        : {user.Email}");
+            TestContext.Out.WriteLine($"Phone        : {user.Phone}");
+            TestContext.Out.WriteLine($"Role         : {user.Role}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            var caesarHelper = new CaesarHelper();
+            user.Login = caesarHelper.Encrypt(user.Login);
+            user.FirstName = caesarHelper.Encrypt(user.FirstName);
+            user.LastName = caesarHelper.Encrypt(user.LastName);
+            user.Department = caesarHelper.Encrypt(user.Department);
+            user.Email = caesarHelper.Encrypt(user.Email);
+            user.Phone = caesarHelper.Encrypt(user.Phone);
+            user.Role = caesarHelper.Encrypt(user.Role);
+            passwordPlain = caesarHelper.Encrypt(passwordPlain);
+            user.PasswordHash = passwordPlain;
+
+            await _usersServices.UpdateAsync(user);
+            user = await _usersServices.GetAsync(user.Id);
+
+            Assert.IsNotNull(user.Id, $"ERROR - {nameof(user.Id)} is null");
+            Assert.IsNotNull(user.Login, $"ERROR - {nameof(user.Login)} is null");
+            Assert.IsNotNull(user.FirstName, $"ERROR - {nameof(user.FirstName)} is null");
+            Assert.IsNotNull(user.LastName, $"ERROR - {nameof(user.LastName)} is null");
+            Assert.IsNotNull(user.Department, $"ERROR - {nameof(user.Department)} is null");
+            Assert.IsNotNull(user.Email, $"ERROR - {nameof(user.Email)} is null");
+            Assert.IsNotNull(user.Role, $"ERROR - {nameof(user.Role)} is null");
+            Assert.IsNotNull(user.PasswordHash, $"ERROR - {nameof(user.PasswordHash)} is null");
+            Assert.That(_passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user), user.PasswordHash, passwordPlain),
+                        Is.EqualTo(PasswordVerificationResult.Success), $"ERROR - {nameof(usersDto.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {user.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {user.LastName}");
+            TestContext.Out.WriteLine($"Department   : {user.Department}");
+            TestContext.Out.WriteLine($"Email        : {user.Email}");
+            TestContext.Out.WriteLine($"Phone        : {user.Phone}");
+            TestContext.Out.WriteLine($"Role         : {user.Role}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            user.Login = caesarHelper.Decrypt(user.Login);
+            user.FirstName = caesarHelper.Decrypt(user.FirstName);
+            user.LastName = caesarHelper.Decrypt(user.LastName);
+            user.Department = caesarHelper.Decrypt(user.Department);
+            user.Email = caesarHelper.Decrypt(user.Email);
+            user.Phone = caesarHelper.Decrypt(user.Phone);
+            user.Role = caesarHelper.Decrypt(user.Role);
+            passwordPlain = caesarHelper.Decrypt(passwordPlain);
+            user.PasswordHash = passwordPlain;
+
+            await _usersServices.UpdateAsync(user);
+            user = await _usersServices.GetAsync(user.Id);
+
+            Assert.IsNotNull(user.Id, $"ERROR - {nameof(user.Id)} is null");
+            Assert.IsNotNull(user.Login, $"ERROR - {nameof(user.Login)} is null");
+            Assert.IsNotNull(user.FirstName, $"ERROR - {nameof(user.FirstName)} is null");
+            Assert.IsNotNull(user.LastName, $"ERROR - {nameof(user.LastName)} is null");
+            Assert.IsNotNull(user.Department, $"ERROR - {nameof(user.Department)} is null");
+            Assert.IsNotNull(user.Email, $"ERROR - {nameof(user.Email)} is null");
+            Assert.IsNotNull(user.Role, $"ERROR - {nameof(user.Role)} is null");
+            Assert.IsNotNull(user.PasswordHash, $"ERROR - {nameof(user.PasswordHash)} is null");
+            Assert.That(_passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user), user.PasswordHash, passwordPlain),
+                        Is.EqualTo(PasswordVerificationResult.Success), $"ERROR - {nameof(usersDto.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"FirstName    : {user.FirstName}");
+            TestContext.Out.WriteLine($"LastName     : {user.LastName}");
+            TestContext.Out.WriteLine($"Department   : {user.Department}");
+            TestContext.Out.WriteLine($"Email        : {user.Email}");
+            TestContext.Out.WriteLine($"Phone        : {user.Phone}");
+            TestContext.Out.WriteLine($"Role         : {user.Role}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+        }
     }
 }

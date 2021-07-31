@@ -76,5 +76,31 @@ namespace mini_ITS.Core.Services
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, usersDto.PasswordHash);
             await _usersRepository.CreateAsync(newUser);
         }
+        public async Task UpdateAsync(UsersDto usersDto)
+        {
+            var user = await _usersRepository.GetAsync(usersDto.Id);
+            
+            if (user.Login == usersDto.Login)
+            {
+                //Login not changed
+                var updateUser = _mapper.Map<Users>(usersDto);
+                updateUser.PasswordHash = _passwordHasher.HashPassword(updateUser, usersDto.PasswordHash);
+                await _usersRepository.UpdateAsync(updateUser);
+            }
+            else
+            {
+                //Login changed
+                if (await _usersRepository.GetAsync(usersDto.Login) is null)
+                {
+                    var updateUser = _mapper.Map<Users>(usersDto);
+                    updateUser.PasswordHash = _passwordHasher.HashPassword(updateUser, usersDto.PasswordHash);
+                    await _usersRepository.UpdateAsync(updateUser);
+                }
+                else
+                {
+                    throw new Exception($"User: '{usersDto.Login}' exist.");
+                }
+            }
+        }
     }
 }

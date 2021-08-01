@@ -102,5 +102,9 @@ namespace mini_ITS.Core.Services
                 }
             }
         }
+        public async Task DeleteAsync(Guid id)
+        {
+            await _usersRepository.DeleteAsync(id);
+        }
     }
 }

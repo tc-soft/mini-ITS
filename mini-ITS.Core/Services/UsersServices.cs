@@ -123,5 +123,25 @@ namespace mini_ITS.Core.Services
                 await _usersRepository.SetPasswordAsync(usersDto.Id, passwordHash);
             }
         }
+        public async Task<bool> LoginAsync(string login, string passwordPlain)
+        {
+            bool results = false;
+
+            var user = await _usersRepository.GetAsync(login);
+            if (user is not null)
+            {
+                var passwordVerification = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, passwordPlain);
+                if (passwordVerification == PasswordVerificationResult.Success)
+                {
+                    results = true;
+                }
+            }
+            else
+            {
+                throw new Exception($"The username or password incorrect.");
+            }
+
+            return results;
+        }
     }
 }

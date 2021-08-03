@@ -21,5 +21,6 @@ namespace mini_ITS.Core.Services
         Task DeleteAsync(Guid id);
 
         Task SetPasswordAsync(UsersDto usersDto);
+        Task<bool> LoginAsync(string login, string passwordPlain);
     }
 }

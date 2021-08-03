@@ -11,7 +11,10 @@ namespace mini_ITS.Core.Tests
 
         public CaesarHelper()
         {
-            _strLetter = Enumerable.Range(32, 95).Select(x => Convert.ToChar(x)).ToList();
+            _strLetter = Enumerable.Range(32, 95)
+                .Select(x => Convert.ToChar(x))
+                .Where(x => x != 39)
+                .ToList();
             Random rnd = new();
             _strMatrix = _strLetter.OrderBy(x => rnd.Next()).Select(x => x).ToList();
         }

@@ -106,5 +106,22 @@ namespace mini_ITS.Core.Services
         {
             await _usersRepository.DeleteAsync(id);
         }
+        public async Task SetPasswordAsync(UsersDto usersDto)
+        {
+            if (usersDto.Id == Guid.Empty)
+            {
+                throw new Exception($"SetPasswordAsync(Guid id, string passwordHash): id parameter is empty.");
+            }
+            else if (usersDto.PasswordHash is null || usersDto.PasswordHash == "")
+            {
+                throw new Exception($"SetPasswordAsync(Guid id, string passwordHash): passwordHash parameter is null or empty.");
+            }
+            else
+            {
+                var users = _mapper.Map<Users>(usersDto);
+                var passwordHash = _passwordHasher.HashPassword(users, usersDto.PasswordHash);
+                await _usersRepository.SetPasswordAsync(usersDto.Id, passwordHash);
+            }
+        }
     }
 }

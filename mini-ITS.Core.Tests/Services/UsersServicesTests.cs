@@ -247,7 +247,6 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine("\nUpdate user and check valid password:");
             var caesarHelper = new CaesarHelper();
             user = UsersServicesTestsHelper.Encrypt(caesarHelper, user);
-            passwordPlain = user.PasswordHash;
             await _usersServices.UpdateAsync(user);
             user = await _usersServices.GetAsync(usersDto.Id);
             UsersServicesTestsHelper.Check(user);
@@ -261,7 +260,6 @@ namespace mini_ITS.Core.Tests.Services
 
             TestContext.Out.WriteLine("\nUpdate user and check valid password:");
             user = UsersServicesTestsHelper.Decrypt(caesarHelper, user);
-            passwordPlain = user.PasswordHash;
             await _usersServices.UpdateAsync(user);
             user = await _usersServices.GetAsync(usersDto.Id);
             UsersServicesTestsHelper.Check(user);

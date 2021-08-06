@@ -84,7 +84,7 @@ namespace mini_ITS.Core.Services
             {
                 //Login not changed
                 var updateUser = _mapper.Map<Users>(usersDto);
-                updateUser.PasswordHash = _passwordHasher.HashPassword(updateUser, usersDto.PasswordHash);
+                updateUser.PasswordHash = user.PasswordHash;
                 await _usersRepository.UpdateAsync(updateUser);
             }
             else
@@ -93,7 +93,7 @@ namespace mini_ITS.Core.Services
                 if (await _usersRepository.GetAsync(usersDto.Login) is null)
                 {
                     var updateUser = _mapper.Map<Users>(usersDto);
-                    updateUser.PasswordHash = _passwordHasher.HashPassword(updateUser, usersDto.PasswordHash);
+                    updateUser.PasswordHash = user.PasswordHash;
                     await _usersRepository.UpdateAsync(updateUser);
                 }
                 else

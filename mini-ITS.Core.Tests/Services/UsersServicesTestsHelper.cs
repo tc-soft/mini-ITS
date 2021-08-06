@@ -97,7 +97,6 @@ namespace mini_ITS.Core.Tests.Services
             usersDto.Email = caesarHelper.Encrypt(usersDto.Email);
             usersDto.Phone = caesarHelper.Encrypt(usersDto.Phone);
             usersDto.Role = caesarHelper.Encrypt(usersDto.Role);
-            usersDto.PasswordHash = caesarHelper.Encrypt(usersDto.PasswordHash);
 
             return usersDto;
         }
@@ -110,7 +109,6 @@ namespace mini_ITS.Core.Tests.Services
             usersDto.Email = caesarHelper.Decrypt(usersDto.Email);
             usersDto.Phone = caesarHelper.Decrypt(usersDto.Phone);
             usersDto.Role = caesarHelper.Decrypt(usersDto.Role);
-            usersDto.PasswordHash = caesarHelper.Decrypt(usersDto.PasswordHash);
 
             return usersDto;
         }

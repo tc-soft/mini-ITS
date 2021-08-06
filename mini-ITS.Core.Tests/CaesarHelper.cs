@@ -28,8 +28,15 @@ namespace mini_ITS.Core.Tests
 
             foreach (var item in strToEncrypt)
             {
-                var idx = _strLetter.FindIndex(x => x == item);
-                lstEncrypt.Add(_strMatrix[idx]);
+                if (item == Convert.ToChar(39))
+                {
+                    throw new Exception($"Encrypt(string strToEncrypt): strToEncrypt contains illegal character '");
+                }
+                else
+                {
+                    var idx = _strLetter.FindIndex(x => x == item);
+                    lstEncrypt.Add(_strMatrix[idx]);
+                }
             }
 
             return string.Join(null, lstEncrypt) ;
@@ -40,8 +47,15 @@ namespace mini_ITS.Core.Tests
 
             foreach (var item in strToDecrypt)
             {
-                var idx = _strMatrix.FindIndex(x => x == item);
-                lstDecrypt.Add(_strLetter[idx]);
+                if (item == Convert.ToChar(39))
+                {
+                    throw new Exception($"Decrypt(string strToDecrypt): strToDecrypt contains illegal character '");
+                }
+                else
+                {
+                    var idx = _strMatrix.FindIndex(x => x == item);
+                    lstDecrypt.Add(_strLetter[idx]);
+                }
             }
 
             return string.Join(null, lstDecrypt);

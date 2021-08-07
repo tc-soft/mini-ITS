@@ -353,6 +353,20 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Password     : {passwordPlain}");
             TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
 
+            TestContext.Out.WriteLine("\nTry to login with an incorrect password:");
+            var caesarHelper = new CaesarHelper();
+            passwordPlain = caesarHelper.Encrypt(passwordPlain);
+            Assert.That(
+                await _usersServices.LoginAsync(user.Login, passwordPlain),
+                Is.False,
+                "ERROR - The username or password incorrect"
+                );
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
             await _usersServices.DeleteAsync(user.Id);
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");

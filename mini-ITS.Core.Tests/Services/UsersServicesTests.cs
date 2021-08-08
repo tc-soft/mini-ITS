@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -20,10 +19,6 @@ namespace mini_ITS.Core.Tests.Services
     [TestFixture]
     class UsersServicesTests
     {
-        private IOptions<DatabaseOptions> _databaseOptions;
-        private ISqlConnectionString _sqlConnectionString;
-
-        private IUsersRepository _usersRepository;
         private IMapper _mapper;
         private IPasswordHasher<Users> _passwordHasher;
         private IUsersServices _usersServices;
@@ -38,9 +33,9 @@ namespace mini_ITS.Core.Tests.Services
                .AddJsonFile("appsettings.json", false)
                .Build();
 
-            _databaseOptions = Microsoft.Extensions.Options.Options.Create(configuration.GetSection("DatabaseOptions").Get<DatabaseOptions>());
-            _sqlConnectionString = new SqlConnectionString(_databaseOptions);
-            _usersRepository = new UsersRepository(_sqlConnectionString);
+            var _databaseOptions = Microsoft.Extensions.Options.Options.Create(configuration.GetSection("DatabaseOptions").Get<DatabaseOptions>());
+            var _sqlConnectionString = new SqlConnectionString(_databaseOptions);
+            var _usersRepository = new UsersRepository(_sqlConnectionString);
             _mapper = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UsersDto, Users>();

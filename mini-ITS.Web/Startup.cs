@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
+using mini_ITS.Core.Services;
+using mini_ITS.Web.Mapper;
 
 namespace mini_ITS.Web
 {
@@ -23,10 +26,14 @@ namespace mini_ITS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //mini_ITS.Core.Repository
             services.Configure<DatabaseOptions>(Configuration.GetSection("DatabaseOptions"));
-
             services.AddSingleton<ISqlConnectionString, SqlConnectionString>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            //mini_ITS.Core.Services
+            services.AddScoped<IUsersServices, UsersServices>();
+            services.AddSingleton(AutoMapperConfig.GetMapper());
+            services.AddSingleton<IPasswordHasher<Users>, PasswordHasher<Users>>();
 
             services.AddControllersWithViews();
 

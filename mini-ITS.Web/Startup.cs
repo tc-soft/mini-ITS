@@ -50,6 +50,27 @@ namespace mini_ITS.Web
                     options.ExpireTimeSpan = TimeSpan.FromDays(2);
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Administrator");
+                });
+
+                options.AddPolicy("Manager", policy =>
+                {
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("Manager");
+                });
+
+                options.AddPolicy("User", policy =>
+                {
+                    policy.RequireAuthenticatedUser()
+                          .RequireRole("User");
+                });
+            });
+
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -78,6 +99,7 @@ namespace mini_ITS.Web
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

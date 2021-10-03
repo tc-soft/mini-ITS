@@ -1,5 +1,8 @@
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
@@ -30,10 +33,22 @@ namespace mini_ITS.Web
             services.Configure<DatabaseOptions>(Configuration.GetSection("DatabaseOptions"));
             services.AddSingleton<ISqlConnectionString, SqlConnectionString>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+
             //mini_ITS.Core.Services
             services.AddScoped<IUsersServices, UsersServices>();
             services.AddSingleton(AutoMapperConfig.GetMapper());
             services.AddSingleton<IPasswordHasher<Users>, PasswordHasher<Users>>();
+
+            //mini_ITS.Web.Controllers
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.Name = "mini-ITS.SessionCookie";
+                    options.LoginPath = new PathString("/Users/Login");
+                    options.AccessDeniedPath = new PathString("/Users/Forbidden");
+                    options.ExpireTimeSpan = TimeSpan.FromDays(2);
+                });
 
             services.AddControllersWithViews();
 

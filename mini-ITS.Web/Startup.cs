@@ -71,6 +71,8 @@ namespace mini_ITS.Web
                 });
             });
 
+            services.AddHttpContextAccessor();
+
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory

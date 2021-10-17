@@ -136,10 +136,6 @@ namespace mini_ITS.Core.Services
                     results = true;
                 }
             }
-            else
-            {
-                throw new Exception($"The username or password incorrect.");
-            }
 
             return results;
         }

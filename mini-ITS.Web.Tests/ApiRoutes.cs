@@ -10,6 +10,7 @@
 
             public static readonly string Login = string.Concat(_usersControllerUrl, "/Login");
             public static readonly string Logout = string.Concat(_usersControllerUrl, "/Logout");
+            public static readonly string LoginStatus = string.Concat(_usersControllerUrl, "/LoginStatus");
         }
     }
 }

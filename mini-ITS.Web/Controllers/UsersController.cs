@@ -79,5 +79,28 @@ namespace mini_ITS.Web.Controllers
                 throw new Exception($"Error: {ex.Message}");
             }
         }
+        [HttpGet]
+        [CookieAuth]
+        public async Task<IActionResult> LoginStatusAsync()
+        {
+            try
+            {
+                var usersDto = await _usersServices.GetAsync(_httpContextAccessor.HttpContext.User.Identity.Name);
+
+                return new JsonResult(new
+                {
+                    login = usersDto.Login,
+                    firstName = usersDto.FirstName,
+                    lastName = usersDto.LastName,
+                    department = usersDto.Department,
+                    role = usersDto.Role,
+                    isLogged = true
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
+        }
     }
 }

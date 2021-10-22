@@ -98,5 +98,52 @@ namespace mini_ITS.Web.Tests.Controllers
                 TestContext.Out.WriteLine($"Logout - OK");
             }
         }
+        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))]
+        public async Task LoginStatus_Unauthorized(LoginData loginData)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await LoginStatusAsync();
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.InternalServerError),
+                "ERROR - respons status code is not 500");
+
+            TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+        }
+        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
+        public async Task LoginStatus_Authorized(LoginData loginData)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await LoginStatusAsync();
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200");
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var results = await response.Content.ReadFromJsonAsync<LoginJsonResults>();
+                Assert.IsNotNull(results, $"ERROR - LoginJsonResults is null");
+
+                TestContext.Out.WriteLine($"\nJson results");
+                TestContext.Out.WriteLine($"Login      : {results.Login}");
+                TestContext.Out.WriteLine($"FirstName  : {results.FirstName}");
+                TestContext.Out.WriteLine($"LastName   : {results.LastName}");
+                TestContext.Out.WriteLine($"Department : {results.Department}");
+                TestContext.Out.WriteLine($"Role       : {results.Role}");
+                TestContext.Out.WriteLine($"isLogged   : {results.isLogged}\n");
+            }
+
+            TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            await LogoutAsync();
+        }
     }
 }

@@ -31,5 +31,11 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> LoginStatusAsync()
+        {
+            var response = await TestClient.GetAsync(ApiRoutes.Users.LoginStatus);
+
+            return response;
+        }
     }
 }

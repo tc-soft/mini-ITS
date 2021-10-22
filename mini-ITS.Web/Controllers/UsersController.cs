@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using mini_ITS.Core.Services;
+using mini_ITS.Web.Framework;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Controllers
@@ -58,6 +59,20 @@ namespace mini_ITS.Web.Controllers
                 {
                     return StatusCode(401, "Login or password is incorrect");
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
+        }
+        [HttpDelete]
+        [CookieAuth]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync();
+                return StatusCode(200, "Wylogowano...");
             }
             catch (Exception ex)
             {

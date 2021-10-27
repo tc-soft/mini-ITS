@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using mini_ITS.Core.Database;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Services;
 using mini_ITS.Web.Framework;
 using mini_ITS.Web.Models.UsersController;
@@ -96,6 +99,24 @@ namespace mini_ITS.Web.Controllers
                     role = usersDto.Role,
                     isLogged = true
                 });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> IndexAsync([FromQuery] SqlPagedQuery<Users> sqlPagedQuery)
+        {
+            try
+            {
+                var result = await _usersServices.GetAsync(sqlPagedQuery);
+                var users = _mapper.Map<IEnumerable<Users>>(result.Results);
+                var sqlPagedResult = SqlPagedResult<Users>.From(result, users);
+
+                return Ok(sqlPagedResult);
             }
             catch (Exception ex)
             {

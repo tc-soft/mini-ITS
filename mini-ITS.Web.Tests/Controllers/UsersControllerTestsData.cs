@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Web.Models.UsersController;
 
@@ -150,6 +151,56 @@ namespace mini_ITS.Web.Tests.Controllers
                     SortDirection = "ASC",
                     Page = 1,
                     ResultsPerPage = 3
+                };
+            }
+        }
+        public static IEnumerable<UsersDto> CRUDCases
+        {
+            get
+            {
+                yield return new UsersDto
+                {
+                    Login = "gerbaemm",
+                    FirstName = "Emma",
+                    LastName = "Gerbani",
+                    Department = "IT",
+                    Email = "emma.gerbani@example.com",
+                    Phone = "501XXX501",
+                    Role = "Manager",
+                    PasswordHash = "Gerbaemm2022@"
+                };
+                yield return new UsersDto
+                {
+                    Login = "trembays",
+                    FirstName = "Ayse",
+                    LastName = "Tremblay",
+                    Department = "Research",
+                    Email = "ayse.tremblay@example.com",
+                    Phone = "502XXX502",
+                    Role = "User",
+                    PasswordHash = "Trembays2022@"
+                };
+                yield return new UsersDto
+                {
+                    Login = "gagnowil",
+                    FirstName = "William",
+                    LastName = "Gagnon",
+                    Department = "Development",
+                    Email = "william.gagnon@example.com",
+                    Phone = "503XXX503",
+                    Role = "Manager",
+                    PasswordHash = "Gagnowil2022@"
+                };
+                yield return new UsersDto
+                {
+                    Login = "mortojac",
+                    FirstName = "Jack",
+                    LastName = "Morton",
+                    Department = "Sales",
+                    Email = "jack.morton@example.com",
+                    Phone = "504XXX504",
+                    Role = "Manager",
+                    PasswordHash = "Mortojac2022@"
                 };
             }
         }

@@ -264,5 +264,61 @@ namespace mini_ITS.Web.Tests.Controllers
 
             await LogoutAsync();
         }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Unauthorized(
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await CreateAsync(usersDto);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.InternalServerError),
+                "ERROR - respons status code is not 500");
+
+            TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+        }
+        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))]
+        public async Task CreateAsync_Authorized(UsersDto usersDto)
+        {
+            var loginData = new LoginData
+            {
+                Login = "admin",
+                Password = "admin"
+            };
+
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await CreateAsync(usersDto);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var results = await response.Content.ReadAsStringAsync();
+
+                TestContext.Out.WriteLine($"Response: {results}");
+            }
+            else
+            {
+                TestContext.Out.WriteLine($"\nCreate user :");
+                TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
+                TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
+                TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");
+                TestContext.Out.WriteLine($"Department : {usersDto.Department}");
+                TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
+
+                TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            }
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200");
+        }
     }
 }

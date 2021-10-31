@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Services;
 using mini_ITS.Web.Framework;
@@ -121,6 +122,22 @@ namespace mini_ITS.Web.Controllers
             catch (Exception ex)
             {
                 throw new Exception($"Error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<ActionResult> CreateAsync([FromBody] UsersDto usersDto)
+        {
+            try
+            {
+                await _usersServices.CreateAsync(usersDto);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
     }

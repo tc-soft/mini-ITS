@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Web.Models.UsersController;
 
@@ -60,6 +61,12 @@ namespace mini_ITS.Web.Tests
 
             var queryString = new FormUrlEncodedContent(queryParameters).ReadAsStringAsync();
             var response = await TestClient.GetAsync($"{ApiRoutes.Users.Index}?{queryString.Result}");
+
+            return response;
+        }
+        protected async Task<HttpResponseMessage> CreateAsync(UsersDto usersDto)
+        {
+            var response = await TestClient.PostAsJsonAsync(ApiRoutes.Users.Create, usersDto);
 
             return response;
         }

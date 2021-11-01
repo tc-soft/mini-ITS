@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -67,6 +68,12 @@ namespace mini_ITS.Web.Tests
         protected async Task<HttpResponseMessage> CreateAsync(UsersDto usersDto)
         {
             var response = await TestClient.PostAsJsonAsync(ApiRoutes.Users.Create, usersDto);
+
+            return response;
+        }
+        protected async Task<HttpResponseMessage> EditGetAsync(Guid id)
+        {
+            var response = await TestClient.GetAsync($"{ApiRoutes.Users.Edit}/{id}");
 
             return response;
         }

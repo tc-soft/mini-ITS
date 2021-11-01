@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -151,6 +152,60 @@ namespace mini_ITS.Web.Tests.Controllers
                     SortDirection = "ASC",
                     Page = 1,
                     ResultsPerPage = 3
+                };
+            }
+        }
+        public static IEnumerable<UsersDto> UsersCases
+        {
+            get
+            {
+                yield return new UsersDto
+                {
+                    Id = new Guid("5ee56913-7441-4305-8b31-bc86584fff47"),
+                    Login = "bartlbri",
+                    FirstName = "Brigita",
+                    LastName = "Bartles",
+                    Department = "Sales",
+                    Email = "brigita.bartles@example.com",
+                    Phone = "505XXX505",
+                    Role = "User",
+                    PasswordHash = "AQAAAAEAACcQAAAAEA/sCjbUn+XYqOX2IvkfPOVDuk55tm6+dAvF3tRKOZtSXFFlog18TLlgf+qZYbz0Eg=="
+                };
+                yield return new UsersDto
+                {
+                    Id = new Guid("3131c3ea-5607-4fa0-b9d7-712ff41baa4e"),
+                    Login = "atkincol",
+                    FirstName = "Colin",
+                    LastName = "Atkins",
+                    Department = "Marketing",
+                    Email = "colin.atkins@example.com",
+                    Phone = "507XXX507",
+                    Role = "Manager",
+                    PasswordHash = "AQAAAAEAACcQAAAAECI5D9hIHXvaVpudtHvyvLqa+p0SwNhPQ0R53T8jrkVUEQ83Teaqb7c8Vkv9O+KtZw=="
+                };
+                yield return new UsersDto
+                {
+                    Id = new Guid("dfe4d2bf-08ea-4d86-9ccd-4e1ce3459c48"),
+                    Login = "kirbyisa",
+                    FirstName = "Isabella",
+                    LastName = "Kirby",
+                    Department = "Marketing",
+                    Email = "isabella.kirby@example.com",
+                    Phone = "507XXX507",
+                    Role = "Manager",
+                    PasswordHash = "AQAAAAEAACcQAAAAELS+ZaS667+SzIjNLuFk9YJV6yvLK85cs2A6wZd9chyjgsHk0gPt2FXbZVxFSASfuw=="
+                };
+                yield return new UsersDto
+                {
+                    Id = new Guid("99fcf2cf-9080-4c61-bd3d-66f78ce4e39f"),
+                    Login = "trevidor",
+                    FirstName = "Dora",
+                    LastName = "Trevino",
+                    Department = "Sales",
+                    Email = "dora.trevino@example.com",
+                    Phone = "509XXX509",
+                    Role = "User",
+                    PasswordHash = "AQAAAAEAACcQAAAAEB6m7DEIjclUTy6LMf7lGSelKRBp0ZstF9Fm+YW/Yq/Ta4NcZCaRKiZla3w7EjcuGg=="
                 };
             }
         }

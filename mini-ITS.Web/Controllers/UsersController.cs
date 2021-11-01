@@ -140,5 +140,28 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpGet("{id:guid}")]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> EditAsync(Guid? id)
+        {
+            try
+            {
+                if (id.HasValue)
+                {
+                    var user = await _usersServices.GetAsync((Guid)id);
+                    user.PasswordHash = "";
+                    return Ok(user);
+                }
+                else
+                {
+                    return StatusCode(500, $"Error: id is null");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
+        }
     }
 }

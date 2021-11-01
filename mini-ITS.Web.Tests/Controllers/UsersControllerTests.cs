@@ -320,5 +320,67 @@ namespace mini_ITS.Web.Tests.Controllers
                 Is.EqualTo(HttpStatusCode.OK),
                 "ERROR - respons status code is not 200");
         }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Unauthorized(
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await EditGetAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.InternalServerError),
+                "ERROR - respons status code is not 500");
+
+            TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+
+            await LogoutAsync();
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Authorized(
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await EditGetAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var results = await response.Content.ReadAsStringAsync();
+
+                TestContext.Out.WriteLine($"Response: {results}");
+            }
+            else
+            {
+                var results = await response.Content.ReadFromJsonAsync<UsersDto>();
+                Assert.IsNotNull(results, $"ERROR - Results is null");
+
+                TestContext.Out.WriteLine($"\nUser to edit :");
+                TestContext.Out.WriteLine($"Id         : {results.Id}");
+                TestContext.Out.WriteLine($"Login      : {results.Login}");
+                TestContext.Out.WriteLine($"FirstName  : {results.FirstName}");
+                TestContext.Out.WriteLine($"LastName   : {results.LastName}");
+                TestContext.Out.WriteLine($"Department : {results.Department}");
+                TestContext.Out.WriteLine($"Email      : {results.Email}");
+                TestContext.Out.WriteLine($"Phone      : {results.Phone}");
+                TestContext.Out.WriteLine($"Role       : {results.Role}\n");
+
+                TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            }
+
+            await LogoutAsync();
+        }
     }
 }

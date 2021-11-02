@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace mini_ITS.Core.Tests
+namespace mini_ITS.Core
 {
     public class CaesarHelper
     {

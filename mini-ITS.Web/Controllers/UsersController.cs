@@ -163,5 +163,27 @@ namespace mini_ITS.Web.Controllers
                 throw new Exception($"Error: {ex.Message}");
             }
         }
+        [HttpPut("{id:guid}")]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> EditAsync([FromBody] UsersDto usersDto)
+        {
+            try
+            {
+                if (usersDto is not null)
+                {
+                    await _usersServices.UpdateAsync(usersDto);
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(500, $"Error: usersDto is null");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

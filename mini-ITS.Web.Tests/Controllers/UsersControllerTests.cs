@@ -22,6 +22,7 @@ namespace mini_ITS.Web.Tests.Controllers
             response = await LoginAsync(loginData);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 401");
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            await LogoutAsync();
         }
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
         public async Task LoginAsync_Authorized(LoginData loginData)
@@ -46,6 +47,8 @@ namespace mini_ITS.Web.Tests.Controllers
                 TestContext.Out.WriteLine($"Role       : {results.Role}");
                 TestContext.Out.WriteLine($"isLogged   : {results.isLogged}\n");
             }
+
+            await LogoutAsync();
         }
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
         public async Task LogoutAsync(LoginData loginData)
@@ -101,6 +104,8 @@ namespace mini_ITS.Web.Tests.Controllers
 
                 TestContext.Out.WriteLine($"Logout - OK");
             }
+
+            await LogoutAsync();
         }
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))]
         public async Task LoginStatus_Unauthorized(LoginData loginData)
@@ -117,6 +122,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - respons status code is not 500");
 
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            await LogoutAsync();
         }
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
         public async Task LoginStatus_Authorized(LoginData loginData)
@@ -166,6 +172,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - respons status code is not 500");
 
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            await LogoutAsync();
         }
         [Test, Combinatorial]
         public async Task IndexAsync_Authorized(
@@ -282,6 +289,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - respons status code is not 500");
 
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
+            await LogoutAsync();
         }
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))]
         public async Task CreateAsync_Authorized(UsersDto usersDto)
@@ -320,6 +328,15 @@ namespace mini_ITS.Web.Tests.Controllers
                 response.StatusCode,
                 Is.EqualTo(HttpStatusCode.OK),
                 "ERROR - respons status code is not 200");
+
+            response = await DeleteAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after delete test user");
+
+            await LogoutAsync();
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Unauthorized(
@@ -338,7 +355,6 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - respons status code is not 500");
 
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
-
             await LogoutAsync();
         }
         [Test, Combinatorial]
@@ -411,7 +427,6 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - respons status code is not 500");
 
             TestContext.Out.WriteLine($"Response: {response.StatusCode}");
-
             await LogoutAsync();
         }
         [Test, Combinatorial]
@@ -517,6 +532,103 @@ namespace mini_ITS.Web.Tests.Controllers
                 TestContext.Out.WriteLine($"Email      : {results.Email}");
                 TestContext.Out.WriteLine($"Phone      : {results.Phone}");
                 TestContext.Out.WriteLine($"Role       : {results.Role}\n");
+            }
+
+            await LogoutAsync();
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Unauthorized(
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+
+            TestContext.Out.WriteLine($"\nUser before delete:");
+            TestContext.Out.WriteLine($"Id         : {usersDto.Id}");
+            TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
+            TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
+            TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");
+            TestContext.Out.WriteLine($"Department : {usersDto.Department}");
+            TestContext.Out.WriteLine($"Email      : {usersDto.Email}");
+            TestContext.Out.WriteLine($"Phone      : {usersDto.Phone}");
+            TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
+
+            response = await DeleteAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.InternalServerError),
+                "ERROR - respons status code is not 500");
+
+            TestContext.Out.WriteLine($"Response after delete user: {response.StatusCode}");
+            await LogoutAsync();
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Authorized(
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+            response = await CreateAsync(usersDto);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after create test user");
+
+            TestContext.Out.WriteLine($"\nCreate test user:");
+            TestContext.Out.WriteLine($"Id         : {usersDto.Id}");
+            TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
+            TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
+            TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");
+            TestContext.Out.WriteLine($"Department : {usersDto.Department}");
+            TestContext.Out.WriteLine($"Email      : {usersDto.Email}");
+            TestContext.Out.WriteLine($"Phone      : {usersDto.Phone}");
+            TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
+
+            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}");
+            
+            response = await EditGetAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after get test user");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                var results = await response.Content.ReadAsStringAsync();
+
+                TestContext.Out.WriteLine($"Response after get user: {results}");
+            }
+            else
+            {
+                var results = await response.Content.ReadFromJsonAsync<UsersDto>();
+                Assert.IsNotNull(results, $"ERROR - Results is null after get user");
+
+                response = await DeleteAsync(usersDto.Id);
+
+                Assert.That(
+                    response.StatusCode,
+                    Is.EqualTo(HttpStatusCode.OK),
+                    "ERROR - respons status code is not 200 after delete test user");
+
+                TestContext.Out.WriteLine($"Response after delete test user: {response.StatusCode}");
+
+                response = await EditGetAsync(usersDto.Id);
+
+                Assert.That(
+                    response.StatusCode,
+                    Is.EqualTo(HttpStatusCode.InternalServerError),
+                    "ERROR - respons status code is not 500 after get test user");
+                
+                TestContext.Out.WriteLine($"Response after check to get delete user: {response.StatusCode}");
             }
 
             await LogoutAsync();

@@ -185,5 +185,27 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpDelete("{id:guid}")]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> DeleteAsync(Guid? id)
+        {
+            try
+            {
+                if (id.HasValue)
+                {
+                    await _usersServices.DeleteAsync((Guid)id);
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(500, $"Error: id is null");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

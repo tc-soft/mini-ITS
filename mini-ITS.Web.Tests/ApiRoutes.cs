@@ -14,6 +14,7 @@
             public static readonly string Index = string.Concat(_usersControllerUrl, "/Index");
             public static readonly string Create = string.Concat(_usersControllerUrl, "/Create");
             public static readonly string Edit = string.Concat(_usersControllerUrl, "/Edit");
+            public static readonly string Delete = string.Concat(_usersControllerUrl, "/Delete");
         }
     }
 }

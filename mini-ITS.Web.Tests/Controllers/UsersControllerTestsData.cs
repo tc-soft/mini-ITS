@@ -215,6 +215,7 @@ namespace mini_ITS.Web.Tests.Controllers
             {
                 yield return new UsersDto
                 {
+                    Id = new Guid("9B62AEAC-A021-40E8-B865-3A0420B8AC77"),
                     Login = "gerbaemm",
                     FirstName = "Emma",
                     LastName = "Gerbani",
@@ -226,6 +227,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 };
                 yield return new UsersDto
                 {
+                    Id = new Guid("036B4504-B062-4DEF-924A-C13741AFD686"),
                     Login = "trembays",
                     FirstName = "Ayse",
                     LastName = "Tremblay",
@@ -237,6 +239,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 };
                 yield return new UsersDto
                 {
+                    Id = new Guid("725D991C-C332-4AAC-A319-3CE55295FE2E"),
                     Login = "gagnowil",
                     FirstName = "William",
                     LastName = "Gagnon",
@@ -248,6 +251,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 };
                 yield return new UsersDto
                 {
+                    Id = new Guid("E5251D40-1402-4D25-8123-067DA24AEDAC"),
                     Login = "mortojac",
                     FirstName = "Jack",
                     LastName = "Morton",

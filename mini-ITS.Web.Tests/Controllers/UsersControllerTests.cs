@@ -633,5 +633,123 @@ namespace mini_ITS.Web.Tests.Controllers
 
             await LogoutAsync();
         }
+        [Test, Combinatorial]
+        public async Task ChangePasswordAsync_Unauthorized(
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+
+            TestContext.Out.WriteLine($"\nUser before change password:");
+            TestContext.Out.WriteLine($"Id         : {usersDto.Id}");
+            TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
+            TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
+            TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");
+            TestContext.Out.WriteLine($"Department : {usersDto.Department}");
+            TestContext.Out.WriteLine($"Email      : {usersDto.Email}");
+            TestContext.Out.WriteLine($"Phone      : {usersDto.Phone}");
+            TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
+            
+            var caesarHelper = new CaesarHelper();
+            var oldPassword = usersDto.Login.Substring(0, 1).ToUpper() + usersDto.Login.Substring(1) + "2022@";
+            var newPassword = caesarHelper.Encrypt(oldPassword);
+
+            var changePassword = new ChangePassword()
+            {
+                Login = usersDto.Login,
+                OldPassword = oldPassword,
+                NewPassword = newPassword
+            };
+            
+            response = await ChangePasswordAsync(changePassword);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.InternalServerError),
+                "ERROR - respons status code is not 500");
+
+            TestContext.Out.WriteLine($"Response after change password: {response.StatusCode}");
+            await LogoutAsync();
+        }
+        [Test, Combinatorial]
+        public async Task ChangePasswordAsync_Authorized(
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}");
+            await LoginAsync(loginData);
+
+            TestContext.Out.WriteLine($"\nCreate test user:");
+            TestContext.Out.WriteLine($"Id         : {usersDto.Id}");
+            TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
+            TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
+            TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");
+            TestContext.Out.WriteLine($"Department : {usersDto.Department}");
+            TestContext.Out.WriteLine($"Email      : {usersDto.Email}");
+            TestContext.Out.WriteLine($"Phone      : {usersDto.Phone}");
+            TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
+
+            response = await CreateAsync(usersDto);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after create test user");
+
+            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}\n");
+
+            var caesarHelper = new CaesarHelper();
+            var changePassword = new ChangePassword()
+            {
+                Login = usersDto.Login,
+                OldPassword = usersDto.PasswordHash,
+                NewPassword = caesarHelper.Encrypt(usersDto.PasswordHash)
+            };
+
+            TestContext.Out.WriteLine($"Old password : {changePassword.OldPassword}");
+            TestContext.Out.WriteLine($"New password : {changePassword.NewPassword}");
+
+            response = await ChangePasswordAsync(changePassword);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after change password");
+
+            TestContext.Out.WriteLine($"Response after change password: {response.StatusCode}");
+            await LogoutAsync();
+
+            var loginUserData = new LoginData()
+            {
+                Login = usersDto.Login,
+                Password = changePassword.NewPassword
+            };
+            
+            response = await LoginAsync(loginUserData);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after login with new password");
+
+            TestContext.Out.WriteLine($"Response after login with new password: {response.StatusCode}");
+            await LogoutAsync();
+
+            await LoginAsync(loginData);
+            response = await DeleteAsync(usersDto.Id);
+
+            Assert.That(
+                response.StatusCode,
+                Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after delete test user");
+
+            TestContext.Out.WriteLine($"Response after delete test user: {response.StatusCode}");
+            await LogoutAsync();
+        }
     }
 }

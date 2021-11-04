@@ -207,5 +207,30 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpPatch]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePassword changePassword)
+        {
+            try
+            {
+                if (changePassword.NewPassword is not null &&
+                    await _usersServices.LoginAsync(changePassword.Login, changePassword.OldPassword))
+                {
+                    var usersDto = await _usersServices.GetAsync(changePassword.Login);
+                    usersDto.PasswordHash = changePassword.NewPassword;
+                    await _usersServices.SetPasswordAsync(usersDto);
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(401, $"Error: credential data are not correct");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

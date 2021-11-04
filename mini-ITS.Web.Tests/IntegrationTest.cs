@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using mini_ITS.Core.Database;
@@ -86,6 +88,16 @@ namespace mini_ITS.Web.Tests
         protected async Task<HttpResponseMessage> DeleteAsync(Guid id)
         {
             var response = await TestClient.DeleteAsync($"{ApiRoutes.Users.Delete}/{id}");
+
+            return response;
+        }
+        protected async Task<HttpResponseMessage> ChangePasswordAsync(ChangePassword changePassword)
+        {
+            var stringContent = new StringContent(
+                JsonSerializer.Serialize(changePassword),
+                Encoding.UTF8,
+                "application/json-patch+json");
+            var response = await TestClient.PatchAsync($"{ApiRoutes.Users.ChangePassword}", stringContent);
 
             return response;
         }

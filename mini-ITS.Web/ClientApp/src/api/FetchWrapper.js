@@ -3,7 +3,8 @@
     logout,
     loginStatus,
     get,
-    post
+    post,
+    put
 }
 
 function login(url, login, password) {
@@ -58,6 +59,16 @@ function get(url, params) {
 function post(url, body) {
     const requestOptions = {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    };
+
+    return fetch(url, requestOptions);
+}
+
+function put(url, body) {
+    const requestOptions = {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     };

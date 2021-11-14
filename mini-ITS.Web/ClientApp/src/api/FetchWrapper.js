@@ -2,7 +2,8 @@
     login,
     logout,
     loginStatus,
-    get
+    get,
+    post
 }
 
 function login(url, login, password) {
@@ -52,6 +53,16 @@ function get(url, params) {
     };
 
     return fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
+}
+
+function post(url, body) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    };
+
+    return fetch(url, requestOptions);
 }
 
 function encodeQueryString(params) {

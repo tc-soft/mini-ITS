@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
-using mini_ITS.Core.Models;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
@@ -61,11 +60,11 @@ namespace mini_ITS.Web.Tests.Controllers
                 };
             }
         }
-        public static IEnumerable<SqlPagedQuery<Users>> SqlPagedQueryCases
+        public static IEnumerable<SqlPagedQuery<UsersDto>> SqlPagedQueryCases
         {
             get
             {
-                yield return new SqlPagedQuery<Users>
+                yield return new SqlPagedQuery<UsersDto>
                 {
                     Filter = new List<SqlQueryCondition>()
                     {
@@ -87,7 +86,7 @@ namespace mini_ITS.Web.Tests.Controllers
                     Page = 1,
                     ResultsPerPage = 5
                 };
-                yield return new SqlPagedQuery<Users>
+                yield return new SqlPagedQuery<UsersDto>
                 {
                     Filter = new List<SqlQueryCondition>()
                     {
@@ -109,7 +108,7 @@ namespace mini_ITS.Web.Tests.Controllers
                     Page = 1,
                     ResultsPerPage = 2
                 };
-                yield return new SqlPagedQuery<Users>
+                yield return new SqlPagedQuery<UsersDto>
                 {
                     Filter = new List<SqlQueryCondition>()
                     {
@@ -131,7 +130,7 @@ namespace mini_ITS.Web.Tests.Controllers
                     Page = 1,
                     ResultsPerPage = 10
                 };
-                yield return new SqlPagedQuery<Users>
+                yield return new SqlPagedQuery<UsersDto>
                 {
                     Filter = new List<SqlQueryCondition>()
                     {

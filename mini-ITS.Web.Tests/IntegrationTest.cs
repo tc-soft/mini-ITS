@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
-using mini_ITS.Core.Models;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests
@@ -18,7 +19,6 @@ namespace mini_ITS.Web.Tests
     {
         protected readonly HttpClient TestClient;
         protected HttpResponseMessage response;
-        protected IEnumerable<string> headerValue;
 
         protected IntegrationTest()
         {
@@ -28,6 +28,9 @@ namespace mini_ITS.Web.Tests
 
         protected async Task<HttpResponseMessage> LoginAsync(LoginData loginData)
         {
+            TestContext.Out.WriteLine(
+                $"   Login: {loginData.Login}\n" +
+                $"Password: {loginData.Password}\n");
             var response = await TestClient.PostAsJsonAsync(ApiRoutes.Users.Login, loginData);
 
             return response;
@@ -35,6 +38,8 @@ namespace mini_ITS.Web.Tests
         protected async Task<HttpResponseMessage> LogoutAsync()
         {
             var response = await TestClient.DeleteAsync(ApiRoutes.Users.Logout);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not OK");
+            TestContext.Out.WriteLine($"Logout status: {response.StatusCode}");
 
             return response;
         }
@@ -44,7 +49,7 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
-        protected async Task<HttpResponseMessage> IndexAsync(SqlPagedQuery<Users> sqlPagedQuery)
+        protected async Task<HttpResponseMessage> IndexAsync(SqlPagedQuery<UsersDto> sqlPagedQuery)
         {
             var queryParameters = new Dictionary<string, string>();
 

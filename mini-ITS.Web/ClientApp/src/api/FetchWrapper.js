@@ -5,7 +5,8 @@
     get,
     post,
     put,
-    patch
+    patch,
+    delete: _delete
 }
 
 function login(url, login, password) {
@@ -82,6 +83,14 @@ function patch(url, body) {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
+    };
+
+    return fetch(url, requestOptions);
+}
+
+function _delete(url) {
+    const requestOptions = {
+        method: 'DELETE'
     };
 
     return fetch(url, requestOptions);

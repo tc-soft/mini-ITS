@@ -53,17 +53,6 @@ namespace mini_ITS.Core.Database
                     {
                         filters.Add($"{item.Name} {item.Operator} '{item.Value}'");
                     }
-
-                    if (item.Value is not null && item.Value is int)
-                    {
-                        filters.Add($"{item.Name} {item.Operator} '{item.Value.ToString()}'");
-                    }
-
-                    if (item.Value is not null && item.Value is DateTime)
-                    {
-                        var dateTime = (DateTime)item.Value;
-                        filters.Add($"{item.Name} {item.Operator} '{dateTime.ToString(Constants.DATE_FORMAT)}'");
-                    }
                 }
 
                 queryBuilder.Append($" WHERE {String.Join(" AND ", filters)}");
@@ -148,17 +137,6 @@ namespace mini_ITS.Core.Database
                     if (item.Value is not null && item.Value is string && !String.IsNullOrWhiteSpace((string)item.Value))
                     {
                         filters.Add($"{item.Name} {item.Operator} '{item.Value}'");
-                    }
-
-                    if (item.Value is not null && item.Value is int)
-                    {
-                        filters.Add($"{item.Name} {item.Operator} '{item.Value.ToString()}'");
-                    }
-
-                    if (item.Value is not null && item.Value is DateTime)
-                    {
-                        var dateTime = (DateTime)item.Value;
-                        filters.Add($"{item.Name} {item.Operator} '{dateTime.ToString(Constants.DATE_FORMAT)}'");
                     }
                 }
 

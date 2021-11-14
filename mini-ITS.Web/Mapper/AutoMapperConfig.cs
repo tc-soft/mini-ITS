@@ -8,7 +8,7 @@ namespace mini_ITS.Web.Mapper
     {
         public static IMapper GetMapper() => new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Users, UsersDto>();
+                cfg.CreateMap<Users, UsersDto>().ReverseMap();
             }
         ).CreateMapper();
     }

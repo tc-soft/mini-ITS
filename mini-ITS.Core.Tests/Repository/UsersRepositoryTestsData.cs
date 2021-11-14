@@ -133,7 +133,7 @@ namespace mini_ITS.Core.Tests.Repository
                     Email = "brigita.bartles@example.com",
                     Phone = "505XXX505",
                     Role = "User",
-                    PasswordHash = "duMypqCJ6/H4N6VxJvAcqjgOSd7fGHojrn1qbf9Nmhgn/Vk4tS/un0jF0OR2+bCf3Qz1gJHyZIWNSw3J6kNKmQ=="
+                    PasswordHash = "AQAAAAEAACcQAAAAEA/sCjbUn+XYqOX2IvkfPOVDuk55tm6+dAvF3tRKOZtSXFFlog18TLlgf+qZYbz0Eg=="
                 };
                 yield return new Users
                 {
@@ -145,7 +145,7 @@ namespace mini_ITS.Core.Tests.Repository
                     Email = "colin.atkins@example.com",
                     Phone = "507XXX507",
                     Role = "Manager",
-                    PasswordHash = "lpaRF1gwtbaR4GYdwIODxQ59uYhV8d0Tf0WjGsP3fwKrW46w+eaiA6hDBIuDrU/1ObpwsbaGaKB7vQwcCyjVpg=="
+                    PasswordHash = "AQAAAAEAACcQAAAAECI5D9hIHXvaVpudtHvyvLqa+p0SwNhPQ0R53T8jrkVUEQ83Teaqb7c8Vkv9O+KtZw=="
                 };
                 yield return new Users
                 {
@@ -157,7 +157,7 @@ namespace mini_ITS.Core.Tests.Repository
                     Email = "isabella.kirby@example.com",
                     Phone = "507XXX507",
                     Role = "Manager",
-                    PasswordHash = "s6Rs+ACBhZNSZDqS9+oAHcY6HbXabI6EZ2SoAd2I/6wzwH54BaspoCYfut/Zj9qQXis7erobV/RhFGALfRZfxg=="
+                    PasswordHash = "AQAAAAEAACcQAAAAELS+ZaS667+SzIjNLuFk9YJV6yvLK85cs2A6wZd9chyjgsHk0gPt2FXbZVxFSASfuw=="
                 };
                 yield return new Users
                 {
@@ -169,7 +169,7 @@ namespace mini_ITS.Core.Tests.Repository
                     Email = "dora.trevino@example.com",
                     Phone = "509XXX509",
                     Role = "User",
-                    PasswordHash = "SY1O1aLA3Ii7mvPeWy0535B1cwspmPjvrL94FmYlpgWGpIx81yUzD/JToTjdQvUQm4HeQUw7ZaQ7xwxTGMYF7Q=="
+                    PasswordHash = "AQAAAAEAACcQAAAAEB6m7DEIjclUTy6LMf7lGSelKRBp0ZstF9Fm+YW/Yq/Ta4NcZCaRKiZla3w7EjcuGg=="
                 };
             }
         }

@@ -1,6 +1,7 @@
 ﻿export const fetchWrapper = {
     login,
-    logout
+    logout,
+    loginStatus
 }
 
 function login(url, login, password) {
@@ -26,6 +27,18 @@ function logout(url) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
+    };
+
+    return fetch(url, requestOptions);
+}
+
+function loginStatus(url) {
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
     };
 
     return fetch(url, requestOptions);

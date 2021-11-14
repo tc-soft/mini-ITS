@@ -4,7 +4,8 @@
     loginStatus,
     get,
     post,
-    put
+    put,
+    patch
 }
 
 function login(url, login, password) {
@@ -69,6 +70,16 @@ function post(url, body) {
 function put(url, body) {
     const requestOptions = {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    };
+
+    return fetch(url, requestOptions);
+}
+
+function patch(url, body) {
+    const requestOptions = {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     };

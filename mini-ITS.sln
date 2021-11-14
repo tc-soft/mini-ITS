@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mini-ITS.Core.Tests", "mini
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mini-ITS.Core", "mini-ITS.Core\mini-ITS.Core.csproj", "{D531D676-1359-4379-9F2B-F2D6B5AD9968}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mini-ITS.Web.Tests", "mini-ITS.Web.Tests\mini-ITS.Web.Tests.csproj", "{6300D2EB-470F-4BE6-ACF9-45F20E7FA42B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mini-ITS.Web.Tests", "mini-ITS.Web.Tests\mini-ITS.Web.Tests.csproj", "{6300D2EB-470F-4BE6-ACF9-45F20E7FA42B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB31C69E-5210-4448-ADFF-8D6558595FC1}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

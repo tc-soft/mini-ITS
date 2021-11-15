@@ -8,7 +8,8 @@ export const usersServices = {
     index,
     create,
     edit,
-    update
+    update,
+    delete: _delete
 }
 
 const baseUrl = 'api/Users';
@@ -43,4 +44,8 @@ function edit(id) {
 
 function update(id, values) {
     return fetchWrapper.put(`${baseUrl}/Edit/${id}`, values);
+}
+
+function _delete(id) {
+    return fetchWrapper.delete(`${baseUrl}/Delete/${id}`);
 }

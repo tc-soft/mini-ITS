@@ -2,7 +2,8 @@
 
 export const usersServices = {
     login,
-    logout
+    logout,
+    loginStatus
 }
 
 const baseUrl = 'api/Users';
@@ -13,4 +14,8 @@ function login(login, password) {
 
 function logout() {
     return fetchWrapper.logout(`${baseUrl}/Logout`);
+}
+
+function loginStatus() {
+    return fetchWrapper.loginStatus(`${baseUrl}/LoginStatus`);
 }

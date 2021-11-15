@@ -4,7 +4,8 @@ export const usersServices = {
     login,
     logout,
     loginStatus,
-    changePassword
+    changePassword,
+    index
 }
 
 const baseUrl = 'api/Users';
@@ -23,4 +24,8 @@ function loginStatus() {
 
 function changePassword(id, values) {
     return fetchWrapper.patch(`${baseUrl}/ChangePassword/${id}`, values);
+}
+
+function index(values) {
+    return fetchWrapper.get(`${baseUrl}/Index`, values);
 }

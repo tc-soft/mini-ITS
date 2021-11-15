@@ -5,7 +5,8 @@ export const usersServices = {
     logout,
     loginStatus,
     changePassword,
-    index
+    index,
+    create
 }
 
 const baseUrl = 'api/Users';
@@ -28,4 +29,8 @@ function changePassword(id, values) {
 
 function index(values) {
     return fetchWrapper.get(`${baseUrl}/Index`, values);
+}
+
+function create(values) {
+    return fetchWrapper.post(`${baseUrl}/Create`, values);
 }

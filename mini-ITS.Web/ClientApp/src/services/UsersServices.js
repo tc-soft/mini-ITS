@@ -7,7 +7,8 @@ export const usersServices = {
     changePassword,
     index,
     create,
-    edit
+    edit,
+    update
 }
 
 const baseUrl = 'api/Users';
@@ -38,4 +39,8 @@ function create(values) {
 
 function edit(id) {
     return fetchWrapper.get(`${baseUrl}/Edit/${id}`);
+}
+
+function update(id, values) {
+    return fetchWrapper.put(`${baseUrl}/Edit/${id}`, values);
 }

@@ -1,4 +1,4 @@
-﻿import { fetchWrapper } from '../api/FetchWrapper';
+import { fetchWrapper } from '../api/FetchWrapper';
 
 export const usersServices = {
     login,

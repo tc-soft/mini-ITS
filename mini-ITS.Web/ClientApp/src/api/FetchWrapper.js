@@ -1,4 +1,4 @@
-﻿export const fetchWrapper = {
+export const fetchWrapper = {
     login,
     logout,
     loginStatus,

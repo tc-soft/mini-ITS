@@ -150,8 +150,16 @@ namespace mini_ITS.Web.Controllers
                 if (id.HasValue)
                 {
                     var user = await _usersServices.GetAsync((Guid)id);
-                    user.PasswordHash = "";
-                    return Ok(user);
+
+                    if (user is not null)
+                    {
+                        user.PasswordHash = "";
+                        return Ok(user);
+                    }
+                    else
+                    {
+                        return StatusCode(500, $"Error: user is null");
+                    }
                 }
                 else
                 {

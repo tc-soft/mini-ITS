@@ -13,7 +13,7 @@ export default function AuthProvider({ children }) {
     const [loginStatus, setLoginStatus] = useState(false);
     const navigate = useNavigate();
 
-    if (!currentUser && !loginStatus) {
+    if (!loginStatus) {
         try {
             usersServices.loginStatus()
                 .then((response) => {
@@ -24,6 +24,9 @@ export default function AuthProvider({ children }) {
                                 setCurrentUser(data);
                                 setLoginStatus(true);
                             })
+                    }
+                    else {
+                        setLoginStatus(true);
                     }
                 });
         }
@@ -66,7 +69,7 @@ export default function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ currentUser, handleLogin, handleLogout }}>
+        <AuthContext.Provider value={{ loginStatus, currentUser, handleLogin, handleLogout, navigate }}>
             {children}
         </AuthContext.Provider>
     );

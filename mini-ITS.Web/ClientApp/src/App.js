@@ -1,27 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import { ReactComponent as BrandIcon } from "./images/mini-ITS.svg";
 
 import './styles/main.scss';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    return (
+        <main className="main">
+            <header className="main__header">
+                <nav>
+                    <BrandIcon />
+
+                    <ul>
+                        <li className="main__header--link">{<Link to="/">Home</Link>}</li>
+                    </ul>
+
+                </nav>
+            </header>
+
+            <section className="main__section">
+                <Routes>
+                    <Route path="/" element={<p>Strona główna</p>}/>
+                </Routes>
+            </section>
+
+            <footer className="main__footer">
+                <p>©2022 mini-ITS</p>
+            </footer>
+        </main>
+    );
 }
 
 export default App;

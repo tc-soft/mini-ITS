@@ -61,6 +61,34 @@ body {
                 text-decoration: none;
             }
         }
+
+        &--icon {
+            display: inline-block;
+
+            a {
+                display: inline-block;
+                width: 50px;
+                color: $color00;
+                text-decoration: none;
+                text-align: center;
+                vertical-align: middle;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: 200ms;
+                padding: 0.5rem 0;
+
+                svg {
+                    display: block;
+                    margin: 0.09rem auto;
+                    height: 15px;
+                }
+            }
+
+            & a:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+                text-decoration: none;
+            }
+        }
     }
 
     &__section {

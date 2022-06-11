@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm } from "react-hook-form";
 import { usersServices } from '../../services/UsersServices';
+import ErrorMessage from './ErrorMessage';
 
 function LoginForm() {
     const { handleLogin, navigate } = useAuth();
+    const [loginError, setLoginError] = useState("");
     const { handleSubmit, register, reset, formState: { errors } } = useForm();
 
     function onSubmit(values) {
@@ -14,12 +16,14 @@ function LoginForm() {
                     return response.json()
                         .then((data) => {
                             handleLogin(data);
+                            setLoginError(null);
                             reset();
                             navigate('/');
                         })
                 } else {
                     return response.json()
                         .then((data) => {
+                            setLoginError(data);
                             reset();
                         })
                 }
@@ -37,6 +41,8 @@ function LoginForm() {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <p>Logowanie</p>
 
+                <ErrorMessage errors={loginError} />
+
                 <label>Nazwa użytkownika</label>
                 <input
                     size='35'
@@ -48,6 +54,7 @@ function LoginForm() {
                         maxLength: { value: 20, message: 'Nazwa użytkownika za długa' }
                     })}
                 />
+                <ErrorMessage errors={errors.login?.message} />
 
                 <label>Hasło</label>
                 <input
@@ -61,6 +68,7 @@ function LoginForm() {
                         maxLength: { value: 40, message: 'Hasło za długie' }
                     })}
                 />
+                <ErrorMessage errors={errors.password?.message} />
 
                 <div>
                     <button

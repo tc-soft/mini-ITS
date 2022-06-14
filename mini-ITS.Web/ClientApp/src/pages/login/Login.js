@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { usersServices } from '../../services/UsersServices';
 import ErrorMessage from './ErrorMessage';
 
+import '../../styles/pages/Login.scss';
+
 function LoginForm() {
     const { handleLogin, navigate } = useAuth();
     const [loginError, setLoginError] = useState("");
@@ -38,13 +40,14 @@ function LoginForm() {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <p>Logowanie</p>
+            <form onSubmit={handleSubmit(onSubmit)} className='login'>
+                <p className='login__title'>Logowanie</p>
 
                 <ErrorMessage errors={loginError} />
 
-                <label>Nazwa użytkownika</label>
+                <label className='login__labels'>Nazwa użytkownika</label>
                 <input
+                    className='login__inputs'
                     size='35'
                     type='text'
                     placeholder='Wpisz login'
@@ -56,8 +59,9 @@ function LoginForm() {
                 />
                 <ErrorMessage errors={errors.login?.message} />
 
-                <label>Hasło</label>
+                <label className='login__labels'>Hasło</label>
                 <input
+                    className='login__inputs'
                     size='35'
                     type='password'
                     placeholder='Wpiz hasło'
@@ -72,12 +76,14 @@ function LoginForm() {
 
                 <div>
                     <button
+                        className='login__button'
                         type='submit'
                         disabled={false}
                     >
                         Zaloguj się
                     </button>
                 </div>
+
             </form>
         </>
     );

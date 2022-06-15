@@ -61,7 +61,7 @@ namespace mini_ITS.Web.Controllers
                 }
                 else
                 {
-                    return StatusCode(401, "Login or password is incorrect");
+                    return StatusCode(401, "Nieprawidłowa nazwa użytkownika lub hasło");
                 }
             }
             catch (Exception ex)

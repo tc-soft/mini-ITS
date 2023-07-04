@@ -36,7 +36,7 @@ function App() {
             </section>
 
             <footer className="main__footer">
-                <p>©2022 mini-ITS</p>
+                <p>©2023 mini-ITS</p>
             </footer>
         </main>
     );

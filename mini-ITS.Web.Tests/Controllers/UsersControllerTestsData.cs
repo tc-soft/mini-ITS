@@ -20,17 +20,17 @@ namespace mini_ITS.Web.Tests.Controllers
                 yield return new LoginData
                 {
                     Login = "baloddem",
-                    Password = "Baloddem2022@"
+                    Password = "Balo1234$%"
                 };
                 yield return new LoginData
                 {
                     Login = "beukeida",
-                    Password = "Beukeida2022@"
+                    Password = "Beuk1234$%"
                 };
                 yield return new LoginData
                 {
                     Login = "huntewil",
-                    Password = "Huntewil2022@"
+                    Password = "Hunt1234$%"
                 };
             }
         }
@@ -160,51 +160,51 @@ namespace mini_ITS.Web.Tests.Controllers
             {
                 yield return new UsersDto
                 {
-                    Id = new Guid("5ee56913-7441-4305-8b31-bc86584fff47"),
+                    Id = new Guid("DA30DCAC-27E8-4B53-B2C4-FE5220420106"),
                     Login = "bartlbri",
                     FirstName = "Brigita",
                     LastName = "Bartles",
                     Department = "Sales",
                     Email = "brigita.bartles@example.com",
-                    Phone = "505XXX505",
-                    Role = "User",
-                    PasswordHash = "AQAAAAEAACcQAAAAEA/sCjbUn+XYqOX2IvkfPOVDuk55tm6+dAvF3tRKOZtSXFFlog18TLlgf+qZYbz0Eg=="
+                    Phone = "506XXX506",
+                    Role = "Manager",
+                    PasswordHash = "AQAAAAIAAYagAAAAECNMSp+6vCmYqr2MLQKmDVuIwLtvfxzC/rZ5fiDvoY05vDWxBuGmW7qC6BzMv+VZyA=="
                 };
                 yield return new UsersDto
                 {
-                    Id = new Guid("3131c3ea-5607-4fa0-b9d7-712ff41baa4e"),
+                    Id = new Guid("8532C003-D391-42AA-843A-21393B46C1A8"),
                     Login = "atkincol",
                     FirstName = "Colin",
                     LastName = "Atkins",
                     Department = "Marketing",
                     Email = "colin.atkins@example.com",
-                    Phone = "507XXX507",
+                    Phone = "505XXX505",
                     Role = "Manager",
-                    PasswordHash = "AQAAAAEAACcQAAAAECI5D9hIHXvaVpudtHvyvLqa+p0SwNhPQ0R53T8jrkVUEQ83Teaqb7c8Vkv9O+KtZw=="
+                    PasswordHash = "AQAAAAIAAYagAAAAED+Au/PbiCL0SjMraBIwqPSgTjDpe13Xo8gCvN6iCvUFj4YNp4PihXhu2bzBgZl6Xg=="
                 };
                 yield return new UsersDto
                 {
-                    Id = new Guid("dfe4d2bf-08ea-4d86-9ccd-4e1ce3459c48"),
+                    Id = new Guid("FAE887FB-ECAD-42E0-B9F3-7C0213BD1FF0"),
                     Login = "kirbyisa",
                     FirstName = "Isabella",
                     LastName = "Kirby",
                     Department = "Marketing",
                     Email = "isabella.kirby@example.com",
-                    Phone = "507XXX507",
-                    Role = "Manager",
-                    PasswordHash = "AQAAAAEAACcQAAAAELS+ZaS667+SzIjNLuFk9YJV6yvLK85cs2A6wZd9chyjgsHk0gPt2FXbZVxFSASfuw=="
+                    Phone = "505XXX505",
+                    Role = "User",
+                    PasswordHash = "AQAAAAIAAYagAAAAEHfxgcWZl1B++sf0Dnm7Un3vTER15OnDLOO+3qQCyC6DRB3zVLFhWS78Gil6UqL2Og=="
                 };
                 yield return new UsersDto
                 {
-                    Id = new Guid("99fcf2cf-9080-4c61-bd3d-66f78ce4e39f"),
+                    Id = new Guid("9C94BCF2-00FA-4307-BF9B-AD70D8C8FC62"),
                     Login = "trevidor",
                     FirstName = "Dora",
                     LastName = "Trevino",
                     Department = "Sales",
                     Email = "dora.trevino@example.com",
-                    Phone = "509XXX509",
+                    Phone = "506XXX506",
                     Role = "User",
-                    PasswordHash = "AQAAAAEAACcQAAAAEB6m7DEIjclUTy6LMf7lGSelKRBp0ZstF9Fm+YW/Yq/Ta4NcZCaRKiZla3w7EjcuGg=="
+                    PasswordHash = "AQAAAAIAAYagAAAAEB5uzIxlCuMPub34FX9WmOdtVcLM4wWnNuqYTJiFkW2KTl8PPntmslcW+TFWgRmcIA=="
                 };
             }
         }

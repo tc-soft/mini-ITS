@@ -13,18 +13,18 @@ function App() {
 
     return (
         <main className="main">
-            <header className="main__header">
+            <header className="main-header">
                 <nav>
                     <BrandIcon />
                     <ul>
-                        <li className="main__header--link">{currentUser && <Link to="/">Home</Link>}</li>
-                        <li className="main__header--link">{currentUser && <Link to="/Test">Użytkownicy</Link>}</li>
-                        <li className="main__header--icon">{currentUser && <Link to='/' onClick={() => { handleLogout() }}><LogOut /></Link>}</li>
+                        <li className="main-header__link">{currentUser && <Link to="/">Home</Link>}</li>
+                        <li className="main-header__link">{currentUser && <Link to="/Test">Użytkownicy</Link>}</li>
+                        <li className="main-header__icon">{currentUser && <Link to='/' onClick={() => { handleLogout() }}><LogOut /></Link>}</li>
                     </ul>
                 </nav>
             </header>
 
-            <section className="main__section">
+            <section className="main-section">
                 <Routes>
                     <Route path="/" element={
                         <RequireAuth>
@@ -35,7 +35,7 @@ function App() {
                 </Routes>
             </section>
 
-            <footer className="main__footer">
+            <footer className="main-footer">
                 <p>©2023 mini-ITS</p>
             </footer>
         </main>

@@ -19,7 +19,7 @@ body {
     height: 100vh;
     background: linear-gradient(27deg, #FFFFFF 0%, #F4F7FC 100%);
 
-    &__header {
+    &-header {
         padding: 0.5rem 1.5rem 0.5rem 1.5rem;
         background-color: white;
         border-bottom: 1px solid rgba(107, 136, 191, 0.29);
@@ -34,7 +34,7 @@ body {
             padding: 0;
         }
 
-        &--link {
+        &__link {
             display: inline-block;
 
             a {
@@ -62,7 +62,7 @@ body {
             }
         }
 
-        &--icon {
+        &__icon {
             display: inline-block;
 
             a {
@@ -91,11 +91,11 @@ body {
         }
     }
 
-    &__section {
+    &-section {
         padding: 0.5rem;
     }
 
-    &__footer {
+    &-footer {
         padding: 0.5rem;
         justify-self: center;
         font-size: 0.9em;

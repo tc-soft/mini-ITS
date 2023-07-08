@@ -64,7 +64,7 @@ function LoginForm() {
                     className='login__inputs'
                     size='35'
                     type='password'
-                    placeholder='Wpiz hasło'
+                    placeholder='Wpisz hasło'
                     autoComplete='on'
                     error={errors.password}
                     {...register('password', {

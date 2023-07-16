@@ -6,36 +6,34 @@ import ErrorMessage from './ErrorMessage';
 
 import '../../styles/pages/Login.scss';
 
-function LoginForm() {
+const LoginForm = () => {
     const { handleLogin, navigate } = useAuth();
     const [loginError, setLoginError] = useState("");
     const { handleSubmit, register, reset, formState: { errors } } = useForm();
 
-    const onSubmit = (values) => {
-        usersServices.login(values.login, values.password)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json()
-                        .then((data) => {
-                            handleLogin(data);
-                            setLoginError(null);
-                            reset();
-                            navigate('/');
-                        });
-                } else {
-                    return response.json()
-                        .then((data) => {
-                            setLoginError(data);
-                            reset();
-                        });
-                };
-            })
-            .catch((error) => {
-                setTimeout(() => {
-                    console.error('Error:', error);
-                    alert(error);
-                }, 200);
-            });
+    const onSubmit = async (values) => {
+        try {
+            const response = await usersServices.login(values.login, values.password);
+
+            if (response.ok) {
+                const data = await response.json();
+                handleLogin(data);
+                setLoginError(null);
+                reset();
+                navigate('/');
+            }
+            else {
+                const data = await response.json();
+                setLoginError(data);
+                reset();
+            };
+        }
+        catch (error) {
+            setTimeout(() => {
+                console.error('Error:', error);
+                alert(error);
+            }, 200);
+        };
     };
 
     return (

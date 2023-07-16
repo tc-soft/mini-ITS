@@ -37,24 +37,19 @@ const AuthProvider = ({ children }) => {
         };
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         try {
-            usersServices.logout()
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json()
-                            .then((data) => {
-                                setCurrentUser(null);
-                                navigate('/');
-                                console.info(data);
-                            });
-                    } else {
-                        return response.json()
-                            .then((data) => {
-                                console.warn(data);
-                            });
-                    };
-                });
+            const response = await usersServices.logout();
+            if (response.ok) {
+                const data = await response.json();
+                setCurrentUser(null);
+                navigate('/');
+                console.info(data);
+            }
+            else {
+                const data = await response.json();
+                console.warn(data);
+            };
         }
         catch (error) {
             console.error('Error logout:', error);

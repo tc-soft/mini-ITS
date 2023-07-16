@@ -1,4 +1,4 @@
-const login = (url, login, password) => {
+const login = async (url, login, password) => {
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -11,10 +11,10 @@ const login = (url, login, password) => {
         })
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const logout = (url) => {
+const logout = async (url) => {
     const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -23,10 +23,10 @@ const logout = (url) => {
         }
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const loginStatus = (url) => {
+const loginStatus = async (url) => {
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -35,54 +35,54 @@ const loginStatus = (url) => {
         }
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const get = (url, params) => {
+const get = async (url, params) => {
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     };
 
-    return fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
+    return await fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
 };
 
-const post = (url, body) => {
+const post = async (url, body) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const put = (url, body) => {
+const put = async (url, body) => {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const patch = (url, body) => {
+const patch = async (url, body) => {
     const requestOptions = {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
-const _delete = (url) => {
+const _delete = async (url) => {
     const requestOptions = {
         method: 'DELETE'
     };
 
-    return fetch(url, requestOptions);
+    return await fetch(url, requestOptions);
 };
 
 const encodeQueryString = (params) => {

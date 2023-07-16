@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { usersServices } from '../services/UsersServices';
 
@@ -9,27 +9,24 @@ const AuthProvider = ({ children }) => {
     const [loginStatus, setLoginStatus] = useState(false);
     const navigate = useNavigate();
 
-    if (!loginStatus) {
-        try {
-            usersServices.loginStatus()
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json()
-                            .then((data) => {
-                                console.log('currentUser : check login status');
-                                setCurrentUser(data);
-                                setLoginStatus(true);
-                            });
-                    }
-                    else {
-                        setLoginStatus(true);
-                    };
-                });
-        }
-        catch (error) {
-            console.error('Error loginStatus:', error);
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const response = await usersServices.loginStatus();
+                if (response.ok) {
+                    const data = await response.json();
+                    setCurrentUser(data);
+                };
+
+                setLoginStatus(true);
+            }
+            catch (error) {
+                console.error('Error loginStatus:', error);
+            };
         };
-    };
+
+        checkLoginStatus();
+    }, []);
 
     const handleLogin = (user) => {
         try {

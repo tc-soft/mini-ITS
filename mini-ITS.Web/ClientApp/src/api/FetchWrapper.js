@@ -8,7 +8,8 @@ const login = async (url, login, password) => {
         body: JSON.stringify({
             login: login,
             password: password
-        })
+        }),
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -20,7 +21,8 @@ const logout = async (url) => {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -32,7 +34,8 @@ const loginStatus = async (url) => {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -41,7 +44,8 @@ const loginStatus = async (url) => {
 const get = async (url, params) => {
     const requestOptions = {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        signal: new AbortController().signal
     };
 
     return await fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
@@ -51,7 +55,8 @@ const post = async (url, body) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -61,7 +66,8 @@ const put = async (url, body) => {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -71,7 +77,8 @@ const patch = async (url, body) => {
     const requestOptions = {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);
@@ -79,7 +86,8 @@ const patch = async (url, body) => {
 
 const _delete = async (url) => {
     const requestOptions = {
-        method: 'DELETE'
+        method: 'DELETE',
+        signal: new AbortController().signal
     };
 
     return await fetch(url, requestOptions);

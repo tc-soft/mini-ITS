@@ -1,15 +1,4 @@
-export const fetchWrapper = {
-    login,
-    logout,
-    loginStatus,
-    get,
-    post,
-    put,
-    patch,
-    delete: _delete
-}
-
-function login(url, login, password) {
+const login = (url, login, password) => {
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -23,9 +12,9 @@ function login(url, login, password) {
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function logout(url) {
+const logout = (url) => {
     const requestOptions = {
         method: 'DELETE',
         headers: {
@@ -35,30 +24,30 @@ function logout(url) {
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function loginStatus(url) {
+const loginStatus = (url) => {
     const requestOptions = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-        },
+        }
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function get(url, params) {
+const get = (url, params) => {
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     };
 
     return fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
-}
+};
 
-function post(url, body) {
+const post = (url, body) => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,9 +55,9 @@ function post(url, body) {
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function put(url, body) {
+const put = (url, body) => {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -76,9 +65,9 @@ function put(url, body) {
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function patch(url, body) {
+const patch = (url, body) => {
     const requestOptions = {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -86,17 +75,17 @@ function patch(url, body) {
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function _delete(url) {
+const _delete = (url) => {
     const requestOptions = {
         method: 'DELETE'
     };
 
     return fetch(url, requestOptions);
-}
+};
 
-function encodeQueryString(params) {
+const encodeQueryString = (params) => {
     const paramsKeys = Object.keys(params);
     var results = "";
 
@@ -114,10 +103,21 @@ function encodeQueryString(params) {
                 }
                 else {
                     return `${paramKey}=${params[paramKey]}`;
-                }
+                };
             })
             .join('&');
     };
 
     return results;
-}
+};
+
+export const fetchWrapper = {
+    login,
+    logout,
+    loginStatus,
+    get,
+    post,
+    put,
+    patch,
+    delete: _delete
+};

@@ -8,7 +8,7 @@ import { ReactComponent as LogOut } from "./images/LogOut.svg";
 
 import './styles/main.scss';
 
-function App() {
+const App = () => {
     const { currentUser, handleLogout } = useAuth();
 
     return (
@@ -31,7 +31,7 @@ function App() {
                             <p>Strona główna</p>
                         </RequireAuth>}
                     />
-                    <Route path="/Login" element={<Login />}/>
+                    <Route path="/Login" element={<Login />} />
                 </Routes>
             </section>
 
@@ -40,6 +40,6 @@ function App() {
             </footer>
         </main>
     );
-}
+};
 
 export default App;

@@ -4,11 +4,7 @@ import { usersServices } from '../services/UsersServices';
 
 const AuthContext = createContext();
 
-export function useAuth() {
-    return useContext(AuthContext);
-}
-
-export default function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loginStatus, setLoginStatus] = useState(false);
     const navigate = useNavigate();
@@ -23,16 +19,16 @@ export default function AuthProvider({ children }) {
                                 console.log('currentUser : check login status');
                                 setCurrentUser(data);
                                 setLoginStatus(true);
-                            })
+                            });
                     }
                     else {
                         setLoginStatus(true);
-                    }
+                    };
                 });
         }
         catch (error) {
-            console.log('Error while loginStatus', error.message);
-        }
+            console.error('Error loginStatus:', error);
+        };
     };
 
     const handleLogin = (user) => {
@@ -40,8 +36,8 @@ export default function AuthProvider({ children }) {
             setCurrentUser(user);
         }
         catch (error) {
-            console.log('Error while logging', error.message);
-        }
+            console.error('Error logging:', error);
+        };
     };
 
     const handleLogout = () => {
@@ -54,18 +50,18 @@ export default function AuthProvider({ children }) {
                                 setCurrentUser(null);
                                 navigate('/');
                                 console.info(data);
-                            })
+                            });
                     } else {
                         return response.json()
                             .then((data) => {
                                 console.warn(data);
-                            })
-                    }
+                            });
+                    };
                 });
         }
         catch (error) {
-            console.log('Error while logging out', error.message);
-        }
+            console.error('Error logout:', error);
+        };
     };
 
     return (
@@ -73,4 +69,7 @@ export default function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     );
-}
+};
+
+export const useAuth = () => useContext(AuthContext);
+export default AuthProvider;

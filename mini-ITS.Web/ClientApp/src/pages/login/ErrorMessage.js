@@ -1,4 +1,4 @@
-function ErrorMessage({ errors }) {
+const ErrorMessage = ({ errors }) => {
     return (
         <>
             {errors ?

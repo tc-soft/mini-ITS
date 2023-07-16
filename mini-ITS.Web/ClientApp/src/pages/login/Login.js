@@ -11,7 +11,7 @@ function LoginForm() {
     const [loginError, setLoginError] = useState("");
     const { handleSubmit, register, reset, formState: { errors } } = useForm();
 
-    function onSubmit(values) {
+    const onSubmit = (values) => {
         usersServices.login(values.login, values.password)
             .then((response) => {
                 if (response.ok) {
@@ -21,14 +21,14 @@ function LoginForm() {
                             setLoginError(null);
                             reset();
                             navigate('/');
-                        })
+                        });
                 } else {
                     return response.json()
                         .then((data) => {
                             setLoginError(data);
                             reset();
-                        })
-                }
+                        });
+                };
             })
             .catch((error) => {
                 setTimeout(() => {
@@ -39,54 +39,52 @@ function LoginForm() {
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit(onSubmit)} className='login'>
-                <p className='login__title'>Logowanie</p>
+        <form onSubmit={handleSubmit(onSubmit)} className='login'>
+            <p className='login__title'>Logowanie</p>
 
-                <ErrorMessage errors={loginError} />
+            <ErrorMessage errors={loginError} />
 
-                <label className='login__labels'>Nazwa użytkownika</label>
-                <input
-                    className='login__inputs'
-                    size='35'
-                    type='text'
-                    placeholder='Wpisz login'
-                    error={errors.login}
-                    {...register('login', {
-                        required: 'Nazwa użytkownika jest wymagana',
-                        maxLength: { value: 20, message: 'Nazwa użytkownika za długa' }
-                    })}
-                />
-                <ErrorMessage errors={errors.login?.message} />
+            <label className='login__labels'>Nazwa użytkownika</label>
+            <input
+                className='login__inputs'
+                size='35'
+                type='text'
+                placeholder='Wpisz login'
+                error={errors.login}
+                {...register('login', {
+                    required: 'Nazwa użytkownika jest wymagana',
+                    maxLength: { value: 20, message: 'Nazwa użytkownika za długa' }
+                })}
+            />
+            <ErrorMessage errors={errors.login?.message} />
 
-                <label className='login__labels'>Hasło</label>
-                <input
-                    className='login__inputs'
-                    size='35'
-                    type='password'
-                    placeholder='Wpisz hasło'
-                    autoComplete='on'
-                    error={errors.password}
-                    {...register('password', {
-                        required: 'Hasło jest wymagane',
-                        maxLength: { value: 40, message: 'Hasło za długie' }
-                    })}
-                />
-                <ErrorMessage errors={errors.password?.message} />
+            <label className='login__labels'>Hasło</label>
+            <input
+                className='login__inputs'
+                size='35'
+                type='password'
+                placeholder='Wpisz hasło'
+                autoComplete='on'
+                error={errors.password}
+                {...register('password', {
+                    required: 'Hasło jest wymagane',
+                    maxLength: { value: 40, message: 'Hasło za długie' }
+                })}
+            />
+            <ErrorMessage errors={errors.password?.message} />
 
-                <div>
-                    <button
-                        className='login__button'
-                        type='submit'
-                        disabled={false}
-                    >
-                        Zaloguj się
-                    </button>
-                </div>
+            <div>
+                <button
+                    className='login__button'
+                    type='submit'
+                    disabled={false}
+                >
+                    Zaloguj się
+                </button>
+            </div>
 
-            </form>
-        </>
+        </form>
     );
-}
+};
 
 export default LoginForm;

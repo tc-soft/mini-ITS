@@ -31,13 +31,13 @@ export default function ModalDialog(props) {
     };
 
     const buttonComponent = modalDialogType === 'Dialog' ? (
-        <div>
-            <button onClick={handleModalConfirm}>Tak</button>
-            <button onClick={handleModalClose}>Nie</button>
+        <div className='modalDialog'>
+            <button className='modalDialog__button modalDialog__button--yes' onClick={handleModalConfirm}>Tak</button>
+            <button className='modalDialog__button modalDialog__button--no' onClick={handleModalClose}>Nie</button>
         </div>
     ) : (
         <div>
-            <button onClick={handleModalConfirm}>Ok</button>
+            <button className='modalDialog__button modalDialog__button--ok' onClick={handleModalConfirm}>Ok</button>
         </div>
     );
 

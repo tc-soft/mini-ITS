@@ -4,6 +4,7 @@ import { usersServices } from '../../services/UsersServices';
 const UsersList = (props) => {
     const {
         pagedQuery,
+        setPagedQuery,
         activeDepartmentFilter,
         activeRoleFilter
     } = props;
@@ -15,6 +16,50 @@ const UsersList = (props) => {
         totalResults: null,
         totalPages: null
     });
+
+    const handleSetResultsPerPage = (number) => {
+        setPagedQuery(prevState => ({
+            ...prevState,
+            resultsPerPage: number,
+            page: 1
+        }));
+    };
+
+    const handleFirstPage = () => {
+        if (users.page > 1) {
+            setPagedQuery((prevState) => ({
+                ...prevState,
+                page: 1
+            }));
+        };
+    };
+
+    const handlePrevPage = () => {
+        if (users.page > 1) {
+            setPagedQuery((prevState) => ({
+                ...prevState,
+                page: users.page - 1
+            }));
+        };
+    };
+
+    const handleNextPage = () => {
+        if (users.page < users.totalPages) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                page: users.page + 1
+            }));
+        };
+    };
+
+    const handleLastPage = () => {
+        if (users.page < users.totalPages) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                page: users.totalPages
+            }));
+        };
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,15 +126,49 @@ const UsersList = (props) => {
             <br />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>Ilość wyników na stronie : &nbsp;
-                    <button style={{ backgroundColor: "lightblue" }}>10</button>
-                    <button>20</button>
-                    <button>50</button>
+                    <button
+                        style={users.resultsPerPage === 10 ? { backgroundColor: "lightblue" } : {}}
+                        onClick={() => { handleSetResultsPerPage(10) }}
+                    >
+                        10
+                    </button>
+                    <button
+                        style={users.resultsPerPage === 20 ? { backgroundColor: "lightblue" } : {}}
+                        onClick={() => { handleSetResultsPerPage(20) }}
+                    >
+                        20
+                    </button>
+                    <button
+                        style={users.resultsPerPage === 50 ? { backgroundColor: "lightblue" } : {}}
+                        onClick={() => { handleSetResultsPerPage(50) }}
+                    >
+                        50
+                    </button>
                 </div>
-                <div>Strona 1 z 5 &nbsp;
-                    <button>&#60;&#60;</button>
-                    <button>&#60;</button>
-                    <button>&#62;</button>
-                    <button>&#62;&#62;</button>
+                <div>Strona {users.page} z {users.totalPages} &nbsp;
+                    <button
+                        onClick={() => { handleFirstPage() }}
+                    >
+                        &#60;&#60;
+                    </button>
+
+                    <button
+                        onClick={() => { handlePrevPage() }}
+                    >
+                        &#60;
+                    </button>
+
+                    <button
+                        onClick={() => { handleNextPage() }}
+                    >
+                        &#62;
+                    </button>
+
+                    <button
+                        onClick={() => { handleLastPage() }}
+                    >
+                        &#62;&#62;
+                    </button>
                 </div>
             </div>
         </>

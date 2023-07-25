@@ -84,7 +84,21 @@ const UsersList = (props) => {
     return (
         <>
             <p>Lista użytkowników</p>
-
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <div>
+                    Dział : &nbsp;
+                    <select>
+                        <option value="Wszyscy">Wszyscy</option>
+                    </select>
+                </div>
+                &nbsp;
+                <div>
+                    Rola : &nbsp;
+                    <select>
+                        <option value="Wszyscy">Wszyscy</option>
+                    </select>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>

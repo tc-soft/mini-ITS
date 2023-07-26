@@ -6,7 +6,9 @@ const UsersList = (props) => {
         pagedQuery,
         setPagedQuery,
         activeDepartmentFilter,
-        activeRoleFilter
+        setActiveDepartmentFilter,
+        activeRoleFilter,
+        setActiveRoleFilter
     } = props;
 
     const [users, setUsers] = useState({
@@ -16,6 +18,91 @@ const UsersList = (props) => {
         totalResults: null,
         totalPages: null
     });
+
+    const [mapDepartment, setMapDepartment] = useState([]);
+    const [mapRole, setMapRole] = useState([]);
+
+    const handleDepartmentFilter = (event) => {
+        if (pagedQuery.filter && pagedQuery.filter.find(x => x.name === 'Department')) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter.filter(x => x.name !== 'Department'), {
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else if (pagedQuery.filter) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter, {
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [{
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        };
+
+        setActiveDepartmentFilter(event.target.value);
+    };
+
+    const handleRoleFilter = (event) => {
+        if (pagedQuery.filter && pagedQuery.filter.find(x => x.name === 'Role')) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter.filter(x => x.name !== 'Role'), {
+                    name: 'Role',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else if (pagedQuery.filter) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter, {
+                    name: 'Role',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [{
+                    name: 'Role',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        };
+
+        setActiveRoleFilter(event.target.value);
+    };
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -64,6 +151,14 @@ const UsersList = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const departmentResponse = await fetch('/Department.json');
+                const departmentData = await departmentResponse.json();
+                setMapDepartment(departmentData.map((item) => item.value === "" ? { ...item, name: "Wszyscy" } : item));
+
+                const roleResponse = await fetch('/Role.json');
+                const roleData = await roleResponse.json();
+                setMapRole(roleData.map((item) => item.value === "" ? { ...item, name: "Wszyscy" } : item));
+
                 const response = await usersServices.index(pagedQuery);
                 if (response.ok) {
                     const data = await response.json();
@@ -87,15 +182,14 @@ const UsersList = (props) => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <div>
                     Dział : &nbsp;
-                    <select>
-                        <option value="Wszyscy">Wszyscy</option>
+                    <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                        {mapDepartment.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
                     </select>
                 </div>
-                &nbsp;
                 <div>
                     Rola : &nbsp;
-                    <select>
-                        <option value="Wszyscy">Wszyscy</option>
+                    <select value={activeRoleFilter} onChange={handleRoleFilter}>
+                        {mapRole.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
                     </select>
                 </div>
             </div>

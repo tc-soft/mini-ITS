@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { usersServices } from '../../services/UsersServices';
+import { ReactComponent as IconAdd } from "../../images/iconAdd.svg";
+import { ReactComponent as IconDetail } from "../../images/iconDetail.svg";
+import { ReactComponent as IconEdit } from "../../images/iconEdit.svg";
+import { ReactComponent as IconDelete } from "../../images/iconDelete.svg";
+import { ReactComponent as IconFirstPage } from "../../images/iconFirstPage.svg";
+import { ReactComponent as IconPrevPage } from "../../images/iconPrevPage.svg";
+import { ReactComponent as IconNextPage } from "../../images/iconNextPage.svg";
+import { ReactComponent as IconLastPage } from "../../images/iconLastPage.svg";
+
+import '../../styles/pages/Users.scss';
 
 const UsersList = (props) => {
     const {
@@ -177,23 +188,33 @@ const UsersList = (props) => {
     }, [pagedQuery, activeDepartmentFilter, activeRoleFilter]);
 
     return (
-        <>
-            <p>Lista użytkowników</p>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <div>
-                    Dział : &nbsp;
-                    <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
-                        {mapDepartment.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
-                    </select>
+        <div className='usersList'>
+            <div className='usersList-panel'>
+                <div className='usersList-panel-tittle'>
+                    <p>Lista użytkowników</p>
+                    <Link>
+                        <button title="Dodaj nowy">
+                            <IconAdd />
+                            <span>Dodaj</span>
+                        </button>
+                    </Link>
                 </div>
-                <div>
-                    Rola : &nbsp;
-                    <select value={activeRoleFilter} onChange={handleRoleFilter}>
-                        {mapRole.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
-                    </select>
+                <div className='usersList-panel-filter'>
+                    <div>
+                        Dział : &nbsp;
+                        <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                            {mapDepartment.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        Rola : &nbsp;
+                        <select value={activeRoleFilter} onChange={handleRoleFilter}>
+                            {mapRole.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
+                        </select>
+                    </div>
                 </div>
             </div>
-            <table>
+            <table className='usersList-table'>
                 <thead>
                     <tr>
                         <th style={{ width: '05%' }}>Lp.</th>
@@ -202,7 +223,7 @@ const UsersList = (props) => {
                         <th style={{ width: '20%' }}>Nazwisko</th>
                         <th style={{ width: '10%' }}>Dział</th>
                         <th style={{ width: '10%' }}>Rola</th>
-                        <th style={{ width: '15%' }}></th>
+                        <th style={{ width: '15%' }}>Operacje</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -216,9 +237,19 @@ const UsersList = (props) => {
                                 <td>{user.lastName}</td>
                                 <td>{user.department}</td>
                                 <td>{user.role}</td>
-                                <td></td>
+                                <td>
+                                    <span>
+                                        <Link><IconDetail title="Szczegóły" /></Link>
+                                    </span>
+                                    <span>
+                                        <Link><IconEdit title="Edycja" /></Link>
+                                    </span>
+                                    <span title="Usuń">
+                                        <IconDelete title="Usuń" />
+                                    </span>
+                                </td>
                             </tr>
-                        );
+                        )
                     }
                     )}
                     {
@@ -231,23 +262,22 @@ const UsersList = (props) => {
                     }
                 </tbody>
             </table>
-            <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className='usersList-paginationPanel'>
                 <div>Ilość wyników na stronie : &nbsp;
                     <button
-                        style={users.resultsPerPage === 10 ? { backgroundColor: "lightblue" } : {}}
+                        className={users.resultsPerPage === 10 ? 'usersList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(10) }}
                     >
                         10
                     </button>
                     <button
-                        style={users.resultsPerPage === 20 ? { backgroundColor: "lightblue" } : {}}
+                        className={users.resultsPerPage === 20 ? 'usersList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(20) }}
                     >
                         20
                     </button>
                     <button
-                        style={users.resultsPerPage === 50 ? { backgroundColor: "lightblue" } : {}}
+                        className={users.resultsPerPage === 50 ? 'usersList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(50) }}
                     >
                         50
@@ -257,30 +287,30 @@ const UsersList = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        &#60;&#60;
+                        <IconFirstPage title="Początek" />
                     </button>
 
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        &#60;
+                        <IconPrevPage title="Wstecz" />
                     </button>
 
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        &#62;
+                        <IconNextPage title="Następna" />
                     </button>
 
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        &#62;&#62;
+                        <IconLastPage title="Koniec" />
                     </button>
                 </div>
             </div>
-        </>
-    );
+        </div>
+     );
 };
 
 export default UsersList;

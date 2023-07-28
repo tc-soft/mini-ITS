@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import UsersList from './UsersList';
+import UsersForm from './UsersForm';
 
 const Users = () => {
     const [pagedQuery, setPagedQuery] = useState({
@@ -24,6 +25,7 @@ const Users = () => {
                 setActiveRoleFilter={setActiveRoleFilter}
                 />}
             />
+            <Route path="/Detail/:userId" element={<UsersForm isMode={'Detail'} />} />
         </Routes>
     );
 };

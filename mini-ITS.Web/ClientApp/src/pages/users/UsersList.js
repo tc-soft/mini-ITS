@@ -239,7 +239,9 @@ const UsersList = (props) => {
                                 <td>{user.role}</td>
                                 <td>
                                     <span>
-                                        <Link><IconDetail title="Szczegóły" /></Link>
+                                        <Link to={`Detail/${user.id}`}>
+                                            <IconDetail title="Szczegóły" />
+                                        </Link>
                                     </span>
                                     <span>
                                         <Link><IconEdit title="Edycja" /></Link>

@@ -192,7 +192,7 @@ const UsersList = (props) => {
             <div className='usersList-panel'>
                 <div className='usersList-panel-tittle'>
                     <p>Lista użytkowników</p>
-                    <Link>
+                    <Link to='Create'>
                         <button title="Dodaj nowy">
                             <IconAdd />
                             <span>Dodaj</span>

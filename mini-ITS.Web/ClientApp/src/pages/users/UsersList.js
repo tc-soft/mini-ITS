@@ -244,7 +244,9 @@ const UsersList = (props) => {
                                         </Link>
                                     </span>
                                     <span>
-                                        <Link><IconEdit title="Edycja" /></Link>
+                                        <Link to={`Edit/${user.id}`}>
+                                            <IconEdit title="Edycja" />
+                                        </Link>
                                     </span>
                                     <span title="Usuń">
                                         <IconDelete title="Usuń" />

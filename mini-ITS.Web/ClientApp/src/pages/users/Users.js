@@ -26,6 +26,7 @@ const Users = () => {
                 />}
             />
             <Route path="/Detail/:userId" element={<UsersForm isMode={'Detail'} />} />
+            <Route path="/Edit/:userId" element={<UsersForm isMode={'Edit'} />} />
         </Routes>
     );
 };

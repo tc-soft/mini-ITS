@@ -65,6 +65,11 @@ const UsersForm = (props) => {
                     await usersServices.update(values.id, values),
                     'Zmiana hasła nie powiodła się!');
             }
+            else if (isMode === 'Create') {
+                handleErrorResponse(
+                    await usersServices.create(values),
+                    'Zmiana hasła nie powiodła się!');
+            };
 
             navigate('/Users');
         }
@@ -87,6 +92,10 @@ const UsersForm = (props) => {
 
                 if (isMode === 'Detail' || isMode === 'Edit') {
                     resetAsyncForm();
+                };
+
+                if (isMode === 'Create') {
+                    setActivePassword(true);
                 };
             }
             catch (error) {
@@ -235,7 +244,7 @@ const UsersForm = (props) => {
                         {errors.phone ? <p style={{ color: 'red' }} >{errors.phone?.message}</p> : <p>&nbsp;</p>}<br />
                     </div>
                     <div>
-                        {(isMode === 'Edit') &&
+                        {(isMode === 'Edit' || isMode === 'Create') &&
                             <>
                                 <label>
                                     <input
@@ -368,7 +377,7 @@ const UsersForm = (props) => {
                     </div>
                 </div>
                 <div>
-                    {(isMode === 'Edit') && (
+                    {(isMode === 'Edit' || isMode === 'Create') && (
                         <>
                             <button
                                 tabIndex='12'

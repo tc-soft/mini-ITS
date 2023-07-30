@@ -106,5 +106,15 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> SetPasswordAsync(SetPassword setPassword)
+        {
+            var stringContent = new StringContent(
+                JsonSerializer.Serialize(setPassword),
+                Encoding.UTF8,
+                "application/json-patch+json");
+            var response = await TestClient.PatchAsync($"{ApiRoutes.Users.SetPassword}", stringContent);
+
+            return response;
+        }
     }
 }

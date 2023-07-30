@@ -110,17 +110,34 @@ namespace mini_ITS.Core.Services
         {
             if (usersDto.Id == Guid.Empty)
             {
-                throw new Exception($"SetPasswordAsync(Guid id, string passwordHash): id parameter is empty.");
+                throw new Exception($"SetPasswordAsync(UsersDto usersDto): id parameter is empty.");
             }
             else if (usersDto.PasswordHash is null || usersDto.PasswordHash == "")
             {
-                throw new Exception($"SetPasswordAsync(Guid id, string passwordHash): passwordHash parameter is null or empty.");
+                throw new Exception($"SetPasswordAsync(UsersDto usersDto): usersDto.PasswordHash parameter is null or empty.");
             }
             else
             {
                 var users = _mapper.Map<Users>(usersDto);
                 var passwordHash = _passwordHasher.HashPassword(users, usersDto.PasswordHash);
                 await _usersRepository.SetPasswordAsync(usersDto.Id, passwordHash);
+            }
+        }
+        public async Task SetPasswordAsync(Guid id, string newPassword)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new Exception($"SetPasswordAsync(Guid id, string newPassword): id parameter is empty.");
+            }
+            else if (newPassword is null || newPassword == "")
+            {
+                throw new Exception($"SetPasswordAsync(Guid id, string passwordHash): passwordHash parameter is null or empty.");
+            }
+            else
+            {
+                var users = await _usersRepository.GetAsync(id);
+                var passwordHash = _passwordHasher.HashPassword(users, newPassword);
+                await _usersRepository.SetPasswordAsync(id, passwordHash);
             }
         }
         public async Task<bool> LoginAsync(string login, string passwordPlain)

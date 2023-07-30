@@ -328,6 +328,48 @@ namespace mini_ITS.Core.Tests.Services
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
         [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
+        public async Task SetPasswordByIdAsync(UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine("\nCreate user and check valid password:");
+            usersDto.Id = Guid.NewGuid();
+            var passwordPlain = UsersServicesTestsHelper.NewPassword(usersDto);
+            usersDto.PasswordHash = passwordPlain;
+            await _usersServices.CreateAsync(usersDto);
+            var user = await _usersServices.GetAsync(usersDto.Id);
+            UsersServicesTestsHelper.Check(user);
+            Assert.That(
+                _passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user),
+                user.PasswordHash, passwordPlain),
+                Is.EqualTo(PasswordVerificationResult.Success),
+                $"ERROR - {nameof(user.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            TestContext.Out.WriteLine("\nUpgrade password and check valid password:");
+            var caesarHelper = new CaesarHelper();
+            passwordPlain = caesarHelper.Encrypt(passwordPlain);
+            await _usersServices.SetPasswordAsync(user.Id, passwordPlain);
+            user = await _usersServices.GetAsync(usersDto.Id);
+            UsersServicesTestsHelper.Check(user);
+            Assert.That(
+                _passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(user),
+                user.PasswordHash, passwordPlain),
+                Is.EqualTo(PasswordVerificationResult.Success),
+                $"ERROR - {nameof(user.PasswordHash)} is not equal");
+
+            TestContext.Out.WriteLine($"Id           : {user.Id}");
+            TestContext.Out.WriteLine($"Login        : {user.Login}");
+            TestContext.Out.WriteLine($"Password     : {passwordPlain}");
+            TestContext.Out.WriteLine($"PasswordHash : {user.PasswordHash}");
+
+            await _usersServices.DeleteAsync(user.Id);
+            user = await _usersServices.GetAsync(usersDto.Id);
+            Assert.That(user, Is.Null, "ERROR - delete user");
+        }
+        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
         public async Task LoginAsync(UsersDto usersDto)
         {
             TestContext.Out.WriteLine("\nCreate user and and try to login:");

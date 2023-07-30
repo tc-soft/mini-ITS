@@ -16,6 +16,7 @@
             public static readonly string Edit = string.Concat(_usersControllerUrl, "/Edit");
             public static readonly string Delete = string.Concat(_usersControllerUrl, "/Delete");
             public static readonly string ChangePassword = string.Concat(_usersControllerUrl, "/ChangePassword");
+            public static readonly string SetPassword = string.Concat(_usersControllerUrl, "/SetPassword");
         }
     }
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../components/AuthProvider';
 import { usersServices } from '../../services/UsersServices';
+import ModalDialog from '../../components/Modal';
 import { ReactComponent as IconAdd } from "../../images/iconAdd.svg";
 import { ReactComponent as IconDetail } from "../../images/iconDetail.svg";
 import { ReactComponent as IconEdit } from "../../images/iconEdit.svg";
@@ -21,6 +23,7 @@ const UsersList = (props) => {
         activeRoleFilter,
         setActiveRoleFilter
     } = props;
+    const { currentUser } = useAuth();
 
     const [users, setUsers] = useState({
         results: null,
@@ -32,6 +35,39 @@ const UsersList = (props) => {
 
     const [mapDepartment, setMapDepartment] = useState([]);
     const [mapRole, setMapRole] = useState([]);
+
+    const [modalDialogOpen, setModalDialogOpen] = useState(false);
+    const [modalDialogType, setModalDialogType] = useState('');
+    const [modalDialogTitle, setModalDialogTitle] = useState('');
+    const [modalDialogMessage, setModalDialogMessage] = useState('');
+    const [modalDialogUserId, setModalDialogUserId] = useState('');
+    const [modalDialogUserLogin, setModalDialogUserLogin] = useState('');
+
+    const handleModalClose = () => {
+        setModalDialogType('');
+        setModalDialogTitle('');
+        setModalDialogMessage('')
+        setModalDialogUserId('');
+        setModalDialogUserLogin('');
+        setModalDialogOpen(false);
+    };
+
+    const handleModalConfirm = async () => {
+        switch (modalDialogType) {
+            case 'Dialog':
+                setModalDialogOpen(false);
+                await handleDeleteStage2(modalDialogUserId, modalDialogUserLogin);
+                break;
+            case 'Information':
+                handleModalClose();
+                break;
+            case 'Error':
+                handleModalClose();
+                break;
+            default:
+                break;
+        };
+    };
 
     const handleDepartmentFilter = (event) => {
         if (pagedQuery.filter && pagedQuery.filter.find(x => x.name === 'Department')) {
@@ -159,6 +195,60 @@ const UsersList = (props) => {
         };
     };
 
+    const handleDeleteStage1 = (id, login) => {
+        if (id === currentUser.id) {
+            setModalDialogType('Error');
+            setModalDialogTitle('Usuwanie użytkownika');
+            setModalDialogMessage(`Nie można usunąć aktualnie zalogowanego użytkownika ${login}`);
+            setModalDialogOpen(true);
+            return;
+        };
+
+        if (login === 'admin') {
+            setModalDialogType('Error');
+            setModalDialogTitle('Usuwanie użytkownika');
+            setModalDialogMessage(`Nie można usunąć użytkownika ${login}`);
+            setModalDialogOpen(true);
+            return;
+        };
+
+        if (currentUser.role === 'Administrator') {
+            setModalDialogType('Dialog');
+            setModalDialogTitle('Usuwanie użytkownika');
+            setModalDialogMessage(`Czy na pewno chcesz usunąć użytkownika ${login}?`);
+            setModalDialogUserId(id);
+            setModalDialogUserLogin(login);
+            setModalDialogOpen(true);
+        };
+    };
+
+    const handleDeleteStage2 = async (id, login) => {
+        try {
+            const deleteResponse = await usersServices.delete(id);
+            if (!deleteResponse.ok) {
+                throw new Error('Usunięcie użytkownika nie powiodło się!');
+            };
+
+            const indexResponse = await usersServices.index(pagedQuery);
+            if (!indexResponse.ok) {
+                throw new Error('Błąd podczas pobierania zaktualizowanej listy użytkowników.');
+            };
+
+            setTimeout(() => {
+                setModalDialogType('Information');
+                setModalDialogTitle('Usuwanie użytkownika');
+                setModalDialogMessage(`Pomyślnie usunięto użytkownika ${login}.`);
+                setModalDialogOpen(true);
+            }, 400);
+
+            const data = await indexResponse.json();
+            setUsers(data);
+        }
+        catch (error) {
+            alert(error.message);
+        };
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -189,6 +279,17 @@ const UsersList = (props) => {
 
     return (
         <div className='usersList'>
+            <ModalDialog
+                modalDialogOpen={modalDialogOpen}
+                modalDialogType={modalDialogType}
+                modalDialogTitle={modalDialogTitle}
+                modalDialogMessage={modalDialogMessage}
+                modalDialogUserId={modalDialogUserId}
+                modalDialogUserLogin={modalDialogUserLogin}
+
+                handleModalConfirm={handleModalConfirm}
+                handleModalClose={handleModalClose}
+            />
             <div className='usersList-panel'>
                 <div className='usersList-panel-tittle'>
                     <p>Lista użytkowników</p>
@@ -248,7 +349,11 @@ const UsersList = (props) => {
                                             <IconEdit title="Edycja" />
                                         </Link>
                                     </span>
-                                    <span title="Usuń">
+                                    <span
+                                        title="Usuń"
+                                        onClick={() => handleDeleteStage1(user.id, user.login)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <IconDelete title="Usuń" />
                                     </span>
                                 </td>

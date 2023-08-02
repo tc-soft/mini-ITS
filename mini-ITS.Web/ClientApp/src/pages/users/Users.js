@@ -25,9 +25,9 @@ const Users = () => {
                 setActiveRoleFilter={setActiveRoleFilter}
                 />}
             />
-            <Route path="/Detail/:userId" element={<UsersForm isMode={'Detail'} />} />
-            <Route path="/Edit/:userId" element={<UsersForm isMode={'Edit'} />} />
-            <Route path="/Create" element={<UsersForm isMode={'Create'} />} />
+            <Route path='/Detail/:userId' element={<UsersForm isMode={'Detail'} />} />
+            <Route path='/Edit/:userId' element={<UsersForm isMode={'Edit'} />} />
+            <Route path='/Create' element={<UsersForm isMode={'Create'} />} />
         </Routes>
     );
 };

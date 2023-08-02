@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 
 const RequireAuth = ({ children }) => {
@@ -15,7 +15,7 @@ const RequireAuth = ({ children }) => {
     return (
         currentUser
             ? (children)
-            : (<Navigate to="/Login" state={{ from: location }} />)
+            : (<Navigate to='/Login' state={{ from: location }} />)
     );
 };
 

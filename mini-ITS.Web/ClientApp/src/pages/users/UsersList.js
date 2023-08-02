@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { usersServices } from '../../services/UsersServices';
 import ModalDialog from '../../components/Modal';
-import { ReactComponent as IconAdd } from "../../images/iconAdd.svg";
-import { ReactComponent as IconDetail } from "../../images/iconDetail.svg";
-import { ReactComponent as IconEdit } from "../../images/iconEdit.svg";
-import { ReactComponent as IconDelete } from "../../images/iconDelete.svg";
-import { ReactComponent as IconFirstPage } from "../../images/iconFirstPage.svg";
-import { ReactComponent as IconPrevPage } from "../../images/iconPrevPage.svg";
-import { ReactComponent as IconNextPage } from "../../images/iconNextPage.svg";
-import { ReactComponent as IconLastPage } from "../../images/iconLastPage.svg";
+import { ReactComponent as IconAdd } from '../../images/iconAdd.svg';
+import { ReactComponent as IconDetail } from '../../images/iconDetail.svg';
+import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
+import { ReactComponent as IconDelete } from '../../images/iconDelete.svg';
+import { ReactComponent as IconFirstPage } from '../../images/iconFirstPage.svg';
+import { ReactComponent as IconPrevPage } from '../../images/iconPrevPage.svg';
+import { ReactComponent as IconNextPage } from '../../images/iconNextPage.svg';
+import { ReactComponent as IconLastPage } from '../../images/iconLastPage.svg';
 
 import '../../styles/pages/Users.scss';
 
@@ -254,11 +254,11 @@ const UsersList = (props) => {
             try {
                 const departmentResponse = await fetch('/Department.json');
                 const departmentData = await departmentResponse.json();
-                setMapDepartment(departmentData.map((item) => item.value === "" ? { ...item, name: "Wszyscy" } : item));
+                setMapDepartment(departmentData.map((item) => item.value === '' ? { ...item, name: 'Wszyscy' } : item));
 
                 const roleResponse = await fetch('/Role.json');
                 const roleData = await roleResponse.json();
-                setMapRole(roleData.map((item) => item.value === "" ? { ...item, name: "Wszyscy" } : item));
+                setMapRole(roleData.map((item) => item.value === '' ? { ...item, name: 'Wszyscy' } : item));
 
                 const response = await usersServices.index(pagedQuery);
                 if (response.ok) {
@@ -294,7 +294,7 @@ const UsersList = (props) => {
                 <div className='usersList-panel-tittle'>
                     <p>Lista użytkowników</p>
                     <Link to='Create'>
-                        <button title="Dodaj nowy">
+                        <button title='Dodaj nowy'>
                             <IconAdd />
                             <span>Dodaj</span>
                         </button>
@@ -341,20 +341,20 @@ const UsersList = (props) => {
                                 <td>
                                     <span>
                                         <Link to={`Detail/${user.id}`}>
-                                            <IconDetail title="Szczegóły" />
+                                            <IconDetail title='Szczegóły' />
                                         </Link>
                                     </span>
                                     <span>
                                         <Link to={`Edit/${user.id}`}>
-                                            <IconEdit title="Edycja" />
+                                            <IconEdit title='Edycja' />
                                         </Link>
                                     </span>
                                     <span
-                                        title="Usuń"
+                                        title='Usuń'
                                         onClick={() => handleDeleteStage1(user.id, user.login)}
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        <IconDelete title="Usuń" />
+                                        <IconDelete title='Usuń' />
                                     </span>
                                 </td>
                             </tr>
@@ -396,25 +396,25 @@ const UsersList = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        <IconFirstPage title="Początek" />
+                        <IconFirstPage title='Początek' />
                     </button>
 
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        <IconPrevPage title="Wstecz" />
+                        <IconPrevPage title='Wstecz' />
                     </button>
 
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        <IconNextPage title="Następna" />
+                        <IconNextPage title='Następna' />
                     </button>
 
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        <IconLastPage title="Koniec" />
+                        <IconLastPage title='Koniec' />
                     </button>
                 </div>
             </div>

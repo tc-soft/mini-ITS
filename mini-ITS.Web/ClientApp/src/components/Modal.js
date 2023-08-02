@@ -42,7 +42,7 @@ export default function ModalDialog(props) {
     );
 
     return (
-        <Modal isOpen={modalDialogOpen} style={modalDialogStyle}>
+        <Modal isOpen={modalDialogOpen} style={modalDialogStyle} ariaHideApp={false}>
             <h2>{modalDialogTitle}</h2>
             <p>{modalDialogMessage}</p>
             <br />

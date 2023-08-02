@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../components/AuthProvider';
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { usersServices } from '../../services/UsersServices';
 import ErrorMessage from './ErrorMessage';
 
@@ -8,7 +8,7 @@ import '../../styles/pages/Login.scss';
 
 const LoginForm = () => {
     const { handleLogin, navigate } = useAuth();
-    const [loginError, setLoginError] = useState("");
+    const [loginError, setLoginError] = useState('');
     const { handleSubmit, register, reset, formState: { errors } } = useForm();
 
     const onSubmit = async (values) => {

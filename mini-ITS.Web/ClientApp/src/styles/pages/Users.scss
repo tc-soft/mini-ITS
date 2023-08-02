@@ -1,0 +1,443 @@
+@import "../variables";
+
+.usersList {
+    padding: 0 1rem 0 1rem;
+
+    &-panel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        padding: 0.5rem 0rem;
+
+        &-tittle {
+            p {
+                display: inline-block;
+                margin-right: 1rem;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: $lists-title-text-color;
+            }
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+
+                button {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                    padding: 0.5rem 0.9rem;
+                    font-size: 0.8rem;
+                    color: white;
+                    background-color: $lists-buttonAdd-background-color;
+                    border: 0;
+                    border-radius: 3px;
+                    transition: 200ms;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $lists-buttonAdd-background-hover-color;
+                    }
+
+                    svg {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+
+        &-filter {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            align-content: center;
+
+            div {
+                select {
+                    width: 150px;
+                    border: 1px solid $lists-selectFilter-border-color;
+                    border-radius: 3px;
+                    outline: none;
+
+                    option {
+                        &:checked {
+                            background-color: lightgray;
+                        }
+                    }
+
+                    &:focus {
+                        border: 1px solid transparent;
+                        outline: 2px solid $lists-selectFilter-border-focus-color;
+                    }
+                }
+
+                &:last-child {
+                    margin-left: 1rem;
+                }
+            }
+
+            @media (max-width: 900px) {
+                flex-direction: column;
+                align-items: flex-end;
+
+                div:not(:last-child) {
+                    margin-bottom: 0.5rem;
+                }
+            }
+        }
+    }
+
+    &-table {
+        width: 100%;
+        margin-top: 8px;
+        border-collapse: collapse;
+
+        thead {
+            color: $lists-table-thead-text-color;
+
+            tr {
+                text-align: left;
+
+                th {
+                    height: 2rem;
+                    padding: 8px 8px 8px 20px;
+                    border: 1px solid $lists-table-border-color;
+                    border-bottom: 2px solid $lists-table-border-color;
+                }
+            }
+        }
+
+        tbody {
+            color: $lists-table-data-text-color;
+
+            tr {
+                display: table-row;
+                vertical-align: middle;
+                text-align: center;
+
+                td {
+                    vertical-align: middle;
+                    padding: 5px 20px 5px 20px;
+                    border: 1px solid $lists-table-border-color;
+
+                    span {
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin-right: 1rem;
+                    }
+
+                    span:nth-child(1) {
+                        padding: 5px 8px;
+                    }
+
+                    span:nth-child(2) {
+                        padding: 5px 5px;
+                    }
+
+                    span:nth-child(3) {
+                        padding: 5px 7px;
+                        cursor: pointer;
+                    }
+
+                    span:hover {
+                        background-color: $lists-table-icon-hover-color;
+                    }
+
+                    svg {
+                        vertical-align: middle;
+                    }
+                }
+            }
+
+            tr:hover {
+                background-color: white;
+            }
+        }
+
+        &--info {
+            div {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                align-content: center;
+                height: 2rem;
+            }
+        }
+    }
+
+    &-paginationPanel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        margin-top: 1.2rem;
+
+        div {
+            padding-left: 10px;
+            padding-right: 10px;
+            border-top: 1px solid $lists-paginationIcons-border-color;
+            border-bottom: 1px solid $lists-paginationIcons-border-color;
+
+            button {
+                width: 2.6rem;
+                height: 2.6rem;
+                background-color: transparent;
+                border: 2px solid transparent;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: $lists-paginationIcons-background-hover-color;
+            }
+        }
+
+        &--buttonActive {
+            font-weight: bold;
+            border-color: $lists-paginationIcons-border-active-color !important;
+        }
+    }
+}
+
+.usersForm {
+    margin-bottom: 8px;
+    padding: 0 1rem 0 1rem;
+
+    &-title {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 0rem;
+        border-bottom: 1px solid $forms-title-bottom-color;
+
+        svg {
+            margin-right: 0.5rem;
+        }
+
+        p {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: $forms-title-text-color;
+        }
+    }
+
+    &-userInfo {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 2rem 1rem 2rem;
+
+        svg {
+            margin-right: 0.5rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: $forms-title-text-color;
+
+            span {
+                margin-left: 0.2rem;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &-detail {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        padding: 0 2rem;
+
+        &-section {
+            width: 15rem;
+            margin-right: 2rem;
+            padding-top: 0.2rem;
+
+            &__label {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                align-content: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: $forms-label-color;
+            }
+
+            &__input {
+                width: 100%;
+                margin-top: 0.4rem;
+                padding: 0.5rem;
+                box-sizing: border-box;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &:hover {
+                    border-color: $forms-input-hover-color;
+                }
+
+                &:focus {
+                    border-color: $forms-input-focus-color;
+                }
+            }
+
+            &__select {
+                width: 100%;
+                margin-top: 0.4rem;
+                padding: 0.3rem;
+                box-sizing: border-box;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &:hover {
+                    border-color: $forms-input-hover-color;
+                }
+
+                &:focus {
+                    border-color: $forms-input-focus-color;
+                }
+            }
+
+            &__inputPassword {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                align-content: center;
+                margin-top: 0.4rem;
+                font-size: 0.9rem;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &--active {
+                    &:hover {
+                        border-color: $forms-input-hover-color;
+                    }
+                }
+
+                &--focus {
+                    border-color: $forms-input-hover-color;
+                }
+
+                input {
+                    width: 100%;
+                    padding: 0.5rem;
+                    color: $forms-input-color;
+                    border: none;
+                    border-radius: 5px;
+                    outline: none;
+                }
+
+                button {
+                    align-self: stretch;
+                    background-color: $forms-input-icon-border-color;
+                    border: none;
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                    cursor: pointer;
+
+                    &:disabled {
+                        opacity: 0.5;
+                    }
+
+                    svg {
+                        vertical-align: middle;
+                    }
+                }
+            }
+
+            &__errorMessage {
+                font-size: 0.8rem;
+                color: red;
+            }
+        }
+    }
+
+    &-submit {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        width: 32rem;
+        margin: 1rem 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid $forms-submit-border-bottom-color;
+
+        a {
+            text-decoration: none;
+        }
+
+        &__button {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            width: 80px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            border: 0;
+            border-radius: 4px;
+            transition: 200ms;
+
+
+            &:not(:last-child) {
+                margin-right: 15px;
+            }
+
+            svg {
+                margin-right: 7px;
+            }
+
+            &--saveButton {
+                color: white;
+                background-color: $forms-submit-buttonSave-background-color;
+                border: 1px solid $forms-submit-buttonSave-background-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonSave-background-hover-color;
+                    border: 1px solid $forms-submit-buttonSave-background-hover-color;
+                }
+            }
+
+            &--cancelButton {
+                color: $forms-submit-buttonCancel-color;
+                background-color: $forms-submit-buttonCancel-background-color;
+                border: 1px solid $forms-submit-buttonCancel-border-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonCancel-background-hover-color;
+                    border: 1px solid $forms-submit-buttonCancel-border-color;
+                }
+            }
+        }
+    }
+}

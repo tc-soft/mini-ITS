@@ -95,10 +95,10 @@ const _delete = async (url) => {
 
 const encodeQueryString = (params) => {
     const paramsKeys = Object.keys(params);
-    var results = "";
+    var results = '';
 
     if (paramsKeys.length) {
-        results = "?" + paramsKeys
+        results = '?' + paramsKeys
             .map(paramKey => {
                 if (typeof params[paramKey] === 'object' && params[paramKey] !== null) {
                     return params[paramKey]

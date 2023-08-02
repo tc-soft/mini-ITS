@@ -51,6 +51,7 @@ namespace mini_ITS.Web.Controllers
 
                     return new JsonResult(new
                     {
+                        id = usersDto.Id,
                         login = usersDto.Login,
                         firstName = usersDto.FirstName,
                         lastName = usersDto.LastName,
@@ -93,6 +94,7 @@ namespace mini_ITS.Web.Controllers
 
                 return new JsonResult(new
                 {
+                    id = usersDto.Id,
                     login = usersDto.Login,
                     firstName = usersDto.FirstName,
                     lastName = usersDto.LastName,
@@ -233,6 +235,28 @@ namespace mini_ITS.Web.Controllers
                 else
                 {
                     return StatusCode(401, $"Error: credential data are not correct");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+        [HttpPatch]
+        [CookieAuth]
+        [Authorize("Admin")]
+        public async Task<IActionResult> SetPasswordAsync([FromBody] SetPassword setPassword)
+        {
+            try
+            {
+                if (setPassword.NewPassword is not null)
+                {
+                    await _usersServices.SetPasswordAsync(setPassword.Id, setPassword.NewPassword);
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(401, $"Error: NewPassword is null");
                 }
             }
             catch (Exception ex)

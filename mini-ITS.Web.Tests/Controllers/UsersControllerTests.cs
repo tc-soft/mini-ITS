@@ -363,5 +363,48 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, Combinatorial]
+        public async Task SetPasswordAsync(
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
+                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate test user");
+
+            response = await CreateAsync(usersDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after create test user");
+            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}\n");
+
+            var caesarHelper = new CaesarHelper();
+            var setPassword = new SetPassword()
+            {
+                Id = usersDto.Id,
+                NewPassword = caesarHelper.Encrypt(usersDto.PasswordHash)
+            };
+
+            TestContext.Out.WriteLine($"Old password : {usersDto.PasswordHash}");
+            TestContext.Out.WriteLine($"New password : {setPassword.NewPassword}\n");
+
+            response = await SetPasswordAsync(setPassword);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after change password");
+            TestContext.Out.WriteLine($"Response after change password: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+
+            var loginUserData = new LoginData()
+            {
+                Login = usersDto.Login,
+                Password = setPassword.NewPassword
+            };
+            TestContext.Out.WriteLine();
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUserData));
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine();
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

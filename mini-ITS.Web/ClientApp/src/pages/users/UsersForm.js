@@ -3,6 +3,14 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm } from 'react-hook-form';
 import { usersServices } from '../../services/UsersServices';
+import { ReactComponent as IconEdit } from "../../images/iconEdit.svg";
+import { ReactComponent as IconUser } from "../../images/iconUser.svg";
+import { ReactComponent as IconShowPassword } from "../../images/iconShowPassword.svg";
+import { ReactComponent as IconHidePassword } from "../../images/iconHidePassword.svg";
+import { ReactComponent as IconSave } from "../../images/iconSave.svg";
+import { ReactComponent as IconCancel } from "../../images/iconCancel.svg";
+
+import '../../styles/pages/Users.scss';
 
 const UsersForm = (props) => {
     const { isMode } = props;
@@ -111,20 +119,22 @@ const UsersForm = (props) => {
     }, [setFocus]);
 
     return (
-        <>
-            <div>
-                <h3>{title[isMode]}</h3><br />
+        <div className='usersForm'>
+            <div className='usersForm-title'>
+                <IconEdit height='17px' />
+                <p>{title[isMode]}</p>
             </div>
 
-            <div>
-                <p>Użytkownik:<span>{getValues('login')}</span></p><br />
+            <div className='usersForm-userInfo'>
+                <IconUser />
+                <p>Użytkownik:<span>{getValues('login')}</span></p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <div>
-                        <label>Login</label><br />
-                        <input
+                <div className='usersForm-detail'>
+                    <div className="usersForm-detail-section">
+                        <label className="usersForm-detail-section__label">Login</label>
+                        <input className="usersForm-detail-section__input"
                             tabIndex='1'
                             type='text'
                             placeholder='Wpisz login'
@@ -137,10 +147,14 @@ const UsersForm = (props) => {
                                 maxLength: { value: 60, message: 'Za duża ilośc znaków.' }
                             })}
                         />
-                        {errors.login ? <p style={{ color: 'red' }} >{errors.login?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.login ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.login?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Imię</label><br />
-                        <input
+                        <label className="usersForm-detail-section__label">Imię</label>
+                        <input className="usersForm-detail-section__input"
                             tabIndex='2'
                             type='text'
                             placeholder='Wpisz imię'
@@ -153,10 +167,14 @@ const UsersForm = (props) => {
                                 maxLength: { value: 40, message: 'Za duża ilośc znaków.' }
                             })}
                         />
-                        {errors.firstName ? <p style={{ color: 'red' }} >{errors.firstName?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.firstName ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.firstName?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Nazwisko</label><br />
-                        <input
+                        <label className="usersForm-detail-section__label">Nazwisko</label>
+                        <input className="usersForm-detail-section__input"
                             tabIndex='3'
                             type='text'
                             placeholder='Wpisz nazwisko'
@@ -169,10 +187,14 @@ const UsersForm = (props) => {
                                 maxLength: { value: 40, message: 'Za duża ilośc znaków.' }
                             })}
                         />
-                        {errors.lastName ? <p style={{ color: 'red' }} >{errors.lastName?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.lastName ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.lastName?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Dział</label><br />
-                        <select
+                        <label className="usersForm-detail-section__label">Dział</label>
+                        <select className="usersForm-detail-section__select"
                             tabIndex='4'
                             placeholder='Wybierz dział'
                             error={errors.department}
@@ -189,10 +211,14 @@ const UsersForm = (props) => {
                             ))}
 
                         </select>
-                        {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.department ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.department?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Rola</label><br />
-                        <select
+                        <label className="usersForm-detail-section__label">Rola</label>
+                        <select className="usersForm-detail-section__select"
                             tabIndex='5'
                             placeholder='Wybierz rolę'
                             error={errors.role}
@@ -208,10 +234,14 @@ const UsersForm = (props) => {
                                 (x, y) => <option key={y} value={x.value}>{x.name}</option>)
                             }
                         </select>
-                        {errors.role ? <p style={{ color: 'red' }} >{errors.role?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.role ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.role?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Email</label><br />
-                        <input
+                        <label className="usersForm-detail-section__label">Email</label>
+                        <input className="usersForm-detail-section__input"
                             tabIndex='6'
                             type='text'
                             placeholder='Wpisz email'
@@ -224,10 +254,14 @@ const UsersForm = (props) => {
                                 maxLength: { value: 60, message: 'Za duża ilośc znaków.' }
                             })}
                         />
-                        {errors.email ? <p style={{ color: 'red' }} >{errors.email?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.email ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.email?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
 
-                        <label>Telefon</label><br />
-                        <input
+                        <label className="usersForm-detail-section__label">Telefon</label>
+                        <input className="usersForm-detail-section__input"
                             tabIndex='7'
                             type='tel'
                             placeholder='Wpisz telefon'
@@ -241,12 +275,16 @@ const UsersForm = (props) => {
                                 maxLength: { value: 14, message: 'Za duża ilość znaków.' }
                             })}
                         />
-                        {errors.phone ? <p style={{ color: 'red' }} >{errors.phone?.message}</p> : <p>&nbsp;</p>}<br />
+                        {errors.phone ?
+                            <p className="usersForm-detail-section__errorMessage">{errors.phone?.message}</p>
+                            :
+                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                        }
                     </div>
-                    <div>
+                    <div className="usersForm-detail-section">
                         {(isMode === 'Edit' || isMode === 'Create') &&
                             <>
-                                <label>
+                                <label className="usersForm-detail-section__label">
                                     <input
                                         tabIndex='8'
                                         type='checkbox'
@@ -266,12 +304,16 @@ const UsersForm = (props) => {
                                     />
                                     &nbsp;Zmiana hasła
                                 </label>
-                                {changePasswordError ? <p style={{ color: 'red' }} >{changePasswordError}</p> : <p>&nbsp;</p>}<br />
+                                {changePasswordError ?
+                                    <p className="usersForm-detail-section__errorMessage">{changePasswordError}</p>
+                                    :
+                                    <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                                }
 
                                 {isMode === 'Edit' && (userId === currentUser.id) &&
                                     <>
-                                        <label>Wpisz stare hasło:</label>
-                                        <div>
+                                        <label className="usersForm-detail-section__label">Wpisz stare hasło:</label>
+                                        <div className={`usersForm-detail-section__inputPassword ${activePassword && activeFocus[0] ? 'usersForm-detail-section__inputPassword--focus' : activePassword ? 'usersForm-detail-section__inputPassword--active' : ''}`}>
                                             <input
                                                 tabIndex='9'
                                                 type={showPassword[0] ? 'text' : 'password'}
@@ -297,15 +339,19 @@ const UsersForm = (props) => {
                                                 disabled={!activePassword}
                                                 onClick={() => activePassword && setShowPassword(prevState => ([!showPassword[0], prevState[1], prevState[2]]))}
                                             >
-                                                {showPassword[0] ? 'Hide' : 'Show'}
+                                                {showPassword[0] ? <IconShowPassword /> : <IconHidePassword />}
                                             </button>
                                         </div>
-                                        {errors.oldPassword ? <p style={{ color: 'red' }} >{errors.oldPassword?.message}</p> : <p>&nbsp;</p>}<br />
+                                        {errors.oldPassword ?
+                                            <p className="usersForm-detail-section__errorMessage">{errors.oldPassword?.message}</p>
+                                            :
+                                            <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                                        }
                                     </>
                                 }
 
-                                <label>Wpisz hasło</label>
-                                <div>
+                                <label className="usersForm-detail-section__label">Wpisz hasło</label>
+                                <div className={`usersForm-detail-section__inputPassword ${activePassword && activeFocus[1] ? 'usersForm-detail-section__inputPassword--focus' : activePassword ? 'usersForm-detail-section__inputPassword--active' : ''}`}>
                                     <input
                                         tabIndex='10'
                                         type={showPassword[1] ? 'text' : 'password'}
@@ -334,13 +380,17 @@ const UsersForm = (props) => {
                                         disabled={!activePassword}
                                         onClick={() => activePassword && setShowPassword(prevState => ([prevState[0], !showPassword[1], prevState[2]]))}
                                     >
-                                        {showPassword[1] ? 'Hide' : 'Show'}
+                                        {showPassword[1] ? <IconShowPassword /> : <IconHidePassword />}
                                     </button>
                                 </div>
-                                {errors.passwordHash ? <p style={{ color: 'red' }} >{errors.passwordHash?.message}</p> : <p>&nbsp;</p>}<br />
+                                {errors.passwordHash ?
+                                    <p className="usersForm-detail-section__errorMessage">{errors.passwordHash?.message}</p>
+                                    :
+                                    <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                                }
 
-                                <label>Powtórz hasło</label>
-                                <div>
+                                <label className="usersForm-detail-section__label">Powtórz hasło</label>
+                                <div className={`usersForm-detail-section__inputPassword ${activePassword && activeFocus[2] ? 'usersForm-detail-section__inputPassword--focus' : activePassword ? 'usersForm-detail-section__inputPassword--active' : ''}`}>
                                     <input
                                         tabIndex='11'
                                         name='confirmPasswordHash'
@@ -368,33 +418,41 @@ const UsersForm = (props) => {
                                         disabled={!activePassword}
                                         onClick={() => activePassword && setShowPassword(prevState => ([prevState[0], prevState[1], !showPassword[2]]))}
                                     >
-                                        {showPassword[2] ? 'Hide' : 'Show'}
+                                        {showPassword[2] ? <IconShowPassword /> : <IconHidePassword />}
                                     </button>
                                 </div>
-                                {errors.confirmPasswordHash ? <p style={{ color: 'red' }} >{errors.confirmPasswordHash?.message}</p> : <p>&nbsp;</p>}<br />
+                                {errors.confirmPasswordHash ?
+                                    <p className="usersForm-detail-section__errorMessage">{errors.confirmPasswordHash?.message}</p>
+                                    :
+                                    <p className="usersForm-detail-section__errorMessage">&nbsp;</p>
+                                }
                             </>
                         }
                     </div>
                 </div>
-                <div>
+                <div className='usersForm-submit'>
                     {(isMode === 'Edit' || isMode === 'Create') && (
                         <>
                             <button
-                                tabIndex='12'
-                                type='submit'>
+                                tabIndex="12"
+                                className='usersForm-submit__button usersForm-submit__button--saveButton'
+                                type="submit">
+                                <IconSave />
                                 Zapisz
                             </button>
                         </>
                     )}
-                    &nbsp;
-                    <Link tabIndex='-1' to={'..'}>
-                        <button tabIndex='13'>
+                    <Link tabIndex="-1" to={'..'}>
+                        <button
+                            tabIndex="13"
+                            className='usersForm-submit__button usersForm-submit__button--cancelButton'>
+                            <IconCancel />
                             Anuluj
                         </button>
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 

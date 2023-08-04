@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
@@ -34,6 +35,26 @@ namespace mini_ITS.Core.Repository
                 var groups = await sqlConnection.QueryAsync<Groups>(sqlQueryBuilder.GetSelectQuery());
                 var count = await sqlConnection.QueryFirstAsync<int>(sqlQueryBuilder.GetCountQuery());
                 return SqlPagedResult<Groups>.Create(groups, query, count);
+            }
+        }
+        public async Task<Groups> GetAsync(Guid id)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Groups>()
+                    .WithFilter(
+                        new List<SqlQueryCondition>()
+                        {
+                            new SqlQueryCondition
+                            {
+                                Name = "Id",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(id.ToString())
+                            }
+                        }
+                    );
+                var groups = await sqlConnection.QueryFirstOrDefaultAsync<Groups>(sqlQueryBuilder.GetSelectQuery());
+                return groups;
             }
         }
     }

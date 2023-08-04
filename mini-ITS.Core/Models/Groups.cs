@@ -15,7 +15,7 @@ namespace mini_ITS.Core.Models
 
         public string GroupName { get; set; }
 
-        private Groups() { }
+        public Groups() { }
 
         public Groups(
             Guid id,

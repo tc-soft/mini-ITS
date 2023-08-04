@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Models;
@@ -9,5 +10,6 @@ namespace mini_ITS.Core.Repository
     {
         Task<IEnumerable<Groups>> GetAsync();
         Task<SqlPagedResult<Groups>> GetAsync(SqlPagedQuery<Groups> query);
+        Task<Groups> GetAsync(Guid guid);
     }
 }

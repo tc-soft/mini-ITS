@@ -60,5 +60,85 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Group: {item.GroupName}");
             }
         }
+        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.SqlPagedQueryCases))]
+        public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Groups> sqlPagedQuery)
+        {
+            var groupsList = await _groupsRepository.GetAsync(sqlPagedQuery);
+            Assert.That(groupsList.Results.Count() > 0, "ERROR - groups is empty");
+
+            for (int i = 1; i <= groupsList.TotalPages; i++)
+            {
+                sqlPagedQuery.Page = i;
+                var groups = await _groupsRepository.GetAsync(sqlPagedQuery);
+
+                string filterString = null;
+                sqlPagedQuery.Filter.ForEach(x =>
+                {
+                    if (x == sqlPagedQuery.Filter.First() || x == sqlPagedQuery.Filter.Last())
+                        filterString += $", {x.Name}={x.Value}";
+                    else
+                        filterString += $" {x.Name}={x.Value}";
+                });
+
+                TestContext.Out.WriteLine($"\n" +
+                    $"Page {groups.Page}/{groupsList.TotalPages} - ResultsPerPage={groups.ResultsPerPage}, " +
+                    $"TotalResults={groups.TotalResults}{filterString}, " +
+                    $"Sort={sqlPagedQuery.SortColumnName}, " +
+                    $"Sort direction={sqlPagedQuery.SortDirection}");
+                TestContext.Out.WriteLine($"" +
+                    $"{"Id",-40}" +
+                    $"{"UserAddGroupFullName",-25}" +
+                    $"{"UserModGroupFullName",-25}" +
+                    $"{"GroupName",-20}");
+
+                Assert.That(groups.Results.Count() > 0, "ERROR - groups is empty");
+                Assert.That(groups, Is.TypeOf<SqlPagedResult<Groups>>(), "ERROR - return type");
+                Assert.That(groups.Results, Is.All.InstanceOf<Groups>(), "ERROR - all instance is not of <Groups>()");
+
+                switch (sqlPagedQuery.SortDirection)
+                {
+                    case "ASC":
+                        Assert.That(groups.Results, Is.Ordered.Ascending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    case "DESC":
+                        Assert.That(groups.Results, Is.Ordered.Descending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    default:
+                        Assert.Fail("ERROR - SortDirection is not T-SQL");
+                        break;
+                };
+
+                Assert.That(groups.Results, Is.Unique);
+
+                foreach (var item in groups.Results)
+                {
+                    Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
+                    Assert.IsNotNull(item.DateAddGroup, $"ERROR - {nameof(item.DateAddGroup)} is null");
+                    Assert.IsNotNull(item.DateModGroup, $"ERROR - {nameof(item.DateModGroup)} is null");
+                    Assert.IsNotNull(item.UserAddGroup, $"ERROR - {nameof(item.UserAddGroup)} is null");
+                    Assert.IsNotNull(item.UserAddGroupFullName, $"ERROR - {nameof(item.UserAddGroupFullName)} is null");
+                    Assert.IsNotNull(item.UserModGroup, $"ERROR - {nameof(item.UserModGroup)} is null");
+                    Assert.IsNotNull(item.UserModGroupFullName, $"ERROR - {nameof(item.UserModGroupFullName)} is null");
+                    Assert.IsNotNull(item.GroupName, $"ERROR - {nameof(item.GroupName)} is null");
+
+                    sqlPagedQuery.Filter.ForEach(x =>
+                    {
+                        if (x.Value is not null)
+                        {
+                            Assert.That(
+                                item.GetType().GetProperty(x.Name).GetValue(item, null),
+                                Is.EqualTo(x.Value),
+                                $"ERROR - Filter {x.Name} is not equal");
+                        }
+                    });
+
+                    TestContext.Out.WriteLine($"" +
+                        $"{item.Id,-40}" +
+                        $"{item.UserAddGroupFullName,-25}" +
+                        $"{item.UserModGroupFullName,-25}" +
+                        $"{item.GroupName,-20}");
+                }
+            }
+        }
     }
 }

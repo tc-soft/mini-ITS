@@ -26,5 +26,15 @@ namespace mini_ITS.Core.Repository
                 return groups;
             }
         }
+        public async Task<SqlPagedResult<Groups>> GetAsync(SqlPagedQuery<Groups> query)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Groups>(query);
+                var groups = await sqlConnection.QueryAsync<Groups>(sqlQueryBuilder.GetSelectQuery());
+                var count = await sqlConnection.QueryFirstAsync<int>(sqlQueryBuilder.GetCountQuery());
+                return SqlPagedResult<Groups>.Create(groups, query, count);
+            }
+        }
     }
 }

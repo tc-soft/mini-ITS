@@ -190,6 +190,10 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"UserModGroup         : {groups.UserModGroup}");
             TestContext.Out.WriteLine($"UserModGroupFullName : {groups.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {groups.GroupName}");
+
+            await _groupsRepository.DeleteAsync(group.Id);
+            group = await _groupsRepository.GetAsync(group.Id);
+            Assert.That(group, Is.Null, "ERROR - delete group");
         }
         [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.CRUDCases))]
         public async Task UpdateAsync(Groups groups)
@@ -271,6 +275,40 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"UserModGroup         : {group.UserModGroup}");
             TestContext.Out.WriteLine($"UserModGroupFullName : {group.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {group.GroupName}");
+
+            await _groupsRepository.DeleteAsync(group.Id);
+            group = await _groupsRepository.GetAsync(group.Id);
+            Assert.That(group, Is.Null, "ERROR - delete group");
+        }
+        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.CRUDCases))]
+        public async Task DeleteAsync(Groups groups)
+        {
+            await _groupsRepository.CreateAsync(groups);
+            var group = await _groupsRepository.GetAsync(groups.Id);
+
+            Assert.IsNotNull(group.Id, $"ERROR - {nameof(group.Id)} is null");
+            Assert.IsNotNull(group.DateAddGroup, $"ERROR - {nameof(group.DateAddGroup)} is null");
+            Assert.IsNotNull(group.DateModGroup, $"ERROR - {nameof(group.DateModGroup)} is null");
+            Assert.IsNotNull(group.UserAddGroup, $"ERROR - {nameof(group.UserAddGroup)} is null");
+            Assert.IsNotNull(group.UserAddGroupFullName, $"ERROR - {nameof(group.UserAddGroupFullName)} is null");
+            Assert.IsNotNull(group.UserModGroup, $"ERROR - {nameof(group.UserModGroup)} is null");
+            Assert.IsNotNull(group.UserModGroupFullName, $"ERROR - {nameof(group.UserModGroupFullName)} is null");
+            Assert.IsNotNull(group.GroupName, $"ERROR - {nameof(group.GroupName)} is null");
+
+            TestContext.Out.WriteLine($"\nUpdate record:");
+
+            TestContext.Out.WriteLine($"Id                   : {group.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {group.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {group.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {group.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {group.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {group.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {group.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {group.GroupName}");
+
+            await _groupsRepository.DeleteAsync(group.Id);
+            group = await _groupsRepository.GetAsync(group.Id);
+            Assert.That(group, Is.Null, "ERROR - delete group");
         }
     }
 }

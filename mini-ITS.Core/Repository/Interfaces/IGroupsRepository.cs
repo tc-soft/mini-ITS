@@ -13,5 +13,6 @@ namespace mini_ITS.Core.Repository
         Task<Groups> GetAsync(Guid guid);
         Task CreateAsync(Groups groups);
         Task UpdateAsync(Groups groups);
+        Task DeleteAsync(Guid guid);
     }
 }

@@ -127,5 +127,55 @@ namespace mini_ITS.Core.Tests.Repository
                 };
             }
         }
+        public static IEnumerable<Groups> CRUDCases
+        {
+            get
+            {
+                yield return new Groups
+                {
+                    Id = new Guid("D08385C0-EE29-4B81-AD0E-634EDAE903C6"),
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Testing Titans"
+                };
+                yield return new Groups
+                {
+                    Id = new Guid("9CFA2855-72F9-48E4-A814-7AE108A2740C"),
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Beta Breakers"
+                };
+                yield return new Groups
+                {
+                    Id = new Guid("723A65C9-FDAA-4D8A-A0EA-1504B2F61AB5"),
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Quality Questers"
+                };
+                yield return new Groups
+                {
+                    Id = new Guid("5E96D80E-5C89-415F-9B80-C7ACC55E17E7"),
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Test Pilots United"
+                };
+            }
+        }
     }
 }

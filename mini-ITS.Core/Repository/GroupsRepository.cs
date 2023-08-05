@@ -65,5 +65,13 @@ namespace mini_ITS.Core.Repository
                 await sqlConnection.ExecuteAsync(sqlQueryBuilder, groups);
             }
         }
+        public async Task UpdateAsync(Groups groups)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Groups>().GetUpdateQuery();
+                await sqlConnection.ExecuteAsync(sqlQueryBuilder, groups);
+            }
+        }
     }
 }

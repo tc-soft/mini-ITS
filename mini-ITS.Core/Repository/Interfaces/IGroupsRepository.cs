@@ -12,5 +12,6 @@ namespace mini_ITS.Core.Repository
         Task<SqlPagedResult<Groups>> GetAsync(SqlPagedQuery<Groups> query);
         Task<Groups> GetAsync(Guid guid);
         Task CreateAsync(Groups groups);
+        Task UpdateAsync(Groups groups);
     }
 }

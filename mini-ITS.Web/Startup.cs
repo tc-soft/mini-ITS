@@ -33,6 +33,7 @@ namespace mini_ITS.Web
             services.Configure<DatabaseOptions>(Configuration.GetSection("DatabaseOptions"));
             services.AddSingleton<ISqlConnectionString, SqlConnectionString>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IGroupsRepository, GroupsRepository>();
 
             //mini_ITS.Core.Services
             services.AddScoped<IUsersServices, UsersServices>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Services
@@ -124,6 +125,52 @@ namespace mini_ITS.Core.Tests.Services
                     UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
                     UserModGroupFullName = "Demi Balode",
                     GroupName = "Team Mercury"
+                };
+            }
+        }
+        public static IEnumerable<GroupsDto> CRUDCases
+        {
+            get
+            {
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Testing Titans"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Beta Breakers"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Quality Questers"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Test Pilots United"
                 };
             }
         }

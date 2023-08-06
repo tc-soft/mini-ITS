@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using mini_ITS.Core.Database;
@@ -40,6 +41,24 @@ namespace mini_ITS.Core.Services
         {
             var group = await _groupsRepository.GetAsync(id);
             return group == null ? null : _mapper.Map<GroupsDto>(group);
+        }
+        public async Task<Guid> CreateAsync(GroupsDto groupsDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var group = new Groups(
+                id: Guid.NewGuid(),
+                dateAddGroup: DateTime.UtcNow,
+                dateModGroup: DateTime.UtcNow,
+                userAddGroup: user.Id,
+                userAddGroupFullName: $"{user.FirstName} {user.LastName}",
+                userModGroup: user.Id,
+                userModGroupFullName: $"{user.FirstName} {user.LastName}",
+                groupName: WebUtility.HtmlEncode(groupsDto.GroupName));
+
+            await _groupsRepository.CreateAsync(group);
+            return group.Id;
         }
     }
 }

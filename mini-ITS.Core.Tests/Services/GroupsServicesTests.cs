@@ -140,5 +140,30 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
+        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.GroupsCases))]
+        public async Task GetAsync_CheckId(Groups groups)
+        {
+            var group = await _groupsServices.GetAsync(groups.Id);
+
+            Assert.That(group, Is.TypeOf<GroupsDto>(), "ERROR - return type");
+
+            Assert.That(group.Id, Is.EqualTo(groups.Id), $"ERROR - {nameof(groups.Id)} is not equal");
+            Assert.That(group.DateAddGroup, Is.EqualTo(groups.DateAddGroup), $"ERROR - {nameof(groups.DateAddGroup)} is not equal");
+            Assert.That(group.DateModGroup, Is.EqualTo(groups.DateModGroup), $"ERROR - {nameof(groups.DateModGroup)} is not equal");
+            Assert.That(group.UserAddGroup, Is.EqualTo(groups.UserAddGroup), $"ERROR - {nameof(groups.UserAddGroup)} is not equal");
+            Assert.That(group.UserAddGroupFullName, Is.EqualTo(groups.UserAddGroupFullName), $"ERROR - {nameof(groups.UserAddGroupFullName)} is not equal");
+            Assert.That(group.UserModGroup, Is.EqualTo(groups.UserModGroup), $"ERROR - {nameof(groups.UserModGroup)} is not equal");
+            Assert.That(group.UserModGroupFullName, Is.EqualTo(groups.UserModGroupFullName), $"ERROR - {nameof(groups.UserModGroupFullName)} is not equal");
+            Assert.That(group.GroupName, Is.EqualTo(groups.GroupName), $"ERROR - {nameof(groups.GroupName)} is not equal");
+
+            TestContext.Out.WriteLine($"Id                   : {group.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {group.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {group.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {group.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {group.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {group.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {group.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {group.GroupName}");
+        }
     }
 }

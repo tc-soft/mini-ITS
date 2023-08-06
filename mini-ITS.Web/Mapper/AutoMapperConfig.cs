@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
@@ -9,6 +9,7 @@ namespace mini_ITS.Web.Mapper
         public static IMapper GetMapper() => new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Users, UsersDto>().ReverseMap();
+                cfg.CreateMap<Groups, GroupsDto>().ReverseMap();
             }
         ).CreateMapper();
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +39,7 @@ namespace mini_ITS.Web
             services.AddScoped<IUsersServices, UsersServices>();
             services.AddSingleton(AutoMapperConfig.GetMapper());
             services.AddSingleton<IPasswordHasher<Users>, PasswordHasher<Users>>();
+            services.AddScoped<IGroupsServices, GroupsServices>();
 
             //mini_ITS.Web.Controllers
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

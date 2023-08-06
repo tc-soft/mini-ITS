@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Repository;
 
 namespace mini_ITS.Core.Services
@@ -26,6 +28,12 @@ namespace mini_ITS.Core.Services
         {
             var groups = await _groupsRepository.GetAsync();
             return groups?.Select(x => _mapper.Map<GroupsDto>(x));
+        }
+        public async Task<SqlPagedResult<GroupsDto>> GetAsync(SqlPagedQuery<Groups> sqlPagedQuery)
+        {
+            var results = await _groupsRepository.GetAsync(sqlPagedQuery);
+            var groups = results.Results.Select(x => _mapper.Map<GroupsDto>(x));
+            return groups == null ? null : SqlPagedResult<GroupsDto>.From(results, groups);
         }
     }
 }

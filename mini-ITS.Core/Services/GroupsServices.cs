@@ -60,5 +60,17 @@ namespace mini_ITS.Core.Services
             await _groupsRepository.CreateAsync(group);
             return group.Id;
         }
+        public async Task UpdateAsync(GroupsDto groupsDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var group = _mapper.Map<Groups>(groupsDto);
+            group.DateModGroup = DateTime.UtcNow;
+            group.UserModGroup = user.Id;
+            group.UserModGroupFullName = $"{user.FirstName} {user.LastName}";
+            
+            await _groupsRepository.UpdateAsync(group);
+        }
     }
 }

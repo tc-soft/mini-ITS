@@ -190,5 +190,77 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
         }
+        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
+        public async Task UpdateAsync(GroupsDto groupsDto)
+        {
+            var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
+            var guid = await _groupsServices.CreateAsync(groupsDto, user.Login);
+            var groupDto = await _groupsServices.GetAsync(guid);
+
+            Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
+
+            Assert.That(groupDto.Id, Is.EqualTo(guid), $"ERROR - {nameof(groupsDto.Id)} is not equal");
+            Assert.That(groupDto.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
+            Assert.That(groupDto.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
+            Assert.That(groupDto.UserModGroup, Is.EqualTo(groupsDto.UserModGroup), $"ERROR - {nameof(groupsDto.UserModGroup)} is not equal");
+            Assert.That(groupDto.UserModGroupFullName, Is.EqualTo(groupsDto.UserModGroupFullName), $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is not equal");
+            Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
+
+            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
+
+            var caesarHelper = new CaesarHelper();
+            groupDto.GroupName = caesarHelper.Encrypt(groupDto.GroupName);
+            await _groupsServices.UpdateAsync(groupDto, user.Login);
+            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+
+            Assert.IsNotNull(groupDto.Id, $"ERROR - {nameof(groupDto.Id)} is null");
+            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupDto.DateAddGroup)} is null");
+            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupDto.DateModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupDto.UserAddGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupDto.UserAddGroupFullName)} is null");
+            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupDto.UserModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupDto.UserModGroupFullName)} is null");
+            Assert.IsNotNull(groupDto.GroupName, $"ERROR - {nameof(groupDto.GroupName)} is null");
+
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
+
+            groupDto.GroupName = caesarHelper.Decrypt(groupDto.GroupName);
+            await _groupsServices.UpdateAsync(groupDto, user.Login);
+            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+
+            Assert.IsNotNull(groupDto.Id, $"ERROR - {nameof(groupDto.Id)} is null");
+            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupDto.DateAddGroup)} is null");
+            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupDto.DateModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupDto.UserAddGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupDto.UserAddGroupFullName)} is null");
+            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupDto.UserModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupDto.UserModGroupFullName)} is null");
+            Assert.IsNotNull(groupDto.GroupName, $"ERROR - {nameof(groupDto.GroupName)} is null");
+
+            TestContext.Out.WriteLine($"\nUpdate record:");
+            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
+        }
     }
 }

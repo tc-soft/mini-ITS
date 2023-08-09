@@ -13,5 +13,6 @@ namespace mini_ITS.Core.Services
         Task<SqlPagedResult<GroupsDto>> GetAsync(SqlPagedQuery<Groups> sqlPagedQuery);
         Task<GroupsDto> GetAsync(Guid guid);
         Task<Guid> CreateAsync(GroupsDto groupsDto, string username);
+        Task UpdateAsync(GroupsDto groupsDto, string username);
     }
 }

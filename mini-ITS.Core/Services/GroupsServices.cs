@@ -72,5 +72,9 @@ namespace mini_ITS.Core.Services
             
             await _groupsRepository.UpdateAsync(group);
         }
+        public async Task DeleteAsync(Guid id)
+        {
+            await _groupsRepository.DeleteAsync(id);
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -15,7 +14,7 @@ using mini_ITS.Core.Services;
 namespace mini_ITS.Core.Tests.Services
 {
     [TestFixture]
-    class GroupsServicesTests
+    public class GroupsServicesTests
     {
         private IMapper _mapper;
         private IUsersRepository _usersRepository;
@@ -46,23 +45,20 @@ namespace mini_ITS.Core.Tests.Services
         [Test]
         public async Task GetAsync_CheckAll()
         {
-            var groups = await _groupsServices.GetAsync();
-            TestContext.Out.WriteLine($"Number of records: {groups.Count()}\n");
+            TestContext.Out.WriteLine("Get groups by GetAsync() and check valid...\n");
+            var groupsDto = await _groupsServices.GetAsync();
+            GroupsServicesTestsHelper.Check(groupsDto);
 
-            Assert.That(groups.Count() >= 10, "ERROR - number of items is less than 10");
-            Assert.That(groups, Is.InstanceOf<IEnumerable<GroupsDto>>(), "ERROR - return type");
-            Assert.That(groups, Is.All.InstanceOf<GroupsDto>(), "ERROR - all instance is not of <GroupsDto>()");
-            Assert.That(groups, Is.Ordered.Ascending.By("GroupName"), "ERROR - sort");
-            Assert.That(groups, Is.Unique, "ERROR - is not unique");
-
-            foreach (var item in groups)
+            foreach (var item in groupsDto)
             {
                 TestContext.Out.WriteLine($"Group: {item.GroupName}");
             }
+            TestContext.Out.WriteLine($"\nNumber of records: {groupsDto.Count()}");
         }
         [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Groups> sqlPagedQuery)
         {
+            TestContext.Out.WriteLine("Get groups by GetAsync(sqlPagedQuery) and check valid...");
             var groupsList = await _groupsServices.GetAsync(sqlPagedQuery);
             Assert.That(groupsList.Results.Count() > 0, "ERROR - groups is empty");
 
@@ -85,7 +81,7 @@ namespace mini_ITS.Core.Tests.Services
                     $"TotalResults={groups.TotalResults}{filterString}, " +
                     $"Sort={sqlPagedQuery.SortColumnName}, " +
                     $"Sort direction={sqlPagedQuery.SortDirection}");
-                TestContext.Out.WriteLine($"" +
+                TestContext.Out.WriteLine(
                     $"{"Id",-40}" +
                     $"{"UserAddGroupFullName",-25}" +
                     $"{"UserModGroupFullName",-25}" +
@@ -112,14 +108,7 @@ namespace mini_ITS.Core.Tests.Services
 
                 foreach (var item in groups.Results)
                 {
-                    Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
-                    Assert.IsNotNull(item.DateAddGroup, $"ERROR - {nameof(item.DateAddGroup)} is null");
-                    Assert.IsNotNull(item.DateModGroup, $"ERROR - {nameof(item.DateModGroup)} is null");
-                    Assert.IsNotNull(item.UserAddGroup, $"ERROR - {nameof(item.UserAddGroup)} is null");
-                    Assert.IsNotNull(item.UserAddGroupFullName, $"ERROR - {nameof(item.UserAddGroupFullName)} is null");
-                    Assert.IsNotNull(item.UserModGroup, $"ERROR - {nameof(item.UserModGroup)} is null");
-                    Assert.IsNotNull(item.UserModGroupFullName, $"ERROR - {nameof(item.UserModGroupFullName)} is null");
-                    Assert.IsNotNull(item.GroupName, $"ERROR - {nameof(item.GroupName)} is null");
+                    GroupsServicesTestsHelper.Check(item);
 
                     sqlPagedQuery.Filter.ForEach(x =>
                     {
@@ -132,64 +121,29 @@ namespace mini_ITS.Core.Tests.Services
                         }
                     });
 
-                    TestContext.Out.WriteLine($"" +
-                        $"{item.Id,-40}" +
-                        $"{item.UserAddGroupFullName,-25}" +
-                        $"{item.UserModGroupFullName,-25}" +
-                        $"{item.GroupName,-20}");
+                    GroupsServicesTestsHelper.PrintRecord(item);
                 }
             }
         }
         [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.GroupsCases))]
-        public async Task GetAsync_CheckId(Groups groups)
+        public async Task GetAsync_CheckId(GroupsDto groupsDto)
         {
-            var group = await _groupsServices.GetAsync(groups.Id);
-
-            Assert.That(group, Is.TypeOf<GroupsDto>(), "ERROR - return type");
-
-            Assert.That(group.Id, Is.EqualTo(groups.Id), $"ERROR - {nameof(groups.Id)} is not equal");
-            Assert.That(group.DateAddGroup, Is.EqualTo(groups.DateAddGroup), $"ERROR - {nameof(groups.DateAddGroup)} is not equal");
-            Assert.That(group.DateModGroup, Is.EqualTo(groups.DateModGroup), $"ERROR - {nameof(groups.DateModGroup)} is not equal");
-            Assert.That(group.UserAddGroup, Is.EqualTo(groups.UserAddGroup), $"ERROR - {nameof(groups.UserAddGroup)} is not equal");
-            Assert.That(group.UserAddGroupFullName, Is.EqualTo(groups.UserAddGroupFullName), $"ERROR - {nameof(groups.UserAddGroupFullName)} is not equal");
-            Assert.That(group.UserModGroup, Is.EqualTo(groups.UserModGroup), $"ERROR - {nameof(groups.UserModGroup)} is not equal");
-            Assert.That(group.UserModGroupFullName, Is.EqualTo(groups.UserModGroupFullName), $"ERROR - {nameof(groups.UserModGroupFullName)} is not equal");
-            Assert.That(group.GroupName, Is.EqualTo(groups.GroupName), $"ERROR - {nameof(groups.GroupName)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                   : {group.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {group.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {group.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {group.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {group.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {group.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {group.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {group.GroupName}");
+            TestContext.Out.WriteLine("Get group by GetAsync(id) and check valid...\n");
+            var groupDto = await _groupsServices.GetAsync(groupsDto.Id);
+            GroupsServicesTestsHelper.Check(groupDto, groupsDto);
+            GroupsServicesTestsHelper.Print(groupDto);
         }
         [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
         public async Task CreateAsync(GroupsDto groupsDto)
         {
+            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserAddGroup);
-            var guid = await _groupsServices.CreateAsync(groupsDto, user.Login);
-            var groupDto = await _groupsServices.GetAsync(guid);
+            var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
+            var groupDto = await _groupsServices.GetAsync(id);
+            GroupsServicesTestsHelper.Check(groupDto, groupsDto);
+            GroupsServicesTestsHelper.Print(groupDto);
 
-            Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
-
-            Assert.That(groupDto.Id, Is.EqualTo(guid), $"ERROR - {nameof(groupsDto.Id)} is not equal");
-            Assert.That(groupDto.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
-            Assert.That(groupDto.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
-            Assert.That(groupDto.UserModGroup, Is.EqualTo(groupsDto.UserModGroup), $"ERROR - {nameof(groupsDto.UserModGroup)} is not equal");
-            Assert.That(groupDto.UserModGroupFullName, Is.EqualTo(groupsDto.UserModGroupFullName), $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is not equal");
-            Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
-
+            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
             await _groupsServices.DeleteAsync(groupDto.Id);
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
@@ -197,75 +151,29 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
         public async Task UpdateAsync(GroupsDto groupsDto)
         {
+            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
-            var guid = await _groupsServices.CreateAsync(groupsDto, user.Login);
-            var groupDto = await _groupsServices.GetAsync(guid);
+            var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
+            var groupDto = await _groupsServices.GetAsync(id);
+            GroupsServicesTestsHelper.Check(groupDto, groupsDto);
+            GroupsServicesTestsHelper.Print(groupDto);
 
-            Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
-
-            Assert.That(groupDto.Id, Is.EqualTo(guid), $"ERROR - {nameof(groupsDto.Id)} is not equal");
-            Assert.That(groupDto.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
-            Assert.That(groupDto.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
-            Assert.That(groupDto.UserModGroup, Is.EqualTo(groupsDto.UserModGroup), $"ERROR - {nameof(groupsDto.UserModGroup)} is not equal");
-            Assert.That(groupDto.UserModGroupFullName, Is.EqualTo(groupsDto.UserModGroupFullName), $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is not equal");
-            Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
-
+            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(groupsDto, username) and check valid...\n");
             var caesarHelper = new CaesarHelper();
             groupDto.GroupName = caesarHelper.Encrypt(groupDto.GroupName);
             await _groupsServices.UpdateAsync(groupDto, user.Login);
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            GroupsServicesTestsHelper.Check(groupDto);
+            GroupsServicesTestsHelper.Print(groupDto);
 
-            Assert.IsNotNull(groupDto.Id, $"ERROR - {nameof(groupDto.Id)} is null");
-            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupDto.DateAddGroup)} is null");
-            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupDto.DateModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupDto.UserAddGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupDto.UserAddGroupFullName)} is null");
-            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupDto.UserModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupDto.UserModGroupFullName)} is null");
-            Assert.IsNotNull(groupDto.GroupName, $"ERROR - {nameof(groupDto.GroupName)} is null");
-
-            TestContext.Out.WriteLine($"\nUpdate record:");
-            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
-
+            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(groupsDto, username) and check valid...\n");
             groupDto.GroupName = caesarHelper.Decrypt(groupDto.GroupName);
             await _groupsServices.UpdateAsync(groupDto, user.Login);
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            GroupsServicesTestsHelper.Check(groupDto);
+            GroupsServicesTestsHelper.Print(groupDto);
 
-            Assert.IsNotNull(groupDto.Id, $"ERROR - {nameof(groupDto.Id)} is null");
-            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupDto.DateAddGroup)} is null");
-            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupDto.DateModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupDto.UserAddGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupDto.UserAddGroupFullName)} is null");
-            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupDto.UserModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupDto.UserModGroupFullName)} is null");
-            Assert.IsNotNull(groupDto.GroupName, $"ERROR - {nameof(groupDto.GroupName)} is null");
-
-            TestContext.Out.WriteLine($"\nUpdate record:");
-            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
-
+            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
             await _groupsServices.DeleteAsync(groupDto.Id);
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
@@ -273,28 +181,14 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
         public async Task DeleteAsync(GroupsDto groupsDto)
         {
+            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
-            var guid = await _groupsServices.CreateAsync(groupsDto, user.Login);
-            var groupDto = await _groupsServices.GetAsync(guid);
+            var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
+            var groupDto = await _groupsServices.GetAsync(id);
+            GroupsServicesTestsHelper.Check(groupDto, groupsDto);
+            GroupsServicesTestsHelper.Print(groupDto);
 
-            Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
-
-            Assert.That(groupDto.Id, Is.EqualTo(guid), $"ERROR - {nameof(groupsDto.Id)} is not equal");
-            Assert.That(groupDto.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
-            Assert.That(groupDto.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
-            Assert.That(groupDto.UserModGroup, Is.EqualTo(groupsDto.UserModGroup), $"ERROR - {nameof(groupsDto.UserModGroup)} is not equal");
-            Assert.That(groupDto.UserModGroupFullName, Is.EqualTo(groupsDto.UserModGroupFullName), $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is not equal");
-            Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                   : {groupDto.Id}");
-            TestContext.Out.WriteLine($"DateAddGroup         : {groupDto.DateAddGroup}");
-            TestContext.Out.WriteLine($"DateModGroup         : {groupDto.DateModGroup}");
-            TestContext.Out.WriteLine($"UserAddGroup         : {groupDto.UserAddGroup}");
-            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupDto.UserAddGroupFullName}");
-            TestContext.Out.WriteLine($"UserModGroup         : {groupDto.UserModGroup}");
-            TestContext.Out.WriteLine($"UserModGroupFullName : {groupDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupDto.GroupName}");
-
+            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
             await _groupsServices.DeleteAsync(groupDto.Id);
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");

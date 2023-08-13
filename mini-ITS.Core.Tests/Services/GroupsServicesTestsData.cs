@@ -78,11 +78,11 @@ namespace mini_ITS.Core.Tests.Services
                 };
             }
         }
-        public static IEnumerable<Groups> GroupsCases
+        public static IEnumerable<GroupsDto> GroupsCases
         {
             get
             {
-                yield return new Groups
+                yield return new GroupsDto
                 {
                     Id = new Guid("B936FBEB-A52D-40F4-92FC-1258214CF6E8"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
@@ -93,7 +93,7 @@ namespace mini_ITS.Core.Tests.Services
                     UserModGroupFullName = "Admin Administrator",
                     GroupName = "Alfa Avengers"
                 };
-                yield return new Groups
+                yield return new GroupsDto
                 {
                     Id = new Guid("9E8569C5-B198-43C7-93C4-260D185028BF"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
@@ -104,7 +104,7 @@ namespace mini_ITS.Core.Tests.Services
                     UserModGroupFullName = "Demi Balode",
                     GroupName = "Group Phoenix"
                 };
-                yield return new Groups
+                yield return new GroupsDto
                 {
                     Id = new Guid("5987D667-6072-41DC-A822-460ECD4C9DA6"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
@@ -115,7 +115,7 @@ namespace mini_ITS.Core.Tests.Services
                     UserModGroupFullName = "Admin Administrator",
                     GroupName = "Precision Probers"
                 };
-                yield return new Groups
+                yield return new GroupsDto
                 {
                     Id = new Guid("F3773676-24E4-413D-A600-60CB032E67DD"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),

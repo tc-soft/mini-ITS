@@ -1,7 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using mini_ITS.Core.Database;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Services;
+using mini_ITS.Web.Framework;
 
 namespace mini_ITS.Web.Controllers
 {
@@ -18,6 +24,23 @@ namespace mini_ITS.Web.Controllers
             _groupsServices = groupsServices;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+        }
+        [HttpGet]
+        [CookieAuth]
+        public async Task<IActionResult> IndexAsync([FromQuery] SqlPagedQuery<Groups> sqlPagedQuery)
+        {
+            try
+            {
+                var result = await _groupsServices.GetAsync(sqlPagedQuery);
+                var groups = _mapper.Map<IEnumerable<Groups>>(result.Results);
+                var sqlPagedResult = SqlPagedResult<Groups>.From(result, groups);
+
+                return Ok(sqlPagedResult);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
         }
     }
 }

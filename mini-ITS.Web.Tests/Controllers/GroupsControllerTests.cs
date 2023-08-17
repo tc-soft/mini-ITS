@@ -129,5 +129,46 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedCreateCases))]
+        public async Task CreateAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedCreateCases,
+            GroupsDto groupsDto)
+        {
+            if (loginUnauthorizedCreateCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedCreateCases));
+            }
+
+            response = await CreateAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
+            TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Authorized(
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedCreateCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.CRUDCases))] GroupsDto groupsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            response = await CreateAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
+
+            TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupsDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

@@ -64,5 +64,11 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> CreateAsync(GroupsDto groupsDto)
+        {
+            var response = await TestClient.PostAsJsonAsync(ApiRoutes.Groups.Create, groupsDto);
+
+            return response;
+        }
     }
 }

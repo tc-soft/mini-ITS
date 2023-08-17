@@ -23,6 +23,7 @@
             private static readonly string _groupsControllerUrl = string.Concat(_baseUrl, "Groups");
 
             public static readonly string Index = string.Concat(_groupsControllerUrl, "/Index");
+            public static readonly string Create = string.Concat(_groupsControllerUrl, "/Create");
         }
     }
 }

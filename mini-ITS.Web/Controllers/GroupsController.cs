@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Services;
 using mini_ITS.Web.Framework;
@@ -40,6 +41,21 @@ namespace mini_ITS.Web.Controllers
             catch (Exception ex)
             {
                 throw new Exception($"Error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        [CookieAuth(roles: "Administrator, Manager")]
+        public async Task<IActionResult> CreateAsync(GroupsDto groupsDto)
+        {
+            try
+            {
+                await _groupsServices.CreateAsync(groupsDto, User.Identity.Name);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
             }
         }
     }

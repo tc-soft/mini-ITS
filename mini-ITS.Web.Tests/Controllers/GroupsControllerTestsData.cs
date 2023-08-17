@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
@@ -90,6 +92,9 @@ namespace mini_ITS.Web.Tests.Controllers
             LoginAuthorizedADMCases
             .Concat(LoginAuthorizedMNGCases)
             .Concat(LoginAuthorizedUSRCases);
+        public static IEnumerable<LoginData> LoginAuthorizedCreateCases =>
+            LoginAuthorizedADMCases
+            .Concat(LoginAuthorizedMNGCases);
         public static IEnumerable<LoginData> LoginUnauthorizedCases
         {
             get
@@ -114,6 +119,27 @@ namespace mini_ITS.Web.Tests.Controllers
                     Login = "huntewil",
                     Password = "Xuntewil2022@"
                 };
+            }
+        }
+        public static IEnumerable<TestCaseData> LoginUnauthorizedCreateCases
+        {
+            get
+            {
+                foreach (var loginUnauthorizedCases in GroupsControllerTestsData.LoginUnauthorizedCases)
+                {
+                    foreach (var groupsDto in GroupsControllerTestsData.CRUDCases)
+                    {
+                        yield return new TestCaseData(loginUnauthorizedCases, null, groupsDto);
+                    }
+                }
+
+                foreach (var loginAuthorizedUSRCases in GroupsControllerTestsData.LoginAuthorizedUSRCases)
+                {
+                    foreach (var groupsDto in GroupsControllerTestsData.CRUDCases)
+                    {
+                        yield return new TestCaseData(null, loginAuthorizedUSRCases, groupsDto);
+                    }
+                }
             }
         }
         public static IEnumerable<SqlPagedQuery<GroupsDto>> SqlPagedQueryCases
@@ -183,6 +209,52 @@ namespace mini_ITS.Web.Tests.Controllers
                     SortDirection = "DESC",
                     Page = 1,
                     ResultsPerPage = 3
+                };
+            }
+        }
+        public static IEnumerable<GroupsDto> CRUDCases
+        {
+            get
+            {
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Testing Titans"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Beta Breakers"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
+                    GroupName = "Quality Questers"
+                };
+                yield return new GroupsDto
+                {
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
+                    GroupName = "Test Pilots United"
                 };
             }
         }

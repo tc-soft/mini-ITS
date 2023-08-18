@@ -58,5 +58,30 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpGet("{id:guid}")]
+        [CookieAuth(roles: "Administrator, Manager")]
+        public async Task<IActionResult> EditAsync(Guid? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest("Error: id is null");
+                }
+
+                var group = await _groupsServices.GetAsync((Guid)id);
+
+                if (group == null)
+                {
+                    return NotFound("Error: group is empty");
+                }
+
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

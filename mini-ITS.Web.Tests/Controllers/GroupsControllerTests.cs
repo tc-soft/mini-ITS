@@ -170,5 +170,51 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedEditCases))]
+        public async Task EditGetAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedEditCases,
+            GroupsDto groupsDto)
+        {
+            if (loginUnauthorizedEditCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+            }
+
+            response = await EditGetAsync(groupsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync of test user: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Authorized(
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedEditCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.GroupsCases))] GroupsDto groupsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            response = await EditGetAsync(groupsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync of test group: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
+            Assert.IsNotNull(results, $"ERROR - GroupsDto of test group is null");
+            TestContext.Out.WriteLine($"Response after load Json data of test group: OK");
+
+            TestContext.Out.WriteLine($"\nGroup to edit");
+            TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupsDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

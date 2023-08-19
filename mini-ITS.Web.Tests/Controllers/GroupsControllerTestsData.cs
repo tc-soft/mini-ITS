@@ -242,46 +242,46 @@ namespace mini_ITS.Web.Tests.Controllers
             {
                 yield return new GroupsDto
                 {
-                    Id = new Guid("B936FBEB-A52D-40F4-92FC-1258214CF6E8"),
+                    Id = new Guid("4863E58B-F9D7-4981-B596-179F3ABBE29E"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
                     DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
-                    UserAddGroupFullName = "Admin Administrator",
-                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
-                    UserModGroupFullName = "Admin Administrator",
+                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserAddGroupFullName = "Demi Balode",
+                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
+                    UserModGroupFullName = "Demi Balode",
                     GroupName = "Alfa Avengers"
                 };
                 yield return new GroupsDto
                 {
-                    Id = new Guid("9E8569C5-B198-43C7-93C4-260D185028BF"),
-                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
-                    UserAddGroupFullName = "Demi Balode",
-                    UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
-                    UserModGroupFullName = "Demi Balode",
-                    GroupName = "Group Phoenix"
-                };
-                yield return new GroupsDto
-                {
-                    Id = new Guid("5987D667-6072-41DC-A822-460ECD4C9DA6"),
+                    Id = new Guid("531CEDF4-48CF-466E-B293-2C465EDE2A3C"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
                     DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
                     UserAddGroupFullName = "Admin Administrator",
                     UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
                     UserModGroupFullName = "Admin Administrator",
-                    GroupName = "Precision Probers"
+                    GroupName = "Innovation Instigators"
                 };
                 yield return new GroupsDto
                 {
-                    Id = new Guid("F3773676-24E4-413D-A600-60CB032E67DD"),
+                    Id = new Guid("FCD15B50-D4A0-4F4B-94AC-5021ED8338BB"),
                     DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
                     DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
                     UserAddGroupFullName = "Demi Balode",
                     UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
                     UserModGroupFullName = "Demi Balode",
+                    GroupName = "Project Orion"
+                };
+                yield return new GroupsDto
+                {
+                    Id = new Guid("3546ACCF-59E9-4CC8-9B31-60B2944DDB3E"),
+                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserAddGroupFullName = "Admin Administrator",
+                    UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
+                    UserModGroupFullName = "Admin Administrator",
                     GroupName = "Team Mercury"
                 };
             }

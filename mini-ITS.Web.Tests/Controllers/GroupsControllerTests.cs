@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using mini_ITS.Core;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
@@ -213,6 +215,91 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
             TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedEditCases))]
+        public async Task EditPutAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedEditCases,
+            GroupsDto groupsDto)
+        {
+            if (loginUnauthorizedEditCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+            }
+
+            response = await EditPutAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            TestContext.Out.WriteLine($"Response after EditPutAsync of test group: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task EditPutAsync_Authorized(
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedEditCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.GroupsCases))] GroupsDto groupsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nGroup before update");
+            TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupsDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+
+            var caesarHelper = new CaesarHelper();
+            groupsDto.GroupName = caesarHelper.Encrypt(groupsDto.GroupName);
+
+            TestContext.Out.WriteLine($"Modification");
+            TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupsDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+
+            response = await EditPutAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
+            TestContext.Out.WriteLine($"Response after EditPutAsync (Encrypt): {response.StatusCode}");
+
+            groupsDto.GroupName = caesarHelper.Decrypt(groupsDto.GroupName);
+
+            response = await EditPutAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 2 (Decrypt)");
+            TestContext.Out.WriteLine($"Response after EditPutAsync (Decrypt): {response.StatusCode}");
+
+            response = await EditGetAsync(groupsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+            
+            Assert.That(results.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupsDto.Id)} is not Guid type");
+            Assert.That(results.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
+            Assert.That(results.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
+            Assert.That(results.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
+            TestContext.Out.WriteLine($"Comparing with the original test data: OK\n");
+
+            TestContext.Out.WriteLine($"User after updates");
+            TestContext.Out.WriteLine($"Id                   : {results.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {results.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {results.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {results.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {results.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {results.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {results.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {results.GroupName}\n");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

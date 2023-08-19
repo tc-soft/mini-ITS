@@ -83,5 +83,25 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpPut("{id:guid}")]
+        [CookieAuth(roles: "Administrator, Manager")]
+        public async Task<IActionResult> EditAsync([FromBody] GroupsDto groupsDto)
+        {
+            try
+            {
+                if (groupsDto is null)
+                {
+                    return BadRequest("Error: groupsDto is null");
+                }
+
+                await _groupsServices.UpdateAsync(groupsDto, User.Identity.Name);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

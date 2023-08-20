@@ -98,6 +98,9 @@ namespace mini_ITS.Web.Tests.Controllers
         public static IEnumerable<LoginData> LoginAuthorizedEditCases =>
             LoginAuthorizedADMCases
             .Concat(LoginAuthorizedMNGCases);
+        public static IEnumerable<LoginData> LoginAuthorizedDeleteCases =>
+            LoginAuthorizedADMCases
+            .Concat(LoginAuthorizedMNGCases);
         public static IEnumerable<LoginData> LoginUnauthorizedCases
         {
             get
@@ -146,6 +149,27 @@ namespace mini_ITS.Web.Tests.Controllers
             }
         }
         public static IEnumerable<TestCaseData> LoginUnauthorizedEditCases
+        {
+            get
+            {
+                foreach (var loginUnauthorizedCases in GroupsControllerTestsData.LoginUnauthorizedCases)
+                {
+                    foreach (var groupsDto in GroupsControllerTestsData.GroupsCases)
+                    {
+                        yield return new TestCaseData(loginUnauthorizedCases, null, groupsDto);
+                    }
+                }
+
+                foreach (var loginAuthorizedUSRCases in GroupsControllerTestsData.LoginAuthorizedUSRCases)
+                {
+                    foreach (var groupsDto in GroupsControllerTestsData.GroupsCases)
+                    {
+                        yield return new TestCaseData(null, loginAuthorizedUSRCases, groupsDto);
+                    }
+                }
+            }
+        }
+        public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteCases
         {
             get
             {

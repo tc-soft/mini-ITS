@@ -25,6 +25,7 @@
             public static readonly string Index = string.Concat(_groupsControllerUrl, "/Index");
             public static readonly string Create = string.Concat(_groupsControllerUrl, "/Create");
             public static readonly string Edit = string.Concat(_groupsControllerUrl, "/Edit");
+            public static readonly string Delete = string.Concat(_groupsControllerUrl, "/Delete");
         }
     }
 }

@@ -49,9 +49,9 @@ namespace mini_ITS.Web.Controllers
         {
             try
             {
-                await _groupsServices.CreateAsync(groupsDto, User.Identity.Name);
+                var id = await _groupsServices.CreateAsync(groupsDto, User.Identity.Name);
 
-                return Ok();
+                return Ok(id);
             }
             catch (Exception ex)
             {
@@ -95,6 +95,26 @@ namespace mini_ITS.Web.Controllers
                 }
 
                 await _groupsServices.UpdateAsync(groupsDto, User.Identity.Name);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+        [HttpDelete("{id:guid}")]
+        [CookieAuth(roles: "Administrator, Manager")]
+        public async Task<IActionResult> DeleteAsync(Guid? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest("Error: id is null");
+                }
+
+                await _groupsServices.DeleteAsync((Guid)id);
 
                 return Ok();
             }

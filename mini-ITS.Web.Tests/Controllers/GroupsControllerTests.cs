@@ -160,6 +160,7 @@ namespace mini_ITS.Web.Tests.Controllers
             response = await CreateAsync(groupsDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
 
+            TestContext.Out.WriteLine($"\nGroup before create");
             TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
             TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
             TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
@@ -167,8 +168,15 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
             TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
             TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
-            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}");
-            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+            
+            TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test group");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
@@ -300,6 +308,83 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"UserModGroup         : {results.UserModGroup}");
             TestContext.Out.WriteLine($"UserModGroupFullName : {results.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {results.GroupName}\n");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedDeleteCases))]
+        public async Task DeleteAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedEditCases,
+            GroupsDto groupsDto)
+        {
+            if (loginUnauthorizedEditCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+            }
+
+            TestContext.Out.WriteLine($"\nGroup before delete");
+            TestContext.Out.WriteLine($"Id                   : {groupsDto.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {groupsDto.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {groupsDto.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {groupsDto.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {groupsDto.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {groupsDto.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
+
+            response = await DeleteAsync(groupsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            TestContext.Out.WriteLine($"Response after DeleteAsync of test group: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Authorized(
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedDeleteCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.CRUDCases))] GroupsDto groupsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nGroup before create");
+            TestContext.Out.WriteLine($"GroupName: {groupsDto.GroupName}\n");
+            
+            response = await CreateAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
+
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+
+            Assert.That(results.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupsDto.Id)} is not Guid type");
+            Assert.That(results.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
+            TestContext.Out.WriteLine($"Comparing with the original test data: OK");
+
+            TestContext.Out.WriteLine($"\nGroup before delete");
+            TestContext.Out.WriteLine($"Id                   : {results.Id}");
+            TestContext.Out.WriteLine($"DateAddGroup         : {results.DateAddGroup}");
+            TestContext.Out.WriteLine($"DateModGroup         : {results.DateModGroup}");
+            TestContext.Out.WriteLine($"UserAddGroup         : {results.UserAddGroup}");
+            TestContext.Out.WriteLine($"UserAddGroupFullName : {results.UserAddGroupFullName}");
+            TestContext.Out.WriteLine($"UserModGroup         : {results.UserModGroup}");
+            TestContext.Out.WriteLine($"UserModGroupFullName : {results.UserModGroupFullName}");
+            TestContext.Out.WriteLine($"GroupName            : {results.GroupName}\n");
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test group");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test group");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

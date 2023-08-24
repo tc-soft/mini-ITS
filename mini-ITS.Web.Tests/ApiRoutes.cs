@@ -18,5 +18,14 @@
             public static readonly string ChangePassword = string.Concat(_usersControllerUrl, "/ChangePassword");
             public static readonly string SetPassword = string.Concat(_usersControllerUrl, "/SetPassword");
         }
+        public static class Groups
+        {
+            private static readonly string _groupsControllerUrl = string.Concat(_baseUrl, "Groups");
+
+            public static readonly string Index = string.Concat(_groupsControllerUrl, "/Index");
+            public static readonly string Create = string.Concat(_groupsControllerUrl, "/Create");
+            public static readonly string Edit = string.Concat(_groupsControllerUrl, "/Edit");
+            public static readonly string Delete = string.Concat(_groupsControllerUrl, "/Delete");
+        }
     }
 }

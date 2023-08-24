@@ -8,10 +8,9 @@ using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
 
-
 namespace mini_ITS.Web.Tests.Controllers
 {
-    public class UsersControllerTests : IntegrationTest
+    public class UsersControllerTests : UsersIntegrationTest
     {
         [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))]
         public async Task LoginAsync_Unauthorized(LoginData loginData)

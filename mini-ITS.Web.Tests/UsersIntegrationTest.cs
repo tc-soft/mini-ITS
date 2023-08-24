@@ -15,12 +15,12 @@ using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests
 {
-    public class IntegrationTest
+    public class UsersIntegrationTest
     {
         protected readonly HttpClient TestClient;
         protected HttpResponseMessage response;
 
-        protected IntegrationTest()
+        protected UsersIntegrationTest()
         {
             var appFactory = new WebApplicationFactory<Startup>();
             TestClient = appFactory.CreateClient();

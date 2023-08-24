@@ -12,8 +12,18 @@ mini-ITS - a small reporting system to your comany.
 | /Index                 |               | List users   |              |                 |                 |
 | /Create                | Create user   |              |              |                 |                 |
 | /Edit/{id}             |               | Edit user    | Update user  |                 |                 |
-| /Delete/{id}           |               |              |              |                 |                 |
+| /Delete/{id}           |               |              |              |                 | Delete user     |
 | /ChangePassword        |               |              |              | Change password |                 |
+
+### <span style="color:blue">**RestAPI of Groups**</span>
+*route : api/Groups*
+
+| Resource / HTTP method | POST (create) | GET (read)   | PUT (update) | PATCH           | DELETE (delete) |
+| ---------------------- | ------------- | ------------ | ------------ | --------------- |---------------- |
+| /Index                 |               | List groups  |              |                 |                 |
+| /Create                | Create group  |              |              |                 |                 |
+| /Edit/{id}             |               | Edit user    | Update user  |                 |                 |
+| /Delete/{id}           |               |              |              |                 | Delete group    |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.

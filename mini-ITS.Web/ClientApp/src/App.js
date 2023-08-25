@@ -4,6 +4,7 @@ import { useAuth } from './components/AuthProvider';
 import RequireAuth from './pages/login/RequireAuth';
 import Login from './pages/login/Login';
 import Users from './pages/users/Users';
+import Groups from './pages/groups/Groups';
 import { ReactComponent as BrandIcon } from './images/mini-ITS.svg';
 import { ReactComponent as LogOut } from './images/LogOut.svg';
 
@@ -18,8 +19,15 @@ const App = () => {
                 <nav>
                     <BrandIcon />
                     <ul>
-                        <li className='main-header__link'>{currentUser && <Link to="/">Home</Link>}</li>
-                        <li className='main-header__link'>{currentUser && (currentUser.role === 'Administrator') && <Link to='/Users'>Użytkownicy</Link>}</li>
+                        <li className='main-header__link'>
+                            {currentUser && <Link to="/">Home</Link>}
+                        </li>
+                        <li className='main-header__link'>
+                            {(currentUser && (currentUser.role === 'Administrator' || currentUser.role === 'Manager')) && <Link to='/Groups'>Grupy</Link>}
+                        </li>
+                        <li className='main-header__link'>
+                            {currentUser && (currentUser.role === 'Administrator') && <Link to='/Users'>Użytkownicy</Link>}
+                        </li>
                         <li className='main-header__icon'>{currentUser && <Link to='/' onClick={() => { handleLogout() }}><LogOut /></Link>}</li>
                     </ul>
                 </nav>
@@ -35,6 +43,11 @@ const App = () => {
                     <Route path='/Users/*' element={
                         <RequireAuth>
                             <Users />
+                        </RequireAuth>}
+                    />
+                    <Route path='/Groups/*' element={
+                        <RequireAuth>
+                            <Groups />
                         </RequireAuth>}
                     />
                     <Route path='/Login' element={<Login />} />

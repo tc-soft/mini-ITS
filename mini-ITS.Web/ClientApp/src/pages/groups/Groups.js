@@ -1,11 +1,12 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import GroupsList from './GroupsList';
 
 const Groups = () => {
 
     return (
         <Routes>
-            <Route path="/" element={<p>Grupy</p>} />
+            <Route path='/' element={<GroupsList />} />
         </Routes>
     );
 };

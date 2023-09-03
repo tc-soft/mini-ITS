@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import GroupsList from './GroupsList';
+import GroupsForm from './GroupsForm';
 
 const Groups = () => {
     const [pagedQuery, setPagedQuery] = useState({
@@ -18,6 +19,7 @@ const Groups = () => {
                 setPagedQuery={setPagedQuery}
                 />}
             />
+            <Route path='/Detail/:groupId' element={<GroupsForm isMode={'Detail'} />} />
         </Routes>
     );
 };

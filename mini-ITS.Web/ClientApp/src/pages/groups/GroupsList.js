@@ -120,7 +120,9 @@ const GroupsList = (props) => {
                                 <td style={{ textAlign: 'left' }}>{group.groupName}</td>
                                 <td>
                                     <span>
-                                        <Link><IconDetail title='Szczegóły' /></Link>
+                                        <Link to={`Detail/${group.id}`}>
+                                            <IconDetail title='Szczegóły' />
+                                        </Link>
                                     </span>
                                     <span>
                                         <Link><IconEdit title='Edycja' /></Link>

@@ -68,6 +68,20 @@ const GroupsList = (props) => {
                     }
                 </tbody>
             </table>
+            <br />
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>Ilość wyników na stronie : &nbsp;
+                    <button style={{ backgroundColor: 'lightblue' }}>10</button>
+                    <button>20</button>
+                    <button>50</button>
+                </div>
+                <div>Strona 1 z 1 &nbsp;
+                    <button>&#60;&#60;</button>
+                    <button>&#60;</button>
+                    <button>&#62;</button>
+                    <button>&#62;&#62;</button>
+                </div>
+            </div>
         </>
     );
 };

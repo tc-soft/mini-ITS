@@ -1,10 +1,45 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { groupsServices } from '../../services/GroupsServices';
 
 const GroupsForm = (props) => {
     const { isMode } = props;
     const isReadMode = isMode === 'Detail' ? true : false;
+    const { groupId } = useParams();
+
+    const { register, reset, getValues } = useForm();
     const title = { Create: 'Dodaj grupę', Detail: 'Szczegóły grupy', Edit: 'Edycja' };
+
+    const resetAsyncForm = useCallback(async () => {
+        try {
+            const response = await groupsServices.edit(groupId);
+            if (response.ok) {
+                const data = await response.json();
+                reset(data);
+            }
+            else {
+                const errorData = await response.json();
+                console.log(errorData);
+            };
+        }
+        catch (error) {
+            console.error(error);
+        };
+    }, [reset]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                resetAsyncForm();
+            }
+            catch (error) {
+                console.error('Error fetching data:', error);
+            };
+        };
+
+        fetchData();
+    }, [resetAsyncForm]);
 
     return (
         <>
@@ -13,7 +48,7 @@ const GroupsForm = (props) => {
             </div>
 
             <div>
-                <p>Grupa:</p><br />
+                <p>Grupa:<span>{getValues('groupName')}</span></p><br />
             </div>
 
             <form>
@@ -24,6 +59,7 @@ const GroupsForm = (props) => {
                             type='text'
                             placeholder='Wpisz nazwę grupy'
                             disabled={isReadMode}
+                            {...register('groupName')}
                         />
                         <br /><br />
                     </div>

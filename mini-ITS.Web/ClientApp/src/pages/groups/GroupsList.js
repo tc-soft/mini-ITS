@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { groupsServices } from '../../services/GroupsServices';
+import { ReactComponent as IconAdd } from '../../images/iconAdd.svg';
+import { ReactComponent as IconDetail } from '../../images/iconDetail.svg';
+import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
+import { ReactComponent as IconDelete } from '../../images/iconDelete.svg';
+import { ReactComponent as IconFirstPage } from '../../images/iconFirstPage.svg';
+import { ReactComponent as IconPrevPage } from '../../images/iconPrevPage.svg';
+import { ReactComponent as IconNextPage } from '../../images/iconNextPage.svg';
+import { ReactComponent as IconLastPage } from '../../images/iconLastPage.svg';
+
+import '../../styles/pages/Groups.scss';
 
 const GroupsList = (props) => {
     const {
@@ -80,15 +91,24 @@ const GroupsList = (props) => {
     }, [pagedQuery]);
 
     return (
-        <>
-            <p>Lista grup</p>
-
-            <table>
+        <div className='groupsList'>
+            <div className='groupsList-panel'>
+                <div className='groupsList-panel-tittle'>
+                    <p>Lista grup</p>
+                    <Link>
+                        <button title='Dodaj nową'>
+                            <IconAdd />
+                            <span>Dodaj</span>
+                        </button>
+                    </Link>
+                </div>
+            </div>
+            <table className='groupsList-table'>
                 <thead>
                     <tr>
                         <th style={{ width: '05%' }}>Lp.</th>
                         <th style={{ width: '80%' }}>Nazwa grupy</th>
-                        <th style={{ width: '15%' }}></th>
+                        <th style={{ width: '15%' }}>Operacje</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,8 +117,18 @@ const GroupsList = (props) => {
                         return (
                             <tr key={index}>
                                 <td>{record}</td>
-                                <td>{group.groupName}</td>
-                                <td></td>
+                                <td style={{ textAlign: 'left' }}>{group.groupName}</td>
+                                <td>
+                                    <span>
+                                        <Link><IconDetail title='Szczegóły' /></Link>
+                                    </span>
+                                    <span>
+                                        <Link><IconEdit title='Edycja' /></Link>
+                                    </span>
+                                    <span title='Usuń'>
+                                        <IconDelete title='Usuń' />
+                                    </span>
+                                </td>
                             </tr>
                         );
                     }
@@ -113,23 +143,22 @@ const GroupsList = (props) => {
                     }
                 </tbody>
             </table>
-            <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className='groupsList-paginationPanel'>
                 <div>Ilość wyników na stronie : &nbsp;
                     <button
-                        style={groups.resultsPerPage === 10 ? { backgroundColor: 'lightblue' } : {}}
+                        className={groups.resultsPerPage === 10 ? 'groupsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(10) }}
                     >
                         10
                     </button>
                     <button
-                        style={groups.resultsPerPage === 20 ? { backgroundColor: 'lightblue' } : {}}
+                        className={groups.resultsPerPage === 20 ? 'groupsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(20) }}
                     >
                         20
                     </button>
                     <button
-                        style={groups.resultsPerPage === 50 ? { backgroundColor: 'lightblue' } : {}}
+                        className={groups.resultsPerPage === 50 ? 'groupsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(50) }}
                     >
                         50
@@ -139,29 +168,29 @@ const GroupsList = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        &#60;&#60;
+                        <IconFirstPage title='Początek' />
                     </button>
 
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        &#60;
+                        <IconPrevPage title='Wstecz' />
                     </button>
 
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        &#62;
+                        <IconNextPage title='Następna' />
                     </button>
 
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        &#62;&#62;
+                        <IconLastPage title='Koniec' />
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

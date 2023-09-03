@@ -1,0 +1,166 @@
+﻿@import "../variables";
+
+.groupsList {
+    padding: 0 1rem 0 1rem;
+
+    &-panel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        padding: 0.5rem 0rem;
+
+        &-tittle {
+            p {
+                display: inline-block;
+                margin-right: 1rem;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: $lists-title-text-color;
+            }
+
+            a {
+                display: inline-block;
+                text-decoration: none;
+
+                button {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    align-content: center;
+                    padding: 0.5rem 0.9rem;
+                    font-size: 0.8rem;
+                    color: white;
+                    background-color: $lists-buttonAdd-background-color;
+                    border: 0;
+                    border-radius: 3px;
+                    transition: 200ms;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $lists-buttonAdd-background-hover-color;
+                    }
+
+                    svg {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+    }
+
+    &-table {
+        width: 100%;
+        margin-top: 8px;
+        border-collapse: collapse;
+
+        thead {
+            color: $lists-table-thead-text-color;
+
+            tr {
+                text-align: left;
+
+                th {
+                    height: 2rem;
+                    padding: 8px 8px 8px 20px;
+                    border: 1px solid $lists-table-border-color;
+                    border-bottom: 2px solid $lists-table-border-color;
+                }
+            }
+        }
+
+        tbody {
+            color: $lists-table-data-text-color;
+
+            tr {
+                display: table-row;
+                vertical-align: middle;
+                text-align: center;
+
+                td {
+                    vertical-align: middle;
+                    padding: 5px 20px 5px 20px;
+                    border: 1px solid $lists-table-border-color;
+
+                    span {
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin-right: 1rem;
+                    }
+
+                    span:nth-child(1) {
+                        padding: 5px 8px;
+                    }
+
+                    span:nth-child(2) {
+                        padding: 5px 5px;
+                    }
+
+                    span:nth-child(3) {
+                        padding: 5px 7px;
+                        cursor: pointer;
+                    }
+
+                    span:hover {
+                        background-color: $lists-table-icon-hover-color;
+                    }
+
+                    svg {
+                        vertical-align: middle;
+                    }
+                }
+            }
+
+            tr:hover {
+                background-color: white;
+            }
+        }
+
+        &--info {
+            div {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                align-content: center;
+                height: 2rem;
+            }
+        }
+    }
+
+    &-paginationPanel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        align-content: center;
+        margin-top: 1.2rem;
+
+        div {
+            padding-left: 10px;
+            padding-right: 10px;
+            border-top: 1px solid $lists-paginationIcons-border-color;
+            border-bottom: 1px solid $lists-paginationIcons-border-color;
+
+            button {
+                width: 2.6rem;
+                height: 2.6rem;
+                background-color: transparent;
+                border: 2px solid transparent;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: $lists-paginationIcons-background-hover-color;
+            }
+        }
+
+        &--buttonActive {
+            font-weight: bold;
+            border-color: $lists-paginationIcons-border-active-color !important;
+        }
+    }
+}

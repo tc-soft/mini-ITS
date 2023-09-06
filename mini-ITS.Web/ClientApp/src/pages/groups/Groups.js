@@ -20,6 +20,7 @@ const Groups = () => {
                 />}
             />
             <Route path='/Detail/:groupId' element={<GroupsForm isMode={'Detail'} />} />
+            <Route path='/Edit/:groupId' element={<GroupsForm isMode={'Edit'} />} />
         </Routes>
     );
 };

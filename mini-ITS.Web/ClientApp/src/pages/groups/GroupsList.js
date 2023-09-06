@@ -125,7 +125,9 @@ const GroupsList = (props) => {
                                         </Link>
                                     </span>
                                     <span>
-                                        <Link><IconEdit title='Edycja' /></Link>
+                                        <Link to={`Edit/${group.id}`}>
+                                            <IconEdit title='Edycja' />
+                                        </Link>
                                     </span>
                                     <span title='Usuń'>
                                         <IconDelete title='Usuń' />

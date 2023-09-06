@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../components/AuthProvider';
 import { groupsServices } from '../../services/GroupsServices';
+import ModalDialog from '../../components/Modal';
 import { ReactComponent as IconAdd } from '../../images/iconAdd.svg';
 import { ReactComponent as IconDetail } from '../../images/iconDetail.svg';
 import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
@@ -17,6 +19,7 @@ const GroupsList = (props) => {
         pagedQuery,
         setPagedQuery
     } = props;
+    const { currentUser } = useAuth();
 
     const [groups, setGroups] = useState({
         results: null,
@@ -25,6 +28,39 @@ const GroupsList = (props) => {
         totalResults: null,
         totalPages: null
     });
+
+    const [modalDialogOpen, setModalDialogOpen] = useState(false);
+    const [modalDialogType, setModalDialogType] = useState('');
+    const [modalDialogTitle, setModalDialogTitle] = useState('');
+    const [modalDialogMessage, setModalDialogMessage] = useState('');
+    const [modalDialogGroupId, setModalDialogGroupId] = useState('');
+    const [modalDialogGroupName, setModalDialogGroupName] = useState('');
+
+    const handleModalClose = () => {
+        setModalDialogType('');
+        setModalDialogTitle('');
+        setModalDialogMessage('')
+        setModalDialogGroupId('');
+        setModalDialogGroupName('');
+        setModalDialogOpen(false);
+    };
+
+    const handleModalConfirm = async () => {
+        switch (modalDialogType) {
+            case 'Dialog':
+                setModalDialogOpen(false);
+                await handleDeleteStage2(modalDialogGroupId, modalDialogGroupName);
+                break;
+            case 'Information':
+                handleModalClose();
+                break;
+            case 'Error':
+                handleModalClose();
+                break;
+            default:
+                break;
+        };
+    };
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -70,6 +106,44 @@ const GroupsList = (props) => {
         };
     };
 
+    const handleDeleteStage1 = (groupId, groupName) => {
+        if (currentUser.role === 'Administrator' || currentUser.role === 'Manager') {
+            setModalDialogType('Dialog');
+            setModalDialogTitle('Usuwanie grupy');
+            setModalDialogMessage(`Czy na pewno chcesz usunąć grupę ${groupName}?`);
+            setModalDialogGroupId(groupId);
+            setModalDialogGroupName(groupName);
+            setModalDialogOpen(true);
+        };
+    };
+
+    const handleDeleteStage2 = async (groupId, groupName) => {
+        try {
+            const deleteResponse = await groupsServices.delete(groupId);
+            if (!deleteResponse.ok) {
+                throw new Error('Usunięcie grupy nie powiodło się!');
+            };
+
+            const indexResponse = await groupsServices.index(pagedQuery);
+            if (!indexResponse.ok) {
+                throw new Error('Błąd podczas pobierania zaktualizowanej listy grup.');
+            };
+
+            setTimeout(() => {
+                setModalDialogType('Information');
+                setModalDialogTitle('Usuwanie grupy');
+                setModalDialogMessage(`Pomyślnie usunięto grupę ${groupName}.`);
+                setModalDialogOpen(true);
+            }, 400);
+
+            const data = await indexResponse.json();
+            setGroups(data);
+        }
+        catch (error) {
+            alert(error.message);
+        };
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -92,6 +166,15 @@ const GroupsList = (props) => {
 
     return (
         <div className='groupsList'>
+            <ModalDialog
+                modalDialogOpen={modalDialogOpen}
+                modalDialogType={modalDialogType}
+                modalDialogTitle={modalDialogTitle}
+                modalDialogMessage={modalDialogMessage}
+
+                handleModalConfirm={handleModalConfirm}
+                handleModalClose={handleModalClose}
+            />
             <div className='groupsList-panel'>
                 <div className='groupsList-panel-tittle'>
                     <p>Lista grup</p>
@@ -129,7 +212,11 @@ const GroupsList = (props) => {
                                             <IconEdit title='Edycja' />
                                         </Link>
                                     </span>
-                                    <span title='Usuń'>
+                                    <span
+                                        title='Usuń'
+                                        onClick={() => handleDeleteStage1(group.id, group.groupName)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <IconDelete title='Usuń' />
                                     </span>
                                 </td>

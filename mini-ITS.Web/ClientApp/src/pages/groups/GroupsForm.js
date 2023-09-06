@@ -40,6 +40,11 @@ const GroupsForm = (props) => {
                     await groupsServices.update(values.id, values),
                     'Aktualizacja nie powiodła się!');
             }
+            else if (isMode === 'Create') {
+                handleErrorResponse(
+                    await groupsServices.create(values),
+                    'Zapis nie powiódł się!');
+            };
 
             navigate('/Groups');
         }
@@ -99,7 +104,7 @@ const GroupsForm = (props) => {
                     </div>
                 </div>
                 <div>
-                    {(isMode === 'Edit') && (
+                    {(isMode === 'Edit' || isMode === 'Create') && (
                         <>
                             <button
                                 tabIndex='2'

@@ -95,7 +95,7 @@ const GroupsList = (props) => {
             <div className='groupsList-panel'>
                 <div className='groupsList-panel-tittle'>
                     <p>Lista grup</p>
-                    <Link>
+                    <Link to='Create'>
                         <button title='Dodaj nową'>
                             <IconAdd />
                             <span>Dodaj</span>

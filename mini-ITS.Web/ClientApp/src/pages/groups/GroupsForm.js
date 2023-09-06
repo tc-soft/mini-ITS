@@ -1,14 +1,15 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { groupsServices } from '../../services/GroupsServices';
 
 const GroupsForm = (props) => {
     const { isMode } = props;
     const isReadMode = isMode === 'Detail' ? true : false;
+    const navigate = useNavigate();
     const { groupId } = useParams();
 
-    const { register, reset, getValues } = useForm();
+    const { handleSubmit, register, reset, getValues, setFocus, formState: { errors } } = useForm();
     const title = { Create: 'Dodaj grupę', Detail: 'Szczegóły grupy', Edit: 'Edycja' };
 
     const resetAsyncForm = useCallback(async () => {
@@ -28,10 +29,31 @@ const GroupsForm = (props) => {
         };
     }, [reset]);
 
+    const handleErrorResponse = (response, errorMessage) => {
+        if (!response.ok) throw errorMessage;
+    };
+
+    const onSubmit = async (values) => {
+        try {
+            if (isMode === 'Edit') {
+                handleErrorResponse(
+                    await groupsServices.update(values.id, values),
+                    'Aktualizacja nie powiodła się!');
+            }
+
+            navigate('/Groups');
+        }
+        catch (error) {
+            console.error(error);
+        };
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                resetAsyncForm();
+                if (isMode === 'Detail' || isMode === 'Edit') {
+                    resetAsyncForm();
+                };
             }
             catch (error) {
                 console.error('Error fetching data:', error);
@@ -40,6 +62,10 @@ const GroupsForm = (props) => {
 
         fetchData();
     }, [resetAsyncForm]);
+
+    useEffect(() => {
+        setFocus('groupName');
+    }, [setFocus]);
 
     return (
         <>
@@ -51,22 +77,40 @@ const GroupsForm = (props) => {
                 <p>Grupa:<span>{getValues('groupName')}</span></p><br />
             </div>
 
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <div>
                         <label>Nazwa grupy</label><br />
                         <input
+                            tabIndex='1'
                             type='text'
                             placeholder='Wpisz nazwę grupy'
+                            error={errors.login}
                             disabled={isReadMode}
-                            {...register('groupName')}
+                            style={isReadMode ? { pointerEvents: 'none' } : null}
+                            {...register('groupName', {
+                                required: { value: true, message: 'Pole wymagane.' },
+                                pattern: { value: /^[^\s].+[^\s]$/g, message: 'Niedozwolony znak.' },
+                                maxLength: { value: 60, message: 'Za duża ilośc znaków.' }
+                            })}
                         />
-                        <br /><br />
+                        {errors.groupName ? <p style={{ color: 'red' }} >{errors.groupName?.message}</p> : <p>&nbsp;</p>}<br />
+
                     </div>
                 </div>
                 <div>
+                    {(isMode === 'Edit') && (
+                        <>
+                            <button
+                                tabIndex='2'
+                                type='submit'>
+                                Zapisz
+                            </button>
+                        </>
+                    )}
+                    &nbsp;
                     <Link tabIndex='-1' to={'..'}>
-                        <button>
+                        <button tabIndex='3'>
                             Anuluj
                         </button>
                     </Link>

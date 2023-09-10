@@ -2,6 +2,12 @@ import React, { useCallback, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { groupsServices } from '../../services/GroupsServices';
+import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
+import { ReactComponent as IconGroup } from '../../images/iconGroup.svg';
+import { ReactComponent as IconSave } from '../../images/iconSave.svg';
+import { ReactComponent as IconCancel } from '../../images/iconCancel.svg';
+
+import '../../styles/pages/Groups.scss';
 
 const GroupsForm = (props) => {
     const { isMode } = props;
@@ -73,20 +79,22 @@ const GroupsForm = (props) => {
     }, [setFocus]);
 
     return (
-        <>
-            <div>
-                <h3>{title[isMode]}</h3><br />
+        <div className='groupsForm'>
+            <div className='groupsForm-title'>
+                <IconEdit height='17px' />
+                <p>{title[isMode]}</p>
             </div>
 
-            <div>
-                <p>Grupa:<span>{getValues('groupName')}</span></p><br />
+            <div className='groupsForm-groupsInfo'>
+                <IconGroup />
+                <p>Grupa:<span>{getValues('groupName')}</span></p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <div>
-                        <label>Nazwa grupy</label><br />
-                        <input
+                <div className='groupsForm-detail'>
+                    <div className='groupsForm-detail-section'>
+                        <label className='groupsForm-detail-section__label'>Nazwa grupy</label>
+                        <input className='groupsForm-detail-section__input'
                             tabIndex='1'
                             type='text'
                             placeholder='Wpisz nazwę grupy'
@@ -99,29 +107,36 @@ const GroupsForm = (props) => {
                                 maxLength: { value: 60, message: 'Za duża ilośc znaków.' }
                             })}
                         />
-                        {errors.groupName ? <p style={{ color: 'red' }} >{errors.groupName?.message}</p> : <p>&nbsp;</p>}<br />
-
+                        {errors.groupName ?
+                            <p className='groupsForm-detail-section__errorMessage'>{errors.groupName?.message}</p>
+                            :
+                            <p className='groupsForm-detail-section__errorMessage'>&nbsp;</p>
+                        }
                     </div>
                 </div>
-                <div>
+                <div className='groupsForm-submit'>
                     {(isMode === 'Edit' || isMode === 'Create') && (
                         <>
                             <button
                                 tabIndex='2'
+                                className='groupsForm-submit__button groupsForm-submit__button--saveButton'
                                 type='submit'>
+                                <IconSave />
                                 Zapisz
                             </button>
                         </>
                     )}
-                    &nbsp;
                     <Link tabIndex='-1' to={'..'}>
-                        <button tabIndex='3'>
+                        <button
+                            tabIndex='3'
+                            className='groupsForm-submit__button groupsForm-submit__button--cancelButton'>
+                            <IconCancel />
                             Anuluj
                         </button>
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 

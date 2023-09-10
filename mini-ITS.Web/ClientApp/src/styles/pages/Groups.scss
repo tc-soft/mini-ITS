@@ -164,3 +164,169 @@
         }
     }
 }
+
+.groupsForm {
+    margin-bottom: 8px;
+    padding: 0 1rem 0 1rem;
+
+    &-title {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 0rem;
+        border-bottom: 1px solid $forms-title-bottom-color;
+
+        svg {
+            margin-right: 0.5rem;
+        }
+
+        p {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: $forms-title-text-color;
+        }
+    }
+
+    &-groupsInfo {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 2rem 1rem 2rem;
+
+        svg {
+            margin-right: 0.65rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: $forms-title-text-color;
+
+            span {
+                margin-left: 0.2rem;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &-detail {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        padding: 0 2rem;
+
+        &-section {
+            width: 15rem;
+            margin-right: 2rem;
+            padding-top: 0.2rem;
+
+            &__label {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                align-content: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: $forms-label-color;
+            }
+
+            &__input {
+                width: 100%;
+                margin-top: 0.4rem;
+                padding: 0.5rem;
+                box-sizing: border-box;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &:hover {
+                    border-color: $forms-input-hover-color;
+                }
+
+                &:focus {
+                    border-color: $forms-input-focus-color;
+                }
+            }
+
+            &__errorMessage {
+                font-size: 0.8rem;
+                color: red;
+            }
+        }
+    }
+
+    &-submit {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        width: 32rem;
+        margin: 1rem 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid $forms-submit-border-bottom-color;
+
+        a {
+            text-decoration: none;
+        }
+
+        &__button {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            width: 80px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            border: 0;
+            border-radius: 4px;
+            transition: 200ms;
+
+
+            &:not(:last-child) {
+                margin-right: 15px;
+            }
+
+            svg {
+                margin-right: 7px;
+            }
+
+            &--saveButton {
+                color: white;
+                background-color: $forms-submit-buttonSave-background-color;
+                border: 1px solid $forms-submit-buttonSave-background-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonSave-background-hover-color;
+                    border: 1px solid $forms-submit-buttonSave-background-hover-color;
+                }
+            }
+
+            &--cancelButton {
+                color: $forms-submit-buttonCancel-color;
+                background-color: $forms-submit-buttonCancel-background-color;
+                border: 1px solid $forms-submit-buttonCancel-border-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonCancel-background-hover-color;
+                    border: 1px solid $forms-submit-buttonCancel-border-color;
+                }
+            }
+        }
+    }
+}

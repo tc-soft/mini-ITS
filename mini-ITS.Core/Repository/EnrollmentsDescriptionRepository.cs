@@ -46,5 +46,25 @@ namespace mini_ITS.Core.Repository
                 return enrollmentsDescription;
             }
         }
+        public async Task<IEnumerable<EnrollmentsDescription>> GetEnrollmentDescriptionsAsync(Guid id)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsDescription>()
+                    .WithFilter(
+                        new List<SqlQueryCondition>()
+                        {
+                            new SqlQueryCondition
+                            {
+                                Name = "EnrollmentId",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(id.ToString())
+                            }
+                        }
+                    );
+                var enrollmentsDescription = await sqlConnection.QueryAsync<EnrollmentsDescription>(sqlQueryBuilder.GetSelectQuery());
+                return enrollmentsDescription;
+            }
+        }
     }
 }

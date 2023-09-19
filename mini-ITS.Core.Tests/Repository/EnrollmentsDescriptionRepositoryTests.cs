@@ -89,5 +89,25 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"Description                : {enrollmentDescription.Description}");
             TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentDescription.ActionExecuted}");
         }
+        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.EnrollmentsDescriptionCases))]
+        public async Task GetEnrollmentDescriptionsAsync_CheckId(EnrollmentsDescription enrollmentsDescription)
+        {
+            var enrollmentDescription = await _enrollmentsDescriptionRepository.GetEnrollmentDescriptionsAsync(enrollmentsDescription.EnrollmentId);
+            TestContext.Out.WriteLine($"Number of records: {enrollmentDescription.Count()}\n");
+
+            Assert.That(enrollmentDescription.Count() >= 2, "ERROR - number of items is less than 2");
+            Assert.That(enrollmentDescription, Is.TypeOf<List<EnrollmentsDescription>>(), "ERROR - return type");
+            Assert.That(enrollmentDescription, Is.All.InstanceOf<EnrollmentsDescription>(), "ERROR - all instance is not of <EnrollmentsDescription>()");
+            Assert.That(enrollmentDescription, Is.Ordered.Ascending.By("DateAddDescription"), "ERROR - sort");
+            Assert.That(enrollmentDescription, Is.Unique);
+
+            var firstEnrollmentId = enrollmentDescription.FirstOrDefault()?.EnrollmentId;
+            Assert.That(enrollmentDescription.All(ed => ed.EnrollmentId == firstEnrollmentId), Is.True, "ERROR - EnrollmentId is not the same for all records");
+
+            foreach (var item in enrollmentDescription)
+            {
+                TestContext.Out.WriteLine($"Description: {item.Description}");
+            }
+        }
     }
 }

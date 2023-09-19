@@ -34,6 +34,7 @@ namespace mini_ITS.Web
             services.AddSingleton<ISqlConnectionString, SqlConnectionString>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IGroupsRepository, GroupsRepository>();
+            services.AddScoped<IEnrollmentsDescriptionRepository, EnrollmentsDescriptionRepository>();
 
             //mini_ITS.Core.Services
             services.AddScoped<IUsersServices, UsersServices>();

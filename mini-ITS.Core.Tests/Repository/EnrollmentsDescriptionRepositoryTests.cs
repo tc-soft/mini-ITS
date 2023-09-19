@@ -60,5 +60,34 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Description: {item.Description}");
             }
         }
+        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.EnrollmentsDescriptionCases))]
+        public async Task GetAsync_CheckId(EnrollmentsDescription enrollmentsDescription)
+        {
+            var enrollmentDescription = await _enrollmentsDescriptionRepository.GetAsync(enrollmentsDescription.Id);
+
+            Assert.That(enrollmentDescription, Is.TypeOf<EnrollmentsDescription>(), "ERROR - return type");
+
+            Assert.That(enrollmentDescription.Id, Is.EqualTo(enrollmentsDescription.Id), $"ERROR - {nameof(enrollmentsDescription.Id)} is not equal");
+            Assert.That(enrollmentDescription.EnrollmentId, Is.EqualTo(enrollmentsDescription.EnrollmentId), $"ERROR - {nameof(enrollmentsDescription.EnrollmentId)} is not equal");
+            Assert.That(enrollmentDescription.DateAddDescription, Is.EqualTo(enrollmentsDescription.DateAddDescription), $"ERROR - {nameof(enrollmentsDescription.DateAddDescription)} is not equal");
+            Assert.That(enrollmentDescription.DateModDescription, Is.EqualTo(enrollmentsDescription.DateModDescription), $"ERROR - {nameof(enrollmentsDescription.DateModDescription)} is not equal");
+            Assert.That(enrollmentDescription.UserAddDescription, Is.EqualTo(enrollmentsDescription.UserAddDescription), $"ERROR - {nameof(enrollmentsDescription.UserAddDescription)} is not equal");
+            Assert.That(enrollmentDescription.UserAddDescriptionFullName, Is.EqualTo(enrollmentsDescription.UserAddDescriptionFullName), $"ERROR - {nameof(enrollmentsDescription.UserAddDescriptionFullName)} is not equal");
+            Assert.That(enrollmentDescription.UserModDescription, Is.EqualTo(enrollmentsDescription.UserModDescription), $"ERROR - {nameof(enrollmentsDescription.UserModDescription)} is not equal");
+            Assert.That(enrollmentDescription.UserModDescriptionFullName, Is.EqualTo(enrollmentsDescription.UserModDescriptionFullName), $"ERROR - {nameof(enrollmentsDescription.UserModDescriptionFullName)} is not equal");
+            Assert.That(enrollmentDescription.Description, Is.EqualTo(enrollmentsDescription.Description), $"ERROR - {nameof(enrollmentsDescription.Description)} is not equal");
+            Assert.That(enrollmentDescription.ActionExecuted, Is.EqualTo(enrollmentsDescription.ActionExecuted), $"ERROR - {nameof(enrollmentsDescription.ActionExecuted)} is not equal");
+
+            TestContext.Out.WriteLine($"Id                         : {enrollmentDescription.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentDescription.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentDescription.DateAddDescription}");
+            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentDescription.DateModDescription}");
+            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentDescription.UserAddDescription}");
+            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentDescription.UserAddDescriptionFullName}");
+            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentDescription.UserModDescription}");
+            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentDescription.UserModDescriptionFullName}");
+            TestContext.Out.WriteLine($"Description                : {enrollmentDescription.Description}");
+            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentDescription.ActionExecuted}");
+        }
     }
 }

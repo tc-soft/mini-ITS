@@ -11,5 +11,6 @@ namespace mini_ITS.Core.Repository
         Task<EnrollmentsDescription> GetAsync(Guid guid);
         Task<IEnumerable<EnrollmentsDescription>> GetEnrollmentDescriptionsAsync(Guid guid);
         Task CreateAsync(EnrollmentsDescription enrollmentsDescription);
+        Task UpdateAsync(EnrollmentsDescription enrollmentsDescription);
     }
 }

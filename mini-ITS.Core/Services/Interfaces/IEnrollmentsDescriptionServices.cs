@@ -1,6 +1,11 @@
-﻿namespace mini_ITS.Core.Services
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using mini_ITS.Core.Dto;
+
+namespace mini_ITS.Core.Services
 {
     public interface IEnrollmentsDescriptionServices
     {
+        Task<IEnumerable<EnrollmentsDescriptionDto>> GetAsync();
     }
 }

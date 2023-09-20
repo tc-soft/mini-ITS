@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -26,6 +27,11 @@ namespace mini_ITS.Core.Services
         {
             var enrollmentsDescription = await _enrollmentsDescriptionRepository.GetAsync();
             return enrollmentsDescription?.Select(x => _mapper.Map<EnrollmentsDescriptionDto>(x));
+        }
+        public async Task<EnrollmentsDescriptionDto> GetAsync(Guid id)
+        {
+            var enrollmentsDescription = await _enrollmentsDescriptionRepository.GetAsync(id);
+            return enrollmentsDescription == null ? null : _mapper.Map<EnrollmentsDescriptionDto>(enrollmentsDescription);
         }
     }
 }

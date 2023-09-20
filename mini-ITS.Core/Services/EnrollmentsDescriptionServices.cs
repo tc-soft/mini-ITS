@@ -33,5 +33,10 @@ namespace mini_ITS.Core.Services
             var enrollmentsDescription = await _enrollmentsDescriptionRepository.GetAsync(id);
             return enrollmentsDescription == null ? null : _mapper.Map<EnrollmentsDescriptionDto>(enrollmentsDescription);
         }
+        public async Task<IEnumerable<EnrollmentsDescriptionDto>> GetEnrollmentDescriptionsAsync(Guid id)
+        {
+            var enrollmentsDescription = await _enrollmentsDescriptionRepository.GetEnrollmentDescriptionsAsync(id);
+            return enrollmentsDescription?.Select(x => _mapper.Map<EnrollmentsDescriptionDto>(x));
+        }
     }
 }

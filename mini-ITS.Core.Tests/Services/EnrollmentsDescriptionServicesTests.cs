@@ -91,5 +91,23 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Description                : {enrollmentDescriptionDto.Description}");
             TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentDescriptionDto.ActionExecuted}");
         }
+        [TestCaseSource(typeof(EnrollmentsDescriptionServicesTestsData), nameof(EnrollmentsDescriptionServicesTestsData.EnrollmentsDescriptionCases))]
+        public async Task GetEnrollmentDescriptionsAsync_CheckId(EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            TestContext.Out.WriteLine("Get enrollmentsDescriptionDto by GetEnrollmentDescriptionsAsync(id) and check valid...\n");
+            var enrollmentDescriptionDto = await _enrollmentsDescriptionServices.GetEnrollmentDescriptionsAsync(enrollmentsDescriptionDto.EnrollmentId);
+
+            Assert.That(enrollmentDescriptionDto.Count() >= 2, "ERROR - number of items is less than 2");
+            Assert.That(enrollmentDescriptionDto, Is.InstanceOf<IEnumerable<EnrollmentsDescriptionDto>>(), "ERROR - return type");
+            Assert.That(enrollmentDescriptionDto, Is.All.InstanceOf<EnrollmentsDescriptionDto>(), "ERROR - all instance is not of <EnrollmentsDescriptionDto>()");
+            Assert.That(enrollmentDescriptionDto, Is.Ordered.Ascending.By("DateAddDescription"), "ERROR - sort");
+            Assert.That(enrollmentDescriptionDto, Is.Unique);
+
+            foreach (var item in enrollmentDescriptionDto)
+            {
+                TestContext.Out.WriteLine($"Description: {item.Description}");
+            }
+            TestContext.Out.WriteLine($"\nNumber of records: {enrollmentDescriptionDto.Count()}");
+        }
     }
 }

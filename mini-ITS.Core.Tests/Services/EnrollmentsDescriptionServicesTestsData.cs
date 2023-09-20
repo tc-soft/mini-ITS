@@ -64,5 +64,63 @@ namespace mini_ITS.Core.Tests.Services
                 };
             }
         }
+        public static IEnumerable<EnrollmentsDescriptionDto> CRUDCases
+        {
+            get
+            {
+                yield return new EnrollmentsDescriptionDto
+                {
+                    Id = new Guid("BB7E3669-7636-4D87-9846-995A1E060A2A"),
+                    EnrollmentId = new Guid("339E285F-C8FA-4B0B-93CB-5CAF96CDD0C8"),
+                    DateAddDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    DateModDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    UserAddDescription = new Guid("6F929C62-3A50-4F29-AF99-F4D188754FC0"),
+                    UserAddDescriptionFullName = "Eva Pedrov",
+                    UserModDescription = new Guid("6F929C62-3A50-4F29-AF99-F4D188754FC0"),
+                    UserModDescriptionFullName = "Eva Pedrov",
+                    Description = "Test 1",
+                    ActionExecuted = 0
+                };
+                yield return new EnrollmentsDescriptionDto
+                {
+                    Id = new Guid("79D82A8C-2040-4A02-AB28-1671C9085D7D"),
+                    EnrollmentId = new Guid("339E285F-C8FA-4B0B-93CB-5CAF96CDD0C8"),
+                    DateAddDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    DateModDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    UserAddDescription = new Guid("253C1456-9966-4E0F-BBFD-0BB202DE221E"),
+                    UserAddDescriptionFullName = "Victoria Sandoval",
+                    UserModDescription = new Guid("253C1456-9966-4E0F-BBFD-0BB202DE221E"),
+                    UserModDescriptionFullName = "Victoria Sandoval",
+                    Description = "Test 2",
+                    ActionExecuted = 0
+                };
+                yield return new EnrollmentsDescriptionDto
+                {
+                    Id = new Guid("C7BE2EDE-BA5A-4C55-B068-960490C12BA2"),
+                    EnrollmentId = new Guid("339E285F-C8FA-4B0B-93CB-5CAF96CDD0C8"),
+                    DateAddDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    DateModDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    UserAddDescription = new Guid("DA38CA53-D59F-49FB-B5E8-4118A13AABD9"),
+                    UserAddDescriptionFullName = "Louis Gilliam",
+                    UserModDescription = new Guid("DA38CA53-D59F-49FB-B5E8-4118A13AABD9"),
+                    UserModDescriptionFullName = "Louis Gilliam",
+                    Description = "Test 3",
+                    ActionExecuted = 0
+                };
+                yield return new EnrollmentsDescriptionDto
+                {
+                    Id = new Guid("DC8520BF-B52D-4294-9672-31635655013B"),
+                    EnrollmentId = new Guid("339E285F-C8FA-4B0B-93CB-5CAF96CDD0C8"),
+                    DateAddDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    DateModDescription = new DateTime(2023, 9, 10, 0, 0, 0),
+                    UserAddDescription = new Guid("BCF44EFA-FB2B-4B13-B507-261C90CCFD17"),
+                    UserAddDescriptionFullName = "Martin Visser",
+                    UserModDescription = new Guid("BCF44EFA-FB2B-4B13-B507-261C90CCFD17"),
+                    UserModDescriptionFullName = "Martin Visser",
+                    Description = "Test 4",
+                    ActionExecuted = 1
+                };
+            }
+        }
     }
 }

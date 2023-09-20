@@ -59,5 +59,17 @@ namespace mini_ITS.Core.Services
             await _enrollmentsDescriptionRepository.CreateAsync(enrollmentDescription);
             return enrollmentDescription.Id;
         }
+        public async Task UpdateAsync(EnrollmentsDescriptionDto enrollmentsDescriptionDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var enrollmentDescription = _mapper.Map<EnrollmentsDescription>(enrollmentsDescriptionDto);
+            enrollmentDescription.DateModDescription = DateTime.UtcNow;
+            enrollmentDescription.UserModDescription = user.Id;
+            enrollmentDescription.UserModDescriptionFullName = $"{user.FirstName} {user.LastName}";
+
+            await _enrollmentsDescriptionRepository.UpdateAsync(enrollmentDescription);
+        }
     }
 }

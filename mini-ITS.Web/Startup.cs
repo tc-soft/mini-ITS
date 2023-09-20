@@ -41,6 +41,7 @@ namespace mini_ITS.Web
             services.AddSingleton(AutoMapperConfig.GetMapper());
             services.AddSingleton<IPasswordHasher<Users>, PasswordHasher<Users>>();
             services.AddScoped<IGroupsServices, GroupsServices>();
+            services.AddScoped<IEnrollmentsDescriptionServices, EnrollmentsDescriptionServices>();
 
             //mini_ITS.Web.Controllers
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

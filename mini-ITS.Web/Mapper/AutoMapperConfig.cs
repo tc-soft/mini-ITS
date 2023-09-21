@@ -10,6 +10,7 @@ namespace mini_ITS.Web.Mapper
             {
                 cfg.CreateMap<Users, UsersDto>().ReverseMap();
                 cfg.CreateMap<Groups, GroupsDto>().ReverseMap();
+                cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>().ReverseMap();
             }
         ).CreateMapper();
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
@@ -22,6 +23,26 @@ namespace mini_ITS.Core.Repository
                 var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsPicture>()
                     .WithSort(nameof(EnrollmentsPicture.DateAddPicture), "ASC");
                 var enrollmentsPicture = await sqlConnection.QueryAsync<EnrollmentsPicture>(sqlQueryBuilder.GetSelectQuery());
+                return enrollmentsPicture;
+            }
+        }
+        public async Task<EnrollmentsPicture> GetAsync(Guid id)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsPicture>()
+                    .WithFilter(
+                        new List<SqlQueryCondition>()
+                        {
+                            new SqlQueryCondition
+                            {
+                                Name = "Id",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(id.ToString())
+                            }
+                        }
+                    );
+                var enrollmentsPicture = await sqlConnection.QueryFirstOrDefaultAsync<EnrollmentsPicture>(sqlQueryBuilder.GetSelectQuery());
                 return enrollmentsPicture;
             }
         }

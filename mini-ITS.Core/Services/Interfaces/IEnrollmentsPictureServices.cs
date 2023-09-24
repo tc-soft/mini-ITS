@@ -10,5 +10,6 @@ namespace mini_ITS.Core.Services
         Task<IEnumerable<EnrollmentsPictureDto>> GetAsync();
         Task<EnrollmentsPictureDto> GetAsync(Guid guid);
         Task<IEnumerable<EnrollmentsPictureDto>> GetEnrollmentPicturesAsync(Guid guid);
+        Task<Guid> CreateAsync(EnrollmentsPictureDto enrollmentsPictureDto, string username);
     }
 }

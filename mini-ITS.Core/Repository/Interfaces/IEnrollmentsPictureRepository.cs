@@ -9,5 +9,6 @@ namespace mini_ITS.Core.Repository
     {
         Task<IEnumerable<EnrollmentsPicture>> GetAsync();
         Task<EnrollmentsPicture> GetAsync(Guid guid);
+        Task<IEnumerable<EnrollmentsPicture>> GetEnrollmentPicturesAsync(Guid guid);
     }
 }

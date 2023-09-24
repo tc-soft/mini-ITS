@@ -92,5 +92,25 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
             TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
         }
+        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.EnrollmentsPictureCases))]
+        public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
+        {
+            var enrollmentPicture = await _enrollmentsPictureRepository.GetEnrollmentPicturesAsync(enrollmentsPicture.EnrollmentId);
+            TestContext.Out.WriteLine($"Number of records: {enrollmentPicture.Count()}\n");
+
+            Assert.That(enrollmentPicture.Count() >= 2, "ERROR - number of items is less than 2");
+            Assert.That(enrollmentPicture, Is.TypeOf<List<EnrollmentsPicture>>(), "ERROR - return type");
+            Assert.That(enrollmentPicture, Is.All.InstanceOf<EnrollmentsPicture>(), "ERROR - all instance is not of <EnrollmentsPicture>()");
+            Assert.That(enrollmentPicture, Is.Ordered.Ascending.By("DateAddPicture"), "ERROR - sort");
+            Assert.That(enrollmentPicture, Is.Unique);
+
+            var firstEnrollmentId = enrollmentPicture.FirstOrDefault()?.EnrollmentId;
+            Assert.That(enrollmentPicture.All(ed => ed.EnrollmentId == firstEnrollmentId), Is.True, "ERROR - EnrollmentId is not the same for all records");
+
+            foreach (var item in enrollmentPicture)
+            {
+                TestContext.Out.WriteLine($"PicturePath: {item.PicturePath}");
+            }
+        }
     }
 }

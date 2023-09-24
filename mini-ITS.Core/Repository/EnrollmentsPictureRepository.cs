@@ -46,5 +46,26 @@ namespace mini_ITS.Core.Repository
                 return enrollmentsPicture;
             }
         }
+        public async Task<IEnumerable<EnrollmentsPicture>> GetEnrollmentPicturesAsync(Guid id)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsPicture>()
+                    .WithFilter(
+                        new List<SqlQueryCondition>()
+                        {
+                            new SqlQueryCondition
+                            {
+                                Name = "EnrollmentId",
+                                Operator = SqlQueryOperator.Equal,
+                                Value = new string(id.ToString())
+                            }
+                        }
+                    )
+                    .WithSort(nameof(EnrollmentsPicture.DateAddPicture), "ASC"); ;
+                var enrollmentsPicture = await sqlConnection.QueryAsync<EnrollmentsPicture>(sqlQueryBuilder.GetSelectQuery());
+                return enrollmentsPicture;
+            }
+        }
     }
 }

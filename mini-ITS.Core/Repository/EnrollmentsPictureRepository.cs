@@ -67,5 +67,13 @@ namespace mini_ITS.Core.Repository
                 return enrollmentsPicture;
             }
         }
+        public async Task CreateAsync(EnrollmentsPicture enrollmentsPicture)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsPicture>().GetInsertQuery();
+                await sqlConnection.ExecuteAsync(sqlQueryBuilder, enrollmentsPicture);
+            }
+        }
     }
 }

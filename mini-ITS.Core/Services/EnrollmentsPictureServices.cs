@@ -60,5 +60,17 @@ namespace mini_ITS.Core.Services
             await _enrollmentsPictureRepository.CreateAsync(enrollmentPicture);
             return enrollmentPicture.Id;
         }
+        public async Task UpdateAsync(EnrollmentsPictureDto enrollmentsPictureDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var enrollmentPicture = _mapper.Map<EnrollmentsPicture>(enrollmentsPictureDto);
+            enrollmentPicture.DateModPicture = DateTime.UtcNow;
+            enrollmentPicture.UserModPicture = user.Id;
+            enrollmentPicture.UserModPictureFullName = $"{user.FirstName} {user.LastName}";
+
+            await _enrollmentsPictureRepository.UpdateAsync(enrollmentPicture);
+        }
     }
 }

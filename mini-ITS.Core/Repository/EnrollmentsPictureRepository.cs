@@ -83,5 +83,13 @@ namespace mini_ITS.Core.Repository
                 await sqlConnection.ExecuteAsync(sqlQueryBuilder, enrollmentsPicture);
             }
         }
+        public async Task DeleteAsync(Guid id)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<EnrollmentsPicture>().GetDeleteQuery();
+                await sqlConnection.ExecuteAsync(sqlQueryBuilder, new { Id = id });
+            }
+        }
     }
 }

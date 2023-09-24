@@ -48,12 +48,7 @@ namespace mini_ITS.Core.Tests.Repository
         {
             var enrollmentsPicture = await _enrollmentsPictureRepository.GetAsync();
             TestContext.Out.WriteLine($"Number of records: {enrollmentsPicture.Count()}\n");
-
-            Assert.That(enrollmentsPicture.Count() >= 10, "ERROR - number of items is less than 10");
-            Assert.That(enrollmentsPicture, Is.TypeOf<List<EnrollmentsPicture>>(), "ERROR - return type");
-            Assert.That(enrollmentsPicture, Is.All.InstanceOf<EnrollmentsPicture>(), "ERROR - all instance is not of <EnrollmentsPicture>()");
-            Assert.That(enrollmentsPicture, Is.Ordered.Ascending.By("DateAddPicture"), "ERROR - sort");
-            Assert.That(enrollmentsPicture, Is.Unique);
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentsPicture);
 
             foreach (var item in enrollmentsPicture)
             {
@@ -64,33 +59,8 @@ namespace mini_ITS.Core.Tests.Repository
         public async Task GetAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
         {
             var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-
-            Assert.That(enrollmentPicture, Is.TypeOf<EnrollmentsPicture>(), "ERROR - return type");
-
-            Assert.That(enrollmentPicture.Id, Is.EqualTo(enrollmentsPicture.Id), $"ERROR - {nameof(enrollmentsPicture.Id)} is not equal");
-            Assert.That(enrollmentPicture.EnrollmentId, Is.EqualTo(enrollmentsPicture.EnrollmentId), $"ERROR - {nameof(enrollmentsPicture.EnrollmentId)} is not equal");
-            Assert.That(enrollmentPicture.DateAddPicture, Is.EqualTo(enrollmentsPicture.DateAddPicture), $"ERROR - {nameof(enrollmentsPicture.DateAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.DateModPicture, Is.EqualTo(enrollmentsPicture.DateModPicture), $"ERROR - {nameof(enrollmentsPicture.DateModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPicture, Is.EqualTo(enrollmentsPicture.UserAddPicture), $"ERROR - {nameof(enrollmentsPicture.UserAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.EqualTo(enrollmentsPicture.UserAddPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserAddPictureFullName)} is not equal");
-            Assert.That(enrollmentPicture.UserModPicture, Is.EqualTo(enrollmentsPicture.UserModPicture), $"ERROR - {nameof(enrollmentsPicture.UserModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserModPictureFullName, Is.EqualTo(enrollmentsPicture.UserModPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserModPictureFullName)} is not equal");
-            
-            Assert.That(enrollmentPicture.PictureName, Is.EqualTo(enrollmentsPicture.PictureName), $"ERROR - {nameof(enrollmentsPicture.PictureName)} is not equal");
-            Assert.That(enrollmentPicture.PicturePath, Is.EqualTo(enrollmentsPicture.PicturePath), $"ERROR - {nameof(enrollmentsPicture.PicturePath)} is not equal");
-            Assert.That(enrollmentPicture.PictureFullPath, Is.EqualTo(enrollmentsPicture.PictureFullPath), $"ERROR - {nameof(enrollmentsPicture.PictureFullPath)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
         }
         [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.EnrollmentsPictureCases))]
         public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
@@ -117,33 +87,8 @@ namespace mini_ITS.Core.Tests.Repository
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);
             var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-
-            Assert.That(enrollmentPicture, Is.TypeOf<EnrollmentsPicture>(), "ERROR - return type");
-
-            Assert.That(enrollmentPicture.Id, Is.EqualTo(enrollmentsPicture.Id), $"ERROR - {nameof(enrollmentsPicture.Id)} is not equal");
-            Assert.That(enrollmentPicture.EnrollmentId, Is.EqualTo(enrollmentsPicture.EnrollmentId), $"ERROR - {nameof(enrollmentsPicture.EnrollmentId)} is not equal");
-            Assert.That(enrollmentPicture.DateAddPicture, Is.EqualTo(enrollmentsPicture.DateAddPicture), $"ERROR - {nameof(enrollmentsPicture.DateAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.DateModPicture, Is.EqualTo(enrollmentsPicture.DateModPicture), $"ERROR - {nameof(enrollmentsPicture.DateModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPicture, Is.EqualTo(enrollmentsPicture.UserAddPicture), $"ERROR - {nameof(enrollmentsPicture.UserAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.EqualTo(enrollmentsPicture.UserAddPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserAddPictureFullName)} is not equal");
-            Assert.That(enrollmentPicture.UserModPicture, Is.EqualTo(enrollmentsPicture.UserModPicture), $"ERROR - {nameof(enrollmentsPicture.UserModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserModPictureFullName, Is.EqualTo(enrollmentsPicture.UserModPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserModPictureFullName)} is not equal");
-
-            Assert.That(enrollmentPicture.PictureName, Is.EqualTo(enrollmentsPicture.PictureName), $"ERROR - {nameof(enrollmentsPicture.PictureName)} is not equal");
-            Assert.That(enrollmentPicture.PicturePath, Is.EqualTo(enrollmentsPicture.PicturePath), $"ERROR - {nameof(enrollmentsPicture.PicturePath)} is not equal");
-            Assert.That(enrollmentPicture.PictureFullPath, Is.EqualTo(enrollmentsPicture.PictureFullPath), $"ERROR - {nameof(enrollmentsPicture.PictureFullPath)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
 
             await _enrollmentsPictureRepository.DeleteAsync(enrollmentPicture.Id);
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
@@ -154,99 +99,23 @@ namespace mini_ITS.Core.Tests.Repository
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);
             var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-            
-            Assert.That(enrollmentPicture, Is.TypeOf<EnrollmentsPicture>(), "ERROR - return type");
-
-            Assert.That(enrollmentPicture.Id, Is.EqualTo(enrollmentsPicture.Id), $"ERROR - {nameof(enrollmentsPicture.Id)} is not equal");
-            Assert.That(enrollmentPicture.EnrollmentId, Is.EqualTo(enrollmentsPicture.EnrollmentId), $"ERROR - {nameof(enrollmentsPicture.EnrollmentId)} is not equal");
-            Assert.That(enrollmentPicture.DateAddPicture, Is.EqualTo(enrollmentsPicture.DateAddPicture), $"ERROR - {nameof(enrollmentsPicture.DateAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.DateModPicture, Is.EqualTo(enrollmentsPicture.DateModPicture), $"ERROR - {nameof(enrollmentsPicture.DateModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPicture, Is.EqualTo(enrollmentsPicture.UserAddPicture), $"ERROR - {nameof(enrollmentsPicture.UserAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.EqualTo(enrollmentsPicture.UserAddPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserAddPictureFullName)} is not equal");
-            Assert.That(enrollmentPicture.UserModPicture, Is.EqualTo(enrollmentsPicture.UserModPicture), $"ERROR - {nameof(enrollmentsPicture.UserModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserModPictureFullName, Is.EqualTo(enrollmentsPicture.UserModPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserModPictureFullName)} is not equal");
-
-            Assert.That(enrollmentPicture.PictureName, Is.EqualTo(enrollmentsPicture.PictureName), $"ERROR - {nameof(enrollmentsPicture.PictureName)} is not equal");
-            Assert.That(enrollmentPicture.PicturePath, Is.EqualTo(enrollmentsPicture.PicturePath), $"ERROR - {nameof(enrollmentsPicture.PicturePath)} is not equal");
-            Assert.That(enrollmentPicture.PictureFullPath, Is.EqualTo(enrollmentsPicture.PictureFullPath), $"ERROR - {nameof(enrollmentsPicture.PictureFullPath)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
 
             var caesarHelper = new CaesarHelper();
-            enrollmentPicture.PictureName = caesarHelper.Encrypt(enrollmentPicture.PictureName);
-            enrollmentPicture.PicturePath = caesarHelper.Encrypt(enrollmentPicture.PicturePath);
-            enrollmentPicture.PictureFullPath = caesarHelper.Encrypt(enrollmentPicture.PictureFullPath);
+            enrollmentPicture = EnrollmentsPictureRepositoryTestsHelper.Encrypt(caesarHelper, enrollmentPicture);
             await _enrollmentsPictureRepository.UpdateAsync(enrollmentPicture);
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-
-            Assert.IsNotNull(enrollmentPicture.Id, $"ERROR - {nameof(enrollmentPicture.Id)} is null");
-            Assert.IsNotNull(enrollmentPicture.EnrollmentId, $"ERROR - {nameof(enrollmentPicture.EnrollmentId)} is null");
-            Assert.IsNotNull(enrollmentPicture.DateAddPicture, $"ERROR - {nameof(enrollmentPicture.DateAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.DateModPicture, $"ERROR - {nameof(enrollmentPicture.DateModPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserAddPicture, $"ERROR - {nameof(enrollmentPicture.UserAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserAddPictureFullName, $"ERROR - {nameof(enrollmentPicture.UserAddPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserModPicture, $"ERROR - {nameof(enrollmentPicture.UserModPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserModPictureFullName, $"ERROR - {nameof(enrollmentPicture.UserModPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPicture.PictureName, $"ERROR - {nameof(enrollmentPicture.PictureName)} is null");
-            Assert.IsNotNull(enrollmentPicture.PicturePath, $"ERROR - {nameof(enrollmentPicture.PicturePath)} is null");
-            Assert.IsNotNull(enrollmentPicture.PictureFullPath, $"ERROR - {nameof(enrollmentPicture.PictureFullPath)} is null");
-
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture);
             TestContext.Out.WriteLine($"\nUpdate record:");
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
 
-            enrollmentPicture.PictureName = caesarHelper.Decrypt(enrollmentPicture.PictureName);
-            enrollmentPicture.PicturePath = caesarHelper.Decrypt(enrollmentPicture.PicturePath);
-            enrollmentPicture.PictureFullPath = caesarHelper.Decrypt(enrollmentPicture.PictureFullPath);
+            enrollmentPicture = EnrollmentsPictureRepositoryTestsHelper.Decrypt(caesarHelper, enrollmentPicture);
             await _enrollmentsPictureRepository.UpdateAsync(enrollmentPicture);
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-
-            Assert.That(enrollmentPicture, Is.TypeOf<EnrollmentsPicture>(), "ERROR - return type");
-
-            Assert.That(enrollmentPicture.Id, Is.EqualTo(enrollmentsPicture.Id), $"ERROR - {nameof(enrollmentsPicture.Id)} is not equal");
-            Assert.That(enrollmentPicture.EnrollmentId, Is.EqualTo(enrollmentsPicture.EnrollmentId), $"ERROR - {nameof(enrollmentsPicture.EnrollmentId)} is not equal");
-            Assert.That(enrollmentPicture.DateAddPicture, Is.EqualTo(enrollmentsPicture.DateAddPicture), $"ERROR - {nameof(enrollmentsPicture.DateAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.DateModPicture, Is.EqualTo(enrollmentsPicture.DateModPicture), $"ERROR - {nameof(enrollmentsPicture.DateModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPicture, Is.EqualTo(enrollmentsPicture.UserAddPicture), $"ERROR - {nameof(enrollmentsPicture.UserAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.EqualTo(enrollmentsPicture.UserAddPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserAddPictureFullName)} is not equal");
-            Assert.That(enrollmentPicture.UserModPicture, Is.EqualTo(enrollmentsPicture.UserModPicture), $"ERROR - {nameof(enrollmentsPicture.UserModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserModPictureFullName, Is.EqualTo(enrollmentsPicture.UserModPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserModPictureFullName)} is not equal");
-
-            Assert.That(enrollmentPicture.PictureName, Is.EqualTo(enrollmentsPicture.PictureName), $"ERROR - {nameof(enrollmentsPicture.PictureName)} is not equal");
-            Assert.That(enrollmentPicture.PicturePath, Is.EqualTo(enrollmentsPicture.PicturePath), $"ERROR - {nameof(enrollmentsPicture.PicturePath)} is not equal");
-            Assert.That(enrollmentPicture.PictureFullPath, Is.EqualTo(enrollmentsPicture.PictureFullPath), $"ERROR - {nameof(enrollmentsPicture.PictureFullPath)} is not equal");
-
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
             TestContext.Out.WriteLine($"\nUpdate record:");
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
 
             await _enrollmentsPictureRepository.DeleteAsync(enrollmentPicture.Id);
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
@@ -257,32 +126,8 @@ namespace mini_ITS.Core.Tests.Repository
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);
             var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
-            Assert.That(enrollmentPicture, Is.TypeOf<EnrollmentsPicture>(), "ERROR - return type");
-
-            Assert.That(enrollmentPicture.Id, Is.EqualTo(enrollmentsPicture.Id), $"ERROR - {nameof(enrollmentsPicture.Id)} is not equal");
-            Assert.That(enrollmentPicture.EnrollmentId, Is.EqualTo(enrollmentsPicture.EnrollmentId), $"ERROR - {nameof(enrollmentsPicture.EnrollmentId)} is not equal");
-            Assert.That(enrollmentPicture.DateAddPicture, Is.EqualTo(enrollmentsPicture.DateAddPicture), $"ERROR - {nameof(enrollmentsPicture.DateAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.DateModPicture, Is.EqualTo(enrollmentsPicture.DateModPicture), $"ERROR - {nameof(enrollmentsPicture.DateModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPicture, Is.EqualTo(enrollmentsPicture.UserAddPicture), $"ERROR - {nameof(enrollmentsPicture.UserAddPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.EqualTo(enrollmentsPicture.UserAddPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserAddPictureFullName)} is not equal");
-            Assert.That(enrollmentPicture.UserModPicture, Is.EqualTo(enrollmentsPicture.UserModPicture), $"ERROR - {nameof(enrollmentsPicture.UserModPicture)} is not equal");
-            Assert.That(enrollmentPicture.UserModPictureFullName, Is.EqualTo(enrollmentsPicture.UserModPictureFullName), $"ERROR - {nameof(enrollmentsPicture.UserModPictureFullName)} is not equal");
-
-            Assert.That(enrollmentPicture.PictureName, Is.EqualTo(enrollmentsPicture.PictureName), $"ERROR - {nameof(enrollmentsPicture.PictureName)} is not equal");
-            Assert.That(enrollmentPicture.PicturePath, Is.EqualTo(enrollmentsPicture.PicturePath), $"ERROR - {nameof(enrollmentsPicture.PicturePath)} is not equal");
-            Assert.That(enrollmentPicture.PictureFullPath, Is.EqualTo(enrollmentsPicture.PictureFullPath), $"ERROR - {nameof(enrollmentsPicture.PictureFullPath)} is not equal");
-
-            TestContext.Out.WriteLine($"Id                     : {enrollmentPicture.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentPicture.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentPicture.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentPicture.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentPicture.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentPicture.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentPicture.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentPicture.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentPicture.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentPicture.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPicture.PictureFullPath}");
+            EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
+            EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
 
             await _enrollmentsPictureRepository.DeleteAsync(enrollmentPicture.Id);
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);

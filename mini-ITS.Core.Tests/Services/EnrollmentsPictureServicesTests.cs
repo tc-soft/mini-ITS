@@ -94,5 +94,26 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"PicturePath            : {enrollmentPictureDto.PicturePath}");
             TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentPictureDto.PictureFullPath}");
         }
+        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.EnrollmentsPictureCases))]
+        public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            TestContext.Out.WriteLine("Get enrollmentsPictureDto by GetEnrollmentPicturesAsync(id) and check valid...\n");
+            var enrollmentPictureDto = await _enrollmentsPictureServices.GetEnrollmentPicturesAsync(enrollmentsPictureDto.EnrollmentId);
+
+            Assert.That(enrollmentPictureDto.Count() >= 2, "ERROR - number of items is less than 2");
+            Assert.That(enrollmentPictureDto, Is.InstanceOf<IEnumerable<EnrollmentsPictureDto>>(), "ERROR - return type");
+            Assert.That(enrollmentPictureDto, Is.All.InstanceOf<EnrollmentsPictureDto>(), "ERROR - all instance is not of <EnrollmentsPictureDto>()");
+            Assert.That(enrollmentPictureDto, Is.Ordered.Ascending.By("DateAddPicture"), "ERROR - sort");
+            Assert.That(enrollmentPictureDto, Is.Unique);
+
+            var firstEnrollmentId = enrollmentPictureDto.FirstOrDefault()?.EnrollmentId;
+            Assert.That(enrollmentPictureDto.All(ed => ed.EnrollmentId == firstEnrollmentId), Is.True, "ERROR - EnrollmentId is not the same for all records");
+
+            foreach (var item in enrollmentPictureDto)
+            {
+                TestContext.Out.WriteLine($"PicturePath: {item.PicturePath}");
+            }
+            TestContext.Out.WriteLine($"\nNumber of records: {enrollmentPictureDto.Count()}");
+        }
     }
 }

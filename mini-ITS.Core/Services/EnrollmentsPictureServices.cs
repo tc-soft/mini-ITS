@@ -33,5 +33,10 @@ namespace mini_ITS.Core.Services
             var enrollmentsPicture = await _enrollmentsPictureRepository.GetAsync(id);
             return enrollmentsPicture == null ? null : _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
         }
+        public async Task<IEnumerable<EnrollmentsPictureDto>> GetEnrollmentPicturesAsync(Guid id)
+        {
+            var enrollmentsPicture = await _enrollmentsPictureRepository.GetEnrollmentPicturesAsync(id);
+            return enrollmentsPicture?.Select(x => _mapper.Map<EnrollmentsPictureDto>(x));
+        }
     }
 }

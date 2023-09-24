@@ -72,5 +72,9 @@ namespace mini_ITS.Core.Services
 
             await _enrollmentsPictureRepository.UpdateAsync(enrollmentPicture);
         }
+        public async Task DeleteAsync(Guid id)
+        {
+            await _enrollmentsPictureRepository.DeleteAsync(id);
+        }
     }
 }

@@ -43,6 +43,7 @@ namespace mini_ITS.Web
             services.AddSingleton<IPasswordHasher<Users>, PasswordHasher<Users>>();
             services.AddScoped<IGroupsServices, GroupsServices>();
             services.AddScoped<IEnrollmentsDescriptionServices, EnrollmentsDescriptionServices>();
+            services.AddScoped<IEnrollmentsPictureServices, EnrollmentsPictureServices>();
 
             //mini_ITS.Web.Controllers
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

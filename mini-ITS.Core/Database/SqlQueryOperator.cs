@@ -8,6 +8,7 @@
         public static string LessThan = "<";
         public static string GreaterThanOrEqual = ">=";
         public static string LessThanOrEqual = "<=";
-        public static string LIKE = "LIKE";
+        public static string Like = "LIKE";
+        public static string Is = "IS";
     }
 }

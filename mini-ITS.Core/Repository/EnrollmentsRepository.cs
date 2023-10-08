@@ -25,5 +25,15 @@ namespace mini_ITS.Core.Repository
                 return enrollments;
             }
         }
+        public async Task<SqlPagedResult<Enrollments>> GetAsync(SqlPagedQuery<Enrollments> query)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Enrollments>(query);
+                var enrollments = await sqlConnection.QueryAsync<Enrollments>(sqlQueryBuilder.GetSelectQuery());
+                var count = await sqlConnection.QueryFirstAsync<int>(sqlQueryBuilder.GetCountQuery());
+                return SqlPagedResult<Enrollments>.Create(enrollments, query, count);
+            }
+        }
     }
 }

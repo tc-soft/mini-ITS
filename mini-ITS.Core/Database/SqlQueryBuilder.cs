@@ -51,7 +51,10 @@ namespace mini_ITS.Core.Database
                 {
                     if (item.Value is not null && item.Value is string && !String.IsNullOrWhiteSpace((string)item.Value))
                     {
-                        filters.Add($"{item.Name} {item.Operator} '{item.Value}'");
+                        var filter = (item.Operator == "IS")
+                            ? $"{item.Name} {item.Operator} {item.Value}"
+                            : $"{item.Name} {item.Operator} '{item.Value}'";
+                        filters.Add(filter);
                     }
                 }
 
@@ -136,7 +139,10 @@ namespace mini_ITS.Core.Database
                 {
                     if (item.Value is not null && item.Value is string && !String.IsNullOrWhiteSpace((string)item.Value))
                     {
-                        filters.Add($"{item.Name} {item.Operator} '{item.Value}'");
+                        var filter = (item.Operator == "IS")
+                            ? $"{item.Name} {item.Operator} {item.Value}"
+                            : $"{item.Name} {item.Operator} '{item.Value}'";
+                        filters.Add(filter);
                     }
                 }
 

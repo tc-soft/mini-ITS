@@ -101,7 +101,7 @@ namespace mini_ITS.Core.Database
 
             foreach (var item in collection)
             {
-                _ = item == collection.Last() ? queryBuilder.Append($"{item} = @{item} ") : queryBuilder.Append($"{item} = @{item}, ");
+                _ = item == collection.Last() ? queryBuilder.Append($"[{item}] = @{item} ") : queryBuilder.Append($"[{item}] = @{item}, ");
             }
 
             queryBuilder.Append("WHERE Id = @Id");
@@ -114,7 +114,7 @@ namespace mini_ITS.Core.Database
 
             if (item is not null)
             {
-                queryBuilder.Append($"{item} = @{item} ");
+                queryBuilder.Append($"[{item}] = @{item} ");
             }
 
             queryBuilder.Append("WHERE Id = @Id");

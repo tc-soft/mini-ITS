@@ -73,5 +73,13 @@ namespace mini_ITS.Core.Repository
                 await sqlConnection.ExecuteAsync(sqlQueryBuilder, enrollments);
             }
         }
+        public async Task UpdateAsync(Enrollments enrollments)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var sqlQueryBuilder = new SqlQueryBuilder<Enrollments>().GetUpdateQuery();
+                await sqlConnection.ExecuteAsync(sqlQueryBuilder, enrollments);
+            }
+        }
     }
 }

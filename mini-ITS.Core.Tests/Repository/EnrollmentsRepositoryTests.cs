@@ -225,5 +225,14 @@ namespace mini_ITS.Core.Tests.Repository
             TestContext.Out.WriteLine($"ActionExecuted                         : {enrollment.ActionExecuted}");
             TestContext.Out.WriteLine($"ActionFinished                         : {enrollment.ActionFinished}");
         }
+        [Test]
+        public async Task GetMaxNumberAsync()
+        {
+            var maxNumber = await _enrollmentsRepository.GetMaxNumberAsync(2023);
+            TestContext.Out.WriteLine($"Max number : {maxNumber}\n");
+
+            Assert.That(maxNumber, Is.TypeOf<int>(), "ERROR - return type");
+            Assert.That(maxNumber, Is.EqualTo(10), $"ERROR - maxNumber is not equal to 10");
+        }
     }
 }

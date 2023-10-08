@@ -56,5 +56,14 @@ namespace mini_ITS.Core.Repository
                 return enrollments;
             }
         }
+        public async Task<int> GetMaxNumberAsync(int year)
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var query = @"SELECT COALESCE(MAX(Nr),0) FROM Enrollments WHERE Year = @Year";
+                var nr = await sqlConnection.QueryFirstOrDefaultAsync<int>(query, new { Year = year });
+                return nr;
+            }
+        }
     }
 }

@@ -211,5 +211,139 @@ namespace mini_ITS.Core.Tests.Repository
                 };
             }
         }
+        public static IEnumerable<Enrollments> CRUDCases
+        {
+            get
+            {
+                yield return new Enrollments
+                {
+                    Id = new Guid("4FE0A770-C22C-4F77-8B7F-ACEA96493358"),
+                    Nr = 11,
+                    Year = 2023,
+                    DateAddEnrollment = new DateTime(2023, 9, 1, 7, 0, 0),
+                    DateEndEnrollment = null,
+                    DateLastChange = new DateTime(2023, 9, 1, 7, 0, 0),
+                    DateEndDeclareByUser = new DateTime(2023, 9, 8, 7, 0, 0),
+                    DateEndDeclareByDepartment = null,
+                    DateEndDeclareByDepartmentUser = new Guid(),
+                    DateEndDeclareByDepartmentUserFullName = null,
+                    Department = "Managers",
+                    Description = "Test enrollment 11",
+                    Group = "Alfa Avengers",
+                    Priority = PriorityValues.Normal,
+                    SMSToUserInfo = false,
+                    SMSToAllInfo = false,
+                    MailToUserInfo = false,
+                    MailToAllInfo = false,
+                    ReadyForClose = false,
+                    State = "New",
+                    UserAddEnrollment = new Guid("42E1156F-1F81-41E6-A5FB-1CBAB26F7F47"),
+                    UserAddEnrollmentFullName = "Lana Raisic",
+                    UserEndEnrollment = new Guid(),
+                    UserEndEnrollmentFullName = null,
+                    UserReeEnrollment = new Guid(),
+                    UserReeEnrollmentFullName = null,
+                    ActionRequest = 0,
+                    ActionExecuted = 0,
+                    ActionFinished = false
+                };
+                yield return new Enrollments
+                {
+                    Id = new Guid("37455F97-7F14-4369-A6C2-6C9A74F9CC9E"),
+                    Nr = 12,
+                    Year = 2023,
+                    DateAddEnrollment = new DateTime(2023, 9, 2, 7, 0, 0),
+                    DateEndEnrollment = null,
+                    DateLastChange = new DateTime(2023, 9, 2, 7, 0, 0),
+                    DateEndDeclareByUser = new DateTime(2023, 9, 9, 7, 0, 0),
+                    DateEndDeclareByDepartment = null,
+                    DateEndDeclareByDepartmentUser = new Guid(),
+                    DateEndDeclareByDepartmentUserFullName = null,
+                    Department = "Development",
+                    Description = "Test enrollment 12",
+                    Group = "DevOps Dynamos",
+                    Priority = PriorityValues.High,
+                    SMSToUserInfo = false,
+                    SMSToAllInfo = false,
+                    MailToUserInfo = false,
+                    MailToAllInfo = false,
+                    ReadyForClose = false,
+                    State = "New",
+                    UserAddEnrollment = new Guid("FFE8CAB9-C2A9-4173-B00B-509A4BA737C8"),
+                    UserAddEnrollmentFullName = "Kathie Marsh",
+                    UserEndEnrollment = new Guid(),
+                    UserEndEnrollmentFullName = null,
+                    UserReeEnrollment = new Guid(),
+                    UserReeEnrollmentFullName = null,
+                    ActionRequest = 0,
+                    ActionExecuted = 0,
+                    ActionFinished = false
+                };
+                yield return new Enrollments
+                {
+                    Id = new Guid("B4A7F52E-CE31-4489-9F89-019F40EF424E"),
+                    Nr = 13,
+                    Year = 2023,
+                    DateAddEnrollment = new DateTime(2023, 9, 3, 7, 0, 0),
+                    DateEndEnrollment = null,
+                    DateLastChange = new DateTime(2023, 9, 3, 7, 0, 0),
+                    DateEndDeclareByUser = new DateTime(2023, 9, 10, 7, 0, 0),
+                    DateEndDeclareByDepartment = null,
+                    DateEndDeclareByDepartmentUser = new Guid(),
+                    DateEndDeclareByDepartmentUserFullName = null,
+                    Department = "Research",
+                    Description = "Test enrollment 13",
+                    Group = "Maverick Testers",
+                    Priority = PriorityValues.Critical,
+                    SMSToUserInfo = false,
+                    SMSToAllInfo = false,
+                    MailToUserInfo = false,
+                    MailToAllInfo = false,
+                    ReadyForClose = false,
+                    State = "New",
+                    UserAddEnrollment = new Guid("61008777-3BCA-4470-817D-35CFBD465921"),
+                    UserAddEnrollmentFullName = "Peter Cottle",
+                    UserEndEnrollment = new Guid(),
+                    UserEndEnrollmentFullName = null,
+                    UserReeEnrollment = new Guid(),
+                    UserReeEnrollmentFullName = null,
+                    ActionRequest = 0,
+                    ActionExecuted = 0,
+                    ActionFinished = false
+                };
+                yield return new Enrollments
+                {
+                    Id = new Guid("EBE99D81-CA2D-428D-871F-15585589B4FF"),
+                    Nr = 14,
+                    Year = 2023,
+                    DateAddEnrollment = new DateTime(2023, 9, 4, 7, 0, 0),
+                    DateEndEnrollment = null,
+                    DateLastChange = new DateTime(2023, 9, 4, 7, 0, 0),
+                    DateEndDeclareByUser = new DateTime(2023, 9, 11, 7, 0, 0),
+                    DateEndDeclareByDepartment = null,
+                    DateEndDeclareByDepartmentUser = new Guid(),
+                    DateEndDeclareByDepartmentUserFullName = null,
+                    Department = "IT",
+                    Description = "Test enrollment 14",
+                    Group = "Project Orion",
+                    Priority = PriorityValues.Normal,
+                    SMSToUserInfo = false,
+                    SMSToAllInfo = false,
+                    MailToUserInfo = false,
+                    MailToAllInfo = false,
+                    ReadyForClose = false,
+                    State = "New",
+                    UserAddEnrollment = new Guid("84249845-9D8E-48FD-898C-16BE0433BE66"),
+                    UserAddEnrollmentFullName = "Michalina Yaveos",
+                    UserEndEnrollment = new Guid(),
+                    UserEndEnrollmentFullName = null,
+                    UserReeEnrollment = new Guid(),
+                    UserReeEnrollmentFullName = null,
+                    ActionRequest = 0,
+                    ActionExecuted = 0,
+                    ActionFinished = false
+                };
+            }
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace mini_ITS.Core.Repository
         Task<int> GetMaxNumberAsync(int year);
         Task CreateAsync(Enrollments enrollments);
         Task UpdateAsync(Enrollments enrollments);
+        Task DeleteAsync(Guid guid);
     }
 }

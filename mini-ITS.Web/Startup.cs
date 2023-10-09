@@ -36,6 +36,7 @@ namespace mini_ITS.Web
             services.AddScoped<IGroupsRepository, GroupsRepository>();
             services.AddScoped<IEnrollmentsDescriptionRepository, EnrollmentsDescriptionRepository>();
             services.AddScoped<IEnrollmentsPictureRepository, EnrollmentsPictureRepository>();
+            services.AddScoped<IEnrollmentsRepository, EnrollmentsRepository>();
 
             //mini_ITS.Core.Services
             services.AddScoped<IUsersServices, UsersServices>();

@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Repository;
 
 namespace mini_ITS.Core.Services
@@ -26,6 +28,12 @@ namespace mini_ITS.Core.Services
         {
             var enrollments = await _enrollmentsRepository.GetAsync();
             return enrollments?.Select(x => _mapper.Map<EnrollmentsDto>(x));
+        }
+        public async Task<SqlPagedResult<EnrollmentsDto>> GetAsync(SqlPagedQuery<Enrollments> sqlPagedQuery)
+        {
+            var results = await _enrollmentsRepository.GetAsync(sqlPagedQuery);
+            var enrollments = results.Results.Select(x => _mapper.Map<EnrollmentsDto>(x));
+            return enrollments == null ? null : SqlPagedResult<EnrollmentsDto>.From(results, enrollments);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Repository;
 
 namespace mini_ITS.Core.Services
@@ -17,6 +21,11 @@ namespace mini_ITS.Core.Services
             _enrollmentsRepository = enrollmentsRepository;
             _usersRepository = usersRepository;
             _mapper = mapper;
+        }
+        public async Task<IEnumerable<EnrollmentsDto>> GetAsync()
+        {
+            var enrollments = await _enrollmentsRepository.GetAsync();
+            return enrollments?.Select(x => _mapper.Map<EnrollmentsDto>(x));
         }
     }
 }

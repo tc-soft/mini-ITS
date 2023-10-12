@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -34,6 +35,11 @@ namespace mini_ITS.Core.Services
             var results = await _enrollmentsRepository.GetAsync(sqlPagedQuery);
             var enrollments = results.Results.Select(x => _mapper.Map<EnrollmentsDto>(x));
             return enrollments == null ? null : SqlPagedResult<EnrollmentsDto>.From(results, enrollments);
+        }
+        public async Task<EnrollmentsDto> GetAsync(Guid id)
+        {
+            var enrollments = await _enrollmentsRepository.GetAsync(id);
+            return enrollments == null ? null : _mapper.Map<EnrollmentsDto>(enrollments);
         }
     }
 }

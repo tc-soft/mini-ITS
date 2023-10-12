@@ -160,5 +160,73 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
+        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.EnrollmentsCases))]
+        public async Task GetAsync_CheckId(EnrollmentsDto enrollmentsDto)
+        {
+            TestContext.Out.WriteLine("Get enrollment by GetAsync(id) and check valid...\n");
+            var enrollmentDto = await _enrollmentsServices.GetAsync(enrollmentsDto.Id);
+
+            Assert.That(enrollmentDto, Is.TypeOf<EnrollmentsDto>(), "ERROR - return type");
+
+            Assert.That(enrollmentDto.Id, Is.EqualTo(enrollmentsDto.Id), $"ERROR - {nameof(enrollmentsDto.Id)} is not equal");
+            Assert.That(enrollmentDto.Nr, Is.EqualTo(enrollmentsDto.Nr), $"ERROR - {nameof(enrollmentsDto.Nr)} is not equal");
+            Assert.That(enrollmentDto.Year, Is.EqualTo(enrollmentsDto.Year), $"ERROR - {nameof(enrollmentsDto.Year)} is not equal");
+            Assert.That(enrollmentDto.DateAddEnrollment, Is.EqualTo(enrollmentsDto.DateAddEnrollment), $"ERROR - {nameof(enrollmentsDto.DateAddEnrollment)} is not equal");
+            Assert.That(enrollmentDto.DateEndEnrollment, Is.EqualTo(enrollmentsDto.DateEndEnrollment), $"ERROR - {nameof(enrollmentsDto.DateEndEnrollment)} is not equal");
+            Assert.That(enrollmentDto.DateLastChange, Is.EqualTo(enrollmentsDto.DateLastChange), $"ERROR - {nameof(enrollmentsDto.DateLastChange)} is not equal");
+            Assert.That(enrollmentDto.DateEndDeclareByUser, Is.EqualTo(enrollmentsDto.DateEndDeclareByUser), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByUser)} is not equal");
+            Assert.That(enrollmentDto.DateEndDeclareByDepartment, Is.EqualTo(enrollmentsDto.DateEndDeclareByDepartment), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByDepartment)} is not equal");
+            Assert.That(enrollmentDto.DateEndDeclareByDepartmentUser, Is.EqualTo(enrollmentsDto.DateEndDeclareByDepartmentUser), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByDepartmentUser)} is not equal");
+            Assert.That(enrollmentDto.DateEndDeclareByDepartmentUserFullName, Is.EqualTo(enrollmentsDto.DateEndDeclareByDepartmentUserFullName), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByDepartmentUserFullName)} is not equal");
+            Assert.That(enrollmentDto.Department, Is.EqualTo(enrollmentsDto.Department), $"ERROR - {nameof(enrollmentsDto.Department)} is not equal");
+            Assert.That(enrollmentDto.Description, Is.EqualTo(enrollmentsDto.Description), $"ERROR - {nameof(enrollmentsDto.Description)} is not equal");
+            Assert.That(enrollmentDto.Group, Is.EqualTo(enrollmentsDto.Group), $"ERROR - {nameof(enrollmentsDto.Group)} is not equal");
+            Assert.That(enrollmentDto.Priority, Is.EqualTo(enrollmentsDto.Priority), $"ERROR - {nameof(enrollmentsDto.Priority)} is not equal");
+            Assert.That(enrollmentDto.SMSToUserInfo, Is.EqualTo(enrollmentsDto.SMSToUserInfo), $"ERROR - {nameof(enrollmentsDto.SMSToUserInfo)} is not equal");
+            Assert.That(enrollmentDto.SMSToAllInfo, Is.EqualTo(enrollmentsDto.SMSToAllInfo), $"ERROR - {nameof(enrollmentsDto.SMSToAllInfo)} is not equal");
+            Assert.That(enrollmentDto.MailToUserInfo, Is.EqualTo(enrollmentsDto.MailToUserInfo), $"ERROR - {nameof(enrollmentsDto.MailToUserInfo)} is not equal");
+            Assert.That(enrollmentDto.MailToAllInfo, Is.EqualTo(enrollmentsDto.MailToAllInfo), $"ERROR - {nameof(enrollmentsDto.MailToAllInfo)} is not equal");
+            Assert.That(enrollmentDto.ReadyForClose, Is.EqualTo(enrollmentsDto.ReadyForClose), $"ERROR - {nameof(enrollmentsDto.ReadyForClose)} is not equal");
+            Assert.That(enrollmentDto.State, Is.EqualTo(enrollmentsDto.State), $"ERROR - {nameof(enrollmentsDto.State)} is not equal");
+            Assert.That(enrollmentDto.UserAddEnrollment, Is.EqualTo(enrollmentsDto.UserAddEnrollment), $"ERROR - {nameof(enrollmentsDto.UserAddEnrollment)} is not equal");
+            Assert.That(enrollmentDto.UserAddEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserAddEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserAddEnrollmentFullName)} is not equal");
+            Assert.That(enrollmentDto.UserEndEnrollment, Is.EqualTo(enrollmentsDto.UserEndEnrollment), $"ERROR - {nameof(enrollmentsDto.UserEndEnrollment)} is not equal");
+            Assert.That(enrollmentDto.UserEndEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserEndEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserEndEnrollmentFullName)} is not equal");
+            Assert.That(enrollmentDto.UserReeEnrollment, Is.EqualTo(enrollmentsDto.UserReeEnrollment), $"ERROR - {nameof(enrollmentsDto.UserReeEnrollment)} is not equal");
+            Assert.That(enrollmentDto.UserReeEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserReeEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserReeEnrollmentFullName)} is not equal");
+            Assert.That(enrollmentDto.ActionRequest, Is.EqualTo(enrollmentsDto.ActionRequest), $"ERROR - {nameof(enrollmentsDto.ActionRequest)} is not equal");
+            Assert.That(enrollmentDto.ActionExecuted, Is.EqualTo(enrollmentsDto.ActionExecuted), $"ERROR - {nameof(enrollmentsDto.ActionExecuted)} is not equal");
+            Assert.That(enrollmentDto.ActionFinished, Is.EqualTo(enrollmentsDto.ActionFinished), $"ERROR - {nameof(enrollmentsDto.ActionFinished)} is not equal");
+
+            TestContext.Out.WriteLine($"Id                                     : {enrollmentDto.Id}");
+            TestContext.Out.WriteLine($"Nr                                     : {enrollmentDto.Nr}");
+            TestContext.Out.WriteLine($"Year                                   : {enrollmentDto.Year}");
+            TestContext.Out.WriteLine($"DateAddEnrollment                      : {enrollmentDto.DateAddEnrollment}");
+            TestContext.Out.WriteLine($"DateEndEnrollment                      : {enrollmentDto.DateEndEnrollment}");
+            TestContext.Out.WriteLine($"DateLastChange                         : {enrollmentDto.DateLastChange}");
+            TestContext.Out.WriteLine($"DateEndDeclareByUser                   : {enrollmentDto.DateEndDeclareByUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartment             : {enrollmentDto.DateEndDeclareByDepartment}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUser         : {enrollmentDto.DateEndDeclareByDepartmentUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUserFullName : {enrollmentDto.DateEndDeclareByDepartmentUserFullName}");
+            TestContext.Out.WriteLine($"Department                             : {enrollmentDto.Department}");
+            TestContext.Out.WriteLine($"Description                            : {enrollmentDto.Description}");
+            TestContext.Out.WriteLine($"Group                                  : {enrollmentDto.Group}");
+            TestContext.Out.WriteLine($"Priority                               : {enrollmentDto.Priority}");
+            TestContext.Out.WriteLine($"SMSToUserInfo                          : {enrollmentDto.SMSToUserInfo}");
+            TestContext.Out.WriteLine($"SMSToAllInfo                           : {enrollmentDto.SMSToAllInfo}");
+            TestContext.Out.WriteLine($"MailToUserInfo                         : {enrollmentDto.MailToUserInfo}");
+            TestContext.Out.WriteLine($"MailToAllInfo                          : {enrollmentDto.MailToAllInfo}");
+            TestContext.Out.WriteLine($"ReadyForClose                          : {enrollmentDto.ReadyForClose}");
+            TestContext.Out.WriteLine($"State                                  : {enrollmentDto.State}");
+            TestContext.Out.WriteLine($"UserAddEnrollment                      : {enrollmentDto.UserAddEnrollment}");
+            TestContext.Out.WriteLine($"UserAddEnrollmentFullName              : {enrollmentDto.UserAddEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserEndEnrollment                      : {enrollmentDto.UserEndEnrollment}");
+            TestContext.Out.WriteLine($"UserEndEnrollmentFullName              : {enrollmentDto.UserEndEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserReeEnrollment                      : {enrollmentDto.UserReeEnrollment}");
+            TestContext.Out.WriteLine($"UserReeEnrollmentFullName              : {enrollmentDto.UserReeEnrollmentFullName}");
+            TestContext.Out.WriteLine($"ActionRequest                          : {enrollmentDto.ActionRequest}");
+            TestContext.Out.WriteLine($"ActionExecuted                         : {enrollmentDto.ActionExecuted}");
+            TestContext.Out.WriteLine($"ActionFinished                         : {enrollmentDto.ActionFinished}");
+        }
     }
 }

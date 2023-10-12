@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -10,5 +11,6 @@ namespace mini_ITS.Core.Services
     {
         Task<IEnumerable<EnrollmentsDto>> GetAsync();
         Task<SqlPagedResult<EnrollmentsDto>> GetAsync(SqlPagedQuery<Enrollments> sqlPagedQuery);
+        Task<EnrollmentsDto> GetAsync(Guid guid);
     }
 }

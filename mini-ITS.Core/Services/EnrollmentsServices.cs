@@ -41,5 +41,10 @@ namespace mini_ITS.Core.Services
             var enrollments = await _enrollmentsRepository.GetAsync(id);
             return enrollments == null ? null : _mapper.Map<EnrollmentsDto>(enrollments);
         }
+        public async Task<int> GetMaxNumberAsync(int year)
+        {
+            var nr = await _enrollmentsRepository.GetMaxNumberAsync(year);
+            return nr;
+        }
     }
 }

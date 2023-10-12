@@ -12,5 +12,6 @@ namespace mini_ITS.Core.Services
         Task<IEnumerable<EnrollmentsDto>> GetAsync();
         Task<SqlPagedResult<EnrollmentsDto>> GetAsync(SqlPagedQuery<Enrollments> sqlPagedQuery);
         Task<EnrollmentsDto> GetAsync(Guid guid);
+        Task<int> GetMaxNumberAsync(int year);
     }
 }

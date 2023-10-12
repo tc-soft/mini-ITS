@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using mini_ITS.Core.Database;
@@ -45,6 +46,26 @@ namespace mini_ITS.Core.Services
         {
             var nr = await _enrollmentsRepository.GetMaxNumberAsync(year);
             return nr;
+        }
+        public async Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var enrollment = _mapper.Map<Enrollments>(enrollmentsDto);
+
+            enrollment.Id = enrollment.Id == Guid.Empty ? Guid.NewGuid() : enrollment.Id;
+            enrollment.Nr = await _enrollmentsRepository.GetMaxNumberAsync(DateTime.Now.Year) + 1;
+            enrollment.Year = DateTime.Now.Year;
+            enrollment.DateAddEnrollment = DateTime.UtcNow;
+            enrollment.DateLastChange = DateTime.UtcNow;
+            enrollment.Description = WebUtility.HtmlEncode(enrollmentsDto.Description);
+            enrollment.State = "New";
+            enrollment.UserAddEnrollment = user.Id;
+            enrollment.UserAddEnrollmentFullName = $"{user.FirstName} {user.LastName}";
+
+            await _enrollmentsRepository.CreateAsync(enrollment);
+            return enrollment.Id;
         }
     }
 }

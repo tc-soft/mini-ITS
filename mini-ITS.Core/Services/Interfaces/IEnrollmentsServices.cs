@@ -14,5 +14,6 @@ namespace mini_ITS.Core.Services
         Task<EnrollmentsDto> GetAsync(Guid guid);
         Task<int> GetMaxNumberAsync(int year);
         Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username);
+        Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username);
     }
 }

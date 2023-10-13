@@ -67,5 +67,15 @@ namespace mini_ITS.Core.Services
             await _enrollmentsRepository.CreateAsync(enrollment);
             return enrollment.Id;
         }
+        public async Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username)
+        {
+            var user = await _usersRepository.GetAsync(username)
+                ?? throw new Exception($"UsersServices: '{username}' not exist.");
+
+            var enrollment = _mapper.Map<Enrollments>(enrollmentsDto);
+            enrollment.DateLastChange = DateTime.UtcNow;
+
+            await _enrollmentsRepository.UpdateAsync(enrollment);
+        }
     }
 }

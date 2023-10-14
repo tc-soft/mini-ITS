@@ -45,6 +45,7 @@ namespace mini_ITS.Web
             services.AddScoped<IGroupsServices, GroupsServices>();
             services.AddScoped<IEnrollmentsDescriptionServices, EnrollmentsDescriptionServices>();
             services.AddScoped<IEnrollmentsPictureServices, EnrollmentsPictureServices>();
+            services.AddScoped<IEnrollmentsServices, EnrollmentsServices>();
 
             //mini_ITS.Web.Controllers
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

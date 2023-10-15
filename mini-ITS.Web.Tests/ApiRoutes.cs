@@ -32,6 +32,7 @@
             private static readonly string _enrollmentsControllerUrl = string.Concat(_baseUrl, "Enrollments");
 
             public static readonly string Index = string.Concat(_enrollmentsControllerUrl, "/Index");
+            public static readonly string Create = string.Concat(_enrollmentsControllerUrl, "/Create");
         }
     }
 }

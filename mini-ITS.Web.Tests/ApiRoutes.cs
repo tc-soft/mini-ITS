@@ -27,5 +27,11 @@
             public static readonly string Edit = string.Concat(_groupsControllerUrl, "/Edit");
             public static readonly string Delete = string.Concat(_groupsControllerUrl, "/Delete");
         }
+        public static class Enrollments
+        {
+            private static readonly string _enrollmentsControllerUrl = string.Concat(_baseUrl, "Enrollments");
+
+            public static readonly string Index = string.Concat(_enrollmentsControllerUrl, "/Index");
+        }
     }
 }

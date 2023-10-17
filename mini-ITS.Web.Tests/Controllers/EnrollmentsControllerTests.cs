@@ -209,6 +209,13 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(id, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollment");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Unauthorized(
@@ -454,6 +461,119 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"ActionFinished                         : {results.ActionFinished}\n");
 
             TestContext.Out.WriteLine($"Comparing with the original test data: OK");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollment");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, TestCaseSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.LoginUnauthorizedDeleteCases))]
+        public async Task DeleteAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedDeleteCases,
+            EnrollmentsDto enrollmentsDto)
+        {
+            if (loginUnauthorizedDeleteCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
+            }
+
+            TestContext.Out.WriteLine($"\nEnrollment before delete:");
+
+            TestContext.Out.WriteLine($"Id                                     : {enrollmentsDto.Id}");
+            TestContext.Out.WriteLine($"Nr                                     : {enrollmentsDto.Nr}");
+            TestContext.Out.WriteLine($"Year                                   : {enrollmentsDto.Year}");
+            TestContext.Out.WriteLine($"DateAddEnrollment                      : {enrollmentsDto.DateAddEnrollment}");
+            TestContext.Out.WriteLine($"DateEndEnrollment                      : {enrollmentsDto.DateEndEnrollment}");
+            TestContext.Out.WriteLine($"DateLastChange                         : {enrollmentsDto.DateLastChange}");
+            TestContext.Out.WriteLine($"DateEndDeclareByUser                   : {enrollmentsDto.DateEndDeclareByUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartment             : {enrollmentsDto.DateEndDeclareByDepartment}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUser         : {enrollmentsDto.DateEndDeclareByDepartmentUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUserFullName : {enrollmentsDto.DateEndDeclareByDepartmentUserFullName}");
+            TestContext.Out.WriteLine($"Department                             : {enrollmentsDto.Department}");
+            TestContext.Out.WriteLine($"Description                            : {enrollmentsDto.Description}");
+            TestContext.Out.WriteLine($"Group                                  : {enrollmentsDto.Group}");
+            TestContext.Out.WriteLine($"Priority                               : {enrollmentsDto.Priority}");
+            TestContext.Out.WriteLine($"SMSToUserInfo                          : {enrollmentsDto.SMSToUserInfo}");
+            TestContext.Out.WriteLine($"SMSToAllInfo                           : {enrollmentsDto.SMSToAllInfo}");
+            TestContext.Out.WriteLine($"MailToUserInfo                         : {enrollmentsDto.MailToUserInfo}");
+            TestContext.Out.WriteLine($"MailToAllInfo                          : {enrollmentsDto.MailToAllInfo}");
+            TestContext.Out.WriteLine($"ReadyForClose                          : {enrollmentsDto.ReadyForClose}");
+            TestContext.Out.WriteLine($"State                                  : {enrollmentsDto.State}");
+            TestContext.Out.WriteLine($"UserAddEnrollment                      : {enrollmentsDto.UserAddEnrollment}");
+            TestContext.Out.WriteLine($"UserAddEnrollmentFullName              : {enrollmentsDto.UserAddEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserEndEnrollment                      : {enrollmentsDto.UserEndEnrollment}");
+            TestContext.Out.WriteLine($"UserEndEnrollmentFullName              : {enrollmentsDto.UserEndEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserReeEnrollment                      : {enrollmentsDto.UserReeEnrollment}");
+            TestContext.Out.WriteLine($"UserReeEnrollmentFullName              : {enrollmentsDto.UserReeEnrollmentFullName}");
+            TestContext.Out.WriteLine($"ActionRequest                          : {enrollmentsDto.ActionRequest}");
+            TestContext.Out.WriteLine($"ActionExecuted                         : {enrollmentsDto.ActionExecuted}");
+            TestContext.Out.WriteLine($"ActionFinished                         : {enrollmentsDto.ActionFinished}\n");
+
+            response = await DeleteAsync(enrollmentsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollment");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Authorized(
+                [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.LoginAuthorizedDeleteCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.CRUDCases))] EnrollmentsDto enrollmentsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nEnrollment before delete:");
+
+            TestContext.Out.WriteLine($"Id                                     : {enrollmentsDto.Id}");
+            TestContext.Out.WriteLine($"Nr                                     : {enrollmentsDto.Nr}");
+            TestContext.Out.WriteLine($"Year                                   : {enrollmentsDto.Year}");
+            TestContext.Out.WriteLine($"DateAddEnrollment                      : {enrollmentsDto.DateAddEnrollment}");
+            TestContext.Out.WriteLine($"DateEndEnrollment                      : {enrollmentsDto.DateEndEnrollment}");
+            TestContext.Out.WriteLine($"DateLastChange                         : {enrollmentsDto.DateLastChange}");
+            TestContext.Out.WriteLine($"DateEndDeclareByUser                   : {enrollmentsDto.DateEndDeclareByUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartment             : {enrollmentsDto.DateEndDeclareByDepartment}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUser         : {enrollmentsDto.DateEndDeclareByDepartmentUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUserFullName : {enrollmentsDto.DateEndDeclareByDepartmentUserFullName}");
+            TestContext.Out.WriteLine($"Department                             : {enrollmentsDto.Department}");
+            TestContext.Out.WriteLine($"Description                            : {enrollmentsDto.Description}");
+            TestContext.Out.WriteLine($"Group                                  : {enrollmentsDto.Group}");
+            TestContext.Out.WriteLine($"Priority                               : {enrollmentsDto.Priority}");
+            TestContext.Out.WriteLine($"SMSToUserInfo                          : {enrollmentsDto.SMSToUserInfo}");
+            TestContext.Out.WriteLine($"SMSToAllInfo                           : {enrollmentsDto.SMSToAllInfo}");
+            TestContext.Out.WriteLine($"MailToUserInfo                         : {enrollmentsDto.MailToUserInfo}");
+            TestContext.Out.WriteLine($"MailToAllInfo                          : {enrollmentsDto.MailToAllInfo}");
+            TestContext.Out.WriteLine($"ReadyForClose                          : {enrollmentsDto.ReadyForClose}");
+            TestContext.Out.WriteLine($"State                                  : {enrollmentsDto.State}");
+            TestContext.Out.WriteLine($"UserAddEnrollment                      : {enrollmentsDto.UserAddEnrollment}");
+            TestContext.Out.WriteLine($"UserAddEnrollmentFullName              : {enrollmentsDto.UserAddEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserEndEnrollment                      : {enrollmentsDto.UserEndEnrollment}");
+            TestContext.Out.WriteLine($"UserEndEnrollmentFullName              : {enrollmentsDto.UserEndEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserReeEnrollment                      : {enrollmentsDto.UserReeEnrollment}");
+            TestContext.Out.WriteLine($"UserReeEnrollmentFullName              : {enrollmentsDto.UserReeEnrollmentFullName}");
+            TestContext.Out.WriteLine($"ActionRequest                          : {enrollmentsDto.ActionRequest}");
+            TestContext.Out.WriteLine($"ActionExecuted                         : {enrollmentsDto.ActionExecuted}");
+            TestContext.Out.WriteLine($"ActionFinished                         : {enrollmentsDto.ActionFinished}");
+
+            response = await CreateAsync(enrollmentsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollment");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollment");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test enrollment");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

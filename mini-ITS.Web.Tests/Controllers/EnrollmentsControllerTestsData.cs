@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -92,6 +93,9 @@ namespace mini_ITS.Web.Tests.Controllers
             LoginAuthorizedADMCases
             .Concat(LoginAuthorizedMNGCases)
             .Concat(LoginAuthorizedUSRCases);
+        public static IEnumerable<LoginData> LoginAuthorizedDeleteCases =>
+            LoginAuthorizedADMCases
+            .Concat(LoginAuthorizedMNGCases);
         public static IEnumerable<LoginData> LoginUnauthorizedCases
         {
             get
@@ -116,6 +120,27 @@ namespace mini_ITS.Web.Tests.Controllers
                     Login = "huntewil",
                     Password = "Xuntewil2022@"
                 };
+            }
+        }
+        public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteCases
+        {
+            get
+            {
+                foreach (var loginUnauthorizedCases in EnrollmentsControllerTestsData.LoginUnauthorizedCases)
+                {
+                    foreach (var enrollmentDto in EnrollmentsControllerTestsData.EnrollmentsCases)
+                    {
+                        yield return new TestCaseData(loginUnauthorizedCases, null, enrollmentDto);
+                    }
+                }
+
+                foreach (var loginAuthorizedUSRCases in EnrollmentsControllerTestsData.LoginAuthorizedUSRCases)
+                {
+                    foreach (var enrollmentDto in EnrollmentsControllerTestsData.EnrollmentsCases)
+                    {
+                        yield return new TestCaseData(null, loginAuthorizedUSRCases, enrollmentDto);
+                    }
+                }
             }
         }
         public static IEnumerable<SqlPagedQuery<EnrollmentsDto>> SqlPagedQueryCases

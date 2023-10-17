@@ -34,6 +34,7 @@
             public static readonly string Index = string.Concat(_enrollmentsControllerUrl, "/Index");
             public static readonly string Create = string.Concat(_enrollmentsControllerUrl, "/Create");
             public static readonly string Edit = string.Concat(_enrollmentsControllerUrl, "/Edit");
+            public static readonly string Delete = string.Concat(_enrollmentsControllerUrl, "/Delete");
         }
     }
 }

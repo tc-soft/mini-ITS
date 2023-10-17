@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using mini_ITS.Core;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
@@ -206,6 +207,65 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"\nResponse after create Enrollment: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
             Assert.IsNotNull(id, $"ERROR - id is null");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Unauthorized(
+            [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
+            [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.EnrollmentsCases))] EnrollmentsDto enrollmentsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            response = await EditGetAsync(enrollmentsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync of test enrollment: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Authorized(
+                [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.LoginAuthorizedAllCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsControllerTestsData), nameof(EnrollmentsControllerTestsData.EnrollmentsCases))] EnrollmentsDto enrollmentsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            response = await EditGetAsync(enrollmentsDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<EnrollmentsDto>();
+            Assert.IsNotNull(results, $"ERROR - EnrollmentsDto of test enrollment is null");
+            TestContext.Out.WriteLine($"Response after load Json data of test enrollment: {response.StatusCode}");
+            TestContext.Out.WriteLine($"\nEnrollment to edit:");
+
+            TestContext.Out.WriteLine($"Id                                     : {results.Id}");
+            TestContext.Out.WriteLine($"Nr                                     : {results.Nr}");
+            TestContext.Out.WriteLine($"Year                                   : {results.Year}");
+            TestContext.Out.WriteLine($"DateAddEnrollment                      : {results.DateAddEnrollment}");
+            TestContext.Out.WriteLine($"DateEndEnrollment                      : {results.DateEndEnrollment}");
+            TestContext.Out.WriteLine($"DateLastChange                         : {results.DateLastChange}");
+            TestContext.Out.WriteLine($"DateEndDeclareByUser                   : {results.DateEndDeclareByUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartment             : {results.DateEndDeclareByDepartment}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUser         : {results.DateEndDeclareByDepartmentUser}");
+            TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUserFullName : {results.DateEndDeclareByDepartmentUserFullName}");
+            TestContext.Out.WriteLine($"Department                             : {results.Department}");
+            TestContext.Out.WriteLine($"Description                            : {results.Description}");
+            TestContext.Out.WriteLine($"Group                                  : {results.Group}");
+            TestContext.Out.WriteLine($"Priority                               : {results.Priority}");
+            TestContext.Out.WriteLine($"SMSToUserInfo                          : {results.SMSToUserInfo}");
+            TestContext.Out.WriteLine($"SMSToAllInfo                           : {results.SMSToAllInfo}");
+            TestContext.Out.WriteLine($"MailToUserInfo                         : {results.MailToUserInfo}");
+            TestContext.Out.WriteLine($"MailToAllInfo                          : {results.MailToAllInfo}");
+            TestContext.Out.WriteLine($"ReadyForClose                          : {results.ReadyForClose}");
+            TestContext.Out.WriteLine($"State                                  : {results.State}");
+            TestContext.Out.WriteLine($"UserAddEnrollment                      : {results.UserAddEnrollment}");
+            TestContext.Out.WriteLine($"UserAddEnrollmentFullName              : {results.UserAddEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserEndEnrollment                      : {results.UserEndEnrollment}");
+            TestContext.Out.WriteLine($"UserEndEnrollmentFullName              : {results.UserEndEnrollmentFullName}");
+            TestContext.Out.WriteLine($"UserReeEnrollment                      : {results.UserReeEnrollment}");
+            TestContext.Out.WriteLine($"UserReeEnrollmentFullName              : {results.UserReeEnrollmentFullName}");
+            TestContext.Out.WriteLine($"ActionRequest                          : {results.ActionRequest}");
+            TestContext.Out.WriteLine($"ActionExecuted                         : {results.ActionExecuted}");
+            TestContext.Out.WriteLine($"ActionFinished                         : {results.ActionFinished}\n");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

@@ -36,7 +36,7 @@ namespace mini_ITS.Web.Tests
         protected async Task<HttpResponseMessage> LogoutAsync()
         {
             var response = await TestClient.DeleteAsync(ApiRoutes.Users.Logout);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not OK");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not OK\n");
             TestContext.Out.WriteLine($"Logout status: {response.StatusCode}");
 
             return response;

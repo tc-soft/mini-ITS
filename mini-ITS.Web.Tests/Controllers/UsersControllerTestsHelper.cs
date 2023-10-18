@@ -91,7 +91,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 headerValue.FirstOrDefault(),
                 Does.Contain("mini-ITS.SessionCookie=; "),
                 "ERROR - header has mini-ITS.SessionCookie value after logout");
-            TestContext.Out.WriteLine($"Checking if the cookie name mini-ITS.SessionCookie value is null: OK");
+            TestContext.Out.WriteLine($"Checking if the cookie name mini-ITS.SessionCookie value is null: OK\n");
         }
         public static void CheckDeleteUserUnauthorizedCase(HttpResponseMessage httpResponseMessage)
         {

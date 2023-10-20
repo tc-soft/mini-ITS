@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -56,17 +56,19 @@ namespace mini_ITS.Core.Tests.Services
             }
             TestContext.Out.WriteLine($"\nNumber of records: {enrollmentsPictureDto.Count()}");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.EnrollmentsPictureCases))]
-        public async Task GetAsync_CheckId(EnrollmentsPictureDto enrollmentsPictureDto)
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCases))]
+        public async Task GetAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
         {
+            var enrollmentsPictureDto = _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
             TestContext.Out.WriteLine("Get enrollmentPictureDto by GetAsync(id) and check valid...\n");
             var enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(enrollmentsPictureDto.Id);
             EnrollmentsPictureServicesTestsHelper.Check(enrollmentPictureDto, enrollmentsPictureDto);
             EnrollmentsPictureServicesTestsHelper.Print(enrollmentPictureDto);
         }
-        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.EnrollmentsPictureCases))]
-        public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPictureDto enrollmentsPictureDto)
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCases))]
+        public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
         {
+            var enrollmentsPictureDto = _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
             TestContext.Out.WriteLine("Get enrollmentsPictureDto by GetEnrollmentPicturesAsync(id) and check valid...\n");
             var enrollmentPictureDto = await _enrollmentsPictureServices.GetEnrollmentPicturesAsync(enrollmentsPictureDto.EnrollmentId);
 
@@ -85,9 +87,10 @@ namespace mini_ITS.Core.Tests.Services
             }
             TestContext.Out.WriteLine($"\nNumber of records: {enrollmentPictureDto.Count()}");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.CRUDCases))]
-        public async Task CreateAsync(EnrollmentsPictureDto enrollmentsPictureDto)
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
+        public async Task CreateAsync(EnrollmentsPicture enrollmentsPicture)
         {
+            var enrollmentsPictureDto = _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
             TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);
@@ -100,9 +103,10 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(enrollmentsPictureDto.Id);
             Assert.That(enrollmentPictureDto, Is.Null, "ERROR - delete enrollmentPicture");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.CRUDCases))]
-        public async Task UpdateAsync(EnrollmentsPictureDto enrollmentsPictureDto)
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
+        public async Task UpdateAsync(EnrollmentsPicture enrollmentsPicture)
         {
+            var enrollmentsPictureDto = _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
             TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);
@@ -130,9 +134,10 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(enrollmentsPictureDto.Id);
             Assert.That(enrollmentPictureDto, Is.Null, "ERROR - delete enrollmentPicture");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureServicesTestsData), nameof(EnrollmentsPictureServicesTestsData.CRUDCases))]
-        public async Task DeleteAsync(EnrollmentsPictureDto enrollmentsPictureDto)
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
+        public async Task DeleteAsync(EnrollmentsPicture enrollmentsPicture)
         {
+            var enrollmentsPictureDto = _mapper.Map<EnrollmentsPictureDto>(enrollmentsPicture);
             TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);

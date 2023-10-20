@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
@@ -55,14 +55,14 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Description: {item.Description}");
             }
         }
-        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.EnrollmentsDescriptionCases))]
+        [TestCaseSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCases))]
         public async Task GetAsync_CheckId(EnrollmentsDescription enrollmentsDescription)
         {
             var enrollmentDescription = await _enrollmentsDescriptionRepository.GetAsync(enrollmentsDescription.Id);
             EnrollmentsDescriptionRepositoryTestsHelper.Check(enrollmentDescription, enrollmentsDescription);
             EnrollmentsDescriptionRepositoryTestsHelper.Print(enrollmentDescription);
         }
-        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.EnrollmentsDescriptionCases))]
+        [TestCaseSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCases))]
         public async Task GetEnrollmentDescriptionsAsync_CheckId(EnrollmentsDescription enrollmentsDescription)
         {
             var enrollmentDescription = await _enrollmentsDescriptionRepository.GetEnrollmentDescriptionsAsync(enrollmentsDescription.EnrollmentId);
@@ -82,7 +82,7 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Description: {item.Description}");
             }
         }
-        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCases))]
         public async Task CreateAsync(EnrollmentsDescription enrollmentsDescription)
         {
             await _enrollmentsDescriptionRepository.CreateAsync(enrollmentsDescription);
@@ -94,7 +94,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollmentDescription = await _enrollmentsDescriptionRepository.GetAsync(enrollmentsDescription.Id);
             Assert.That(enrollmentDescription, Is.Null, "ERROR - delete enrollmentDescription");
         }
-        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCases))]
         public async Task UpdateAsync(EnrollmentsDescription enrollmentsDescription)
         {
             await _enrollmentsDescriptionRepository.CreateAsync(enrollmentsDescription);
@@ -121,7 +121,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollmentDescription = await _enrollmentsDescriptionRepository.GetAsync(enrollmentsDescription.Id);
             Assert.That(enrollmentDescription, Is.Null, "ERROR - delete enrollmentDescription");
         }
-        [TestCaseSource(typeof(EnrollmentsDescriptionRepositoryTestsData), nameof(EnrollmentsDescriptionRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCases))]
         public async Task DeleteAsync(EnrollmentsDescription enrollmentsDescription)
         {
             await _enrollmentsDescriptionRepository.CreateAsync(enrollmentsDescription);

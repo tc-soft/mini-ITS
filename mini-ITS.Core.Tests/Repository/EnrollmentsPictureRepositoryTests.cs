@@ -55,14 +55,14 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"PicturePath: {item.PicturePath}");
             }
         }
-        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.EnrollmentsPictureCases))]
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCases))]
         public async Task GetAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
         {
             var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
             EnrollmentsPictureRepositoryTestsHelper.Check(enrollmentPicture, enrollmentsPicture);
             EnrollmentsPictureRepositoryTestsHelper.Print(enrollmentPicture);
         }
-        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.EnrollmentsPictureCases))]
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCases))]
         public async Task GetEnrollmentPicturesAsync_CheckId(EnrollmentsPicture enrollmentsPicture)
         {
             var enrollmentPicture = await _enrollmentsPictureRepository.GetEnrollmentPicturesAsync(enrollmentsPicture.EnrollmentId);
@@ -82,7 +82,7 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"PicturePath: {item.PicturePath}");
             }
         }
-        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
         public async Task CreateAsync(EnrollmentsPicture enrollmentsPicture)
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);
@@ -94,7 +94,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
             Assert.That(enrollmentPicture, Is.Null, "ERROR - delete enrollmentPicture");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
         public async Task UpdateAsync(EnrollmentsPicture enrollmentsPicture)
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);
@@ -121,7 +121,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPicture.Id);
             Assert.That(enrollmentPicture, Is.Null, "ERROR - delete enrollmentPicture");
         }
-        [TestCaseSource(typeof(EnrollmentsPictureRepositoryTestsData), nameof(EnrollmentsPictureRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCases))]
         public async Task DeleteAsync(EnrollmentsPicture enrollmentsPicture)
         {
             await _enrollmentsPictureRepository.CreateAsync(enrollmentsPicture);

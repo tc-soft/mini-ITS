@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -55,7 +55,7 @@ namespace mini_ITS.Core.Tests.Services
             }
             TestContext.Out.WriteLine($"\nNumber of records: {groupsDto.Count()}");
         }
-        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Groups> sqlPagedQuery)
         {
             TestContext.Out.WriteLine("Get groups by GetAsync(sqlPagedQuery) and check valid...");
@@ -125,17 +125,19 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
-        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.GroupsCases))]
-        public async Task GetAsync_CheckId(GroupsDto groupsDto)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.GroupsCases))]
+        public async Task GetAsync_CheckId(Groups groups)
         {
+            var groupsDto = _mapper.Map<GroupsDto>(groups);
             TestContext.Out.WriteLine("Get group by GetAsync(id) and check valid...\n");
             var groupDto = await _groupsServices.GetAsync(groupsDto.Id);
             GroupsServicesTestsHelper.Check(groupDto, groupsDto);
             GroupsServicesTestsHelper.Print(groupDto);
         }
-        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
-        public async Task CreateAsync(GroupsDto groupsDto)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
+        public async Task CreateAsync(Groups groups)
         {
+            var groupsDto = _mapper.Map<GroupsDto>(groups);
             TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserAddGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
@@ -148,9 +150,10 @@ namespace mini_ITS.Core.Tests.Services
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
-        public async Task UpdateAsync(GroupsDto groupsDto)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
+        public async Task UpdateAsync(Groups groups)
         {
+            var groupsDto = _mapper.Map<GroupsDto>(groups);
             TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
@@ -178,9 +181,10 @@ namespace mini_ITS.Core.Tests.Services
             groupDto = await _groupsServices.GetAsync(groupDto.Id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsServicesTestsData), nameof(GroupsServicesTestsData.CRUDCases))]
-        public async Task DeleteAsync(GroupsDto groupsDto)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
+        public async Task DeleteAsync(Groups groups)
         {
+            var groupsDto = _mapper.Map<GroupsDto>(groups);
             TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);

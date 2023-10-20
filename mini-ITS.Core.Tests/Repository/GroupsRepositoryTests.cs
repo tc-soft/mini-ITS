@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
@@ -55,7 +55,7 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Group: {item.GroupName}");
             }
         }
-        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Groups> sqlPagedQuery)
         {
             var groupsList = await _groupsRepository.GetAsync(sqlPagedQuery);
@@ -120,14 +120,14 @@ namespace mini_ITS.Core.Tests.Repository
                 }
             }
         }
-        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.GroupsCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.GroupsCases))]
         public async Task GetAsync_CheckId(Groups groups)
         {
             var group = await _groupsRepository.GetAsync(groups.Id);
             GroupsRepositoryTestsHelper.Check(group, groups);
             GroupsRepositoryTestsHelper.Print(groups);
         }
-        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
         public async Task CreateAsync(Groups groups)
         {
             await _groupsRepository.CreateAsync(groups);
@@ -139,7 +139,7 @@ namespace mini_ITS.Core.Tests.Repository
             group = await _groupsRepository.GetAsync(groups.Id);
             Assert.That(group, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
         public async Task UpdateAsync(Groups groups)
         {
             await _groupsRepository.CreateAsync(groups);
@@ -166,7 +166,7 @@ namespace mini_ITS.Core.Tests.Repository
             group = await _groupsRepository.GetAsync(groups.Id);
             Assert.That(group, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsRepositoryTestsData), nameof(GroupsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
         public async Task DeleteAsync(Groups groups)
         {
             await _groupsRepository.CreateAsync(groups);

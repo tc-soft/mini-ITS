@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -56,7 +56,7 @@ namespace mini_ITS.Core.Tests.Services
             }
             TestContext.Out.WriteLine($"\nNumber of records: {enrollmentsDto.Count()}");
         }
-        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Enrollments> sqlPagedQuery)
         {
             TestContext.Out.WriteLine("Get enrollments by GetAsync(sqlPagedQuery) and check valid...");
@@ -123,9 +123,10 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
-        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.EnrollmentsCases))]
-        public async Task GetAsync_CheckId(EnrollmentsDto enrollmentsDto)
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.EnrollmentsCases))]
+        public async Task GetAsync_CheckId(Enrollments enrollments)
         {
+            var enrollmentsDto = _mapper.Map<EnrollmentsDto>(enrollments);
             TestContext.Out.WriteLine("Get enrollment by GetAsync(id) and check valid...\n");
             var enrollmentDto = await _enrollmentsServices.GetAsync(enrollmentsDto.Id);
             EnrollmentsServicesTestsHelper.Check(enrollmentDto, enrollmentsDto);
@@ -142,9 +143,10 @@ namespace mini_ITS.Core.Tests.Services
 
             TestContext.Out.WriteLine($"\nMax number is : {maxNumber}");
         }
-        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.CRUDCases))]
-        public async Task CreateAsync(EnrollmentsDto enrollmentsDto)
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
+        public async Task CreateAsync(Enrollments enrollments)
         {
+            var enrollmentsDto = _mapper.Map<EnrollmentsDto>(enrollments);
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
             var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);
@@ -157,9 +159,10 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
             Assert.That(enrollmentDto, Is.Null, "ERROR - delete enrollment");
         }
-        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.CRUDCases))]
-        public async Task UpdateAsync(EnrollmentsDto enrollmentsDto)
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
+        public async Task UpdateAsync(Enrollments enrollments)
         {
+            var enrollmentsDto = _mapper.Map<EnrollmentsDto>(enrollments);
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
             var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);
@@ -201,9 +204,10 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
             Assert.That(enrollmentDto, Is.Null, "ERROR - delete enrollment");
         }
-        [TestCaseSource(typeof(EnrollmentsServicesTestsData), nameof(EnrollmentsServicesTestsData.CRUDCases))]
-        public async Task DeleteAsync(EnrollmentsDto enrollmentsDto)
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
+        public async Task DeleteAsync(Enrollments enrollments)
         {
+            var enrollmentsDto = _mapper.Map<EnrollmentsDto>(enrollments);
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
             var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);

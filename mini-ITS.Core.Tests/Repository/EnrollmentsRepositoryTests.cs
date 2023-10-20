@@ -55,7 +55,7 @@ namespace mini_ITS.Core.Tests.Repository
                 TestContext.Out.WriteLine($"Enrollment Nr:{item.Nr}/{item.DateAddEnrollment.Value.Year}\tDescription: {item.Description}");
             }
         }
-        [TestCaseSource(typeof(EnrollmentsRepositoryTestsData), nameof(EnrollmentsRepositoryTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Enrollments> sqlPagedQuery)
         {
             var enrollmentsList = await _enrollmentsRepository.GetAsync(sqlPagedQuery);
@@ -121,7 +121,7 @@ namespace mini_ITS.Core.Tests.Repository
                 }
             }
         }
-        [TestCaseSource(typeof(EnrollmentsRepositoryTestsData), nameof(EnrollmentsRepositoryTestsData.EnrollmentsCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.EnrollmentsCases))]
         public async Task GetAsync_CheckId(Enrollments enrollments)
         {
             var enrollment = await _enrollmentsRepository.GetAsync(enrollments.Id);
@@ -137,7 +137,7 @@ namespace mini_ITS.Core.Tests.Repository
             Assert.That(maxNumber, Is.TypeOf<int>(), "ERROR - return type");
             Assert.That(maxNumber, Is.EqualTo(10), $"ERROR - maxNumber is not equal to 10");
         }
-        [TestCaseSource(typeof(EnrollmentsRepositoryTestsData), nameof(EnrollmentsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
         public async Task CreateAsync(Enrollments enrollments)
         {
             await _enrollmentsRepository.CreateAsync(enrollments);
@@ -149,7 +149,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollment = await _enrollmentsRepository.GetAsync(enrollments.Id);
             Assert.That(enrollment, Is.Null, "ERROR - delete enrollment");
         }
-        [TestCaseSource(typeof(EnrollmentsRepositoryTestsData), nameof(EnrollmentsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
         public async Task UpdateAsync(Enrollments enrollments)
         {
             await _enrollmentsRepository.CreateAsync(enrollments);
@@ -208,7 +208,7 @@ namespace mini_ITS.Core.Tests.Repository
             enrollment = await _enrollmentsRepository.GetAsync(enrollments.Id);
             Assert.That(enrollment, Is.Null, "ERROR - delete enrollment");
         }
-        [TestCaseSource(typeof(EnrollmentsRepositoryTestsData), nameof(EnrollmentsRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCases))]
         public async Task DeleteAsync(Enrollments enrollments)
         {
             await _enrollmentsRepository.CreateAsync(enrollments);

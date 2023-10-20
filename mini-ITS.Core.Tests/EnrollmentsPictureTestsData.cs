@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using mini_ITS.Core.Models;
 
-namespace mini_ITS.Core.Tests.Repository
+namespace mini_ITS.Core.Tests
 {
-    public class EnrollmentsPictureRepositoryTestsData
+    public class EnrollmentsPictureTestsData
     {
         public static IEnumerable<EnrollmentsPicture> EnrollmentsPictureCases
         {
@@ -20,7 +20,7 @@ namespace mini_ITS.Core.Tests.Repository
                     UserAddPictureFullName = "Eva Pedrov",
                     UserModPicture = new Guid("6F929C62-3A50-4F29-AF99-F4D188754FC0"),
                     UserModPictureFullName = "Eva Pedrov",
-                    
+
                     PictureName = "20230901_000001.jpg",
                     PicturePath = "/Files/6ac164ec-c578-43eb-9b4a-0478c316dd03/8732dcba-ed68-4920-bee4-f1401e229d66.jpg",
                     PictureFullPath = "/app/wwwroot/Files/6ac164ec-c578-43eb-9b4a-0478c316dd03/8732dcba-ed68-4920-bee4-f1401e229d66.jpg"

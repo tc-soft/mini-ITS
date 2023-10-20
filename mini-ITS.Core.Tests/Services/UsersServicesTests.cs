@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -78,8 +78,8 @@ namespace mini_ITS.Core.Tests.Services
         }
         [Test, Combinatorial]
         public async Task GetAsync_CheckDepartmentRole(
-            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestDepartment))] string department,
-            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestRole))] string role)
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestRole))] string role)
         {
             var users = await _usersServices.GetAsync(department, role);
             TestContext.Out.WriteLine($"Number of records: {users.Count()}");
@@ -96,8 +96,8 @@ namespace mini_ITS.Core.Tests.Services
         }
         [Test, Combinatorial]
         public async Task GetAsync_CheckSqlQueryCondition(
-            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestDepartment))] string department,
-            [ValueSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.TestRole))] string role)
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestRole))] string role)
         {
             var sqlQueryConditionList = new List<SqlQueryCondition>()
             {
@@ -128,7 +128,7 @@ namespace mini_ITS.Core.Tests.Services
                 UsersServicesTestsHelper.PrintRecord(item);
             }
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Users> sqlPagedQuery)
         {
             var usersList = await _usersServices.GetAsync(sqlPagedQuery);
@@ -193,23 +193,26 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.UsersCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCases))]
         public async Task GetAsync_CheckId(Users users)
         {
-            var user = await _usersServices.GetAsync(users.Id);
-            UsersServicesTestsHelper.Check(user, users);
-            UsersServicesTestsHelper.Print(user);
+            var usersDto = _mapper.Map<UsersDto>(users);
+            var userDto = await _usersServices.GetAsync(usersDto.Id);
+            UsersServicesTestsHelper.Check(userDto, usersDto);
+            UsersServicesTestsHelper.Print(userDto);
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.UsersCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCases))]
         public async Task GetAsync_CheckLogin(Users users)
         {
-            var user = await _usersServices.GetAsync(users.Login);
-            UsersServicesTestsHelper.Check(user, users);
-            UsersServicesTestsHelper.Print(user);
+            var usersDto = _mapper.Map<UsersDto>(users);
+            var userDto = await _usersServices.GetAsync(usersDto.Login);
+            UsersServicesTestsHelper.Check(userDto, usersDto);
+            UsersServicesTestsHelper.Print(userDto);
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task CreateAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task CreateAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             usersDto.Id = Guid.NewGuid();
             usersDto.PasswordHash = UsersServicesTestsHelper.NewPassword(usersDto);
             await _usersServices.CreateAsync(usersDto);
@@ -221,9 +224,10 @@ namespace mini_ITS.Core.Tests.Services
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task UpdateAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task UpdateAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             TestContext.Out.WriteLine("\nCreate user and check valid password:");
             usersDto.Id = Guid.NewGuid();
             var passwordPlain = UsersServicesTestsHelper.NewPassword(usersDto);
@@ -270,9 +274,10 @@ namespace mini_ITS.Core.Tests.Services
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task DeleteAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task DeleteAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             usersDto.Id = Guid.NewGuid();
             usersDto.PasswordHash = UsersServicesTestsHelper.NewPassword(usersDto);
             await _usersServices.CreateAsync(usersDto);
@@ -284,9 +289,10 @@ namespace mini_ITS.Core.Tests.Services
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task SetPasswordAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task SetPasswordAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             TestContext.Out.WriteLine("\nCreate user and check valid password:");
             usersDto.Id = Guid.NewGuid();
             var passwordPlain = UsersServicesTestsHelper.NewPassword(usersDto);
@@ -327,9 +333,10 @@ namespace mini_ITS.Core.Tests.Services
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task SetPasswordByIdAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task SetPasswordByIdAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             TestContext.Out.WriteLine("\nCreate user and check valid password:");
             usersDto.Id = Guid.NewGuid();
             var passwordPlain = UsersServicesTestsHelper.NewPassword(usersDto);
@@ -369,9 +376,10 @@ namespace mini_ITS.Core.Tests.Services
             user = await _usersServices.GetAsync(usersDto.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersServicesTestsData), nameof(UsersServicesTestsData.CRUDCases))]
-        public async Task LoginAsync(UsersDto usersDto)
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
+        public async Task LoginAsync(Users users)
         {
+            var usersDto = _mapper.Map<UsersDto>(users);
             TestContext.Out.WriteLine("\nCreate user and and try to login:");
             usersDto.Id = Guid.NewGuid();
             var passwordPlain = UsersServicesTestsHelper.NewPassword(usersDto);

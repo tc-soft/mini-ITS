@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using NUnit.Framework;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Options;
@@ -78,8 +77,8 @@ namespace mini_ITS.Core.Tests.Repository
         }
         [Test, Combinatorial]
         public async Task GetAsync_CheckDepartmentRole(
-            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestDepartment))] string department,
-            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestRole))] string role)
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestRole))] string role)
         {
             var users = await _usersRepository.GetAsync(department, role);
             TestContext.Out.WriteLine($"Number of records: {users.Count()}");
@@ -96,8 +95,8 @@ namespace mini_ITS.Core.Tests.Repository
         }
         [Test, Combinatorial]
         public async Task GetAsync_CheckSqlQueryCondition(
-            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestDepartment))] string department,
-            [ValueSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.TestRole))] string role)
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestDepartment))] string department,
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.TestRole))] string role)
         {
             var sqlQueryConditionList = new List<SqlQueryCondition>()
             {
@@ -128,7 +127,7 @@ namespace mini_ITS.Core.Tests.Repository
                 UsersRepositoryTestsHelper.PrintRecord(item);
             }
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.SqlPagedQueryCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Users> sqlPagedQuery)
         {
             var usersList = await _usersRepository.GetAsync(sqlPagedQuery);
@@ -193,14 +192,14 @@ namespace mini_ITS.Core.Tests.Repository
                 }
             }
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.UsersCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCases))]
         public async Task GetAsync_CheckId(Users users)
         {
             var user = await _usersRepository.GetAsync(users.Id);
             UsersRepositoryTestsHelper.Check(user, users);
             UsersRepositoryTestsHelper.Print(user);
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.UsersCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCases))]
         public async Task GetAsync_CheckLogin(Users users)
         {
             var user = await _usersRepository.GetAsync(users.Login);
@@ -208,7 +207,7 @@ namespace mini_ITS.Core.Tests.Repository
             UsersRepositoryTestsHelper.Print(user);
  
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
         public async Task CreateAsync(Users users)
         {
             await _usersRepository.CreateAsync(users);
@@ -220,7 +219,7 @@ namespace mini_ITS.Core.Tests.Repository
             user = await _usersRepository.GetAsync(users.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
         public async Task UpdateAsync(Users users)
         {
             await _usersRepository.CreateAsync(users);
@@ -247,7 +246,7 @@ namespace mini_ITS.Core.Tests.Repository
             user = await _usersRepository.GetAsync(users.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.CRUDCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCases))]
         public async Task DeleteAsync(Users users)
         {
             await _usersRepository.CreateAsync(users);
@@ -259,7 +258,7 @@ namespace mini_ITS.Core.Tests.Repository
             user = await _usersRepository.GetAsync(users.Id);
             Assert.That(user, Is.Null, "ERROR - delete user");
         }
-        [TestCaseSource(typeof(UsersRepositoryTestsData), nameof(UsersRepositoryTestsData.UsersCases))]
+        [TestCaseSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCases))]
         public async Task SetPasswordAsync(Users users)
         {
             var user = await _usersRepository.GetAsync(users.Id);

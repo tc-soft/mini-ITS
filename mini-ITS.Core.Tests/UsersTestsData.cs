@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Models;
 
-namespace mini_ITS.Core.Tests.Repository
+namespace mini_ITS.Core.Tests
 {
-    public class UsersRepositoryTestsData
+    public class UsersTestsData
     {
         public static IEnumerable<string> TestDepartment
         {

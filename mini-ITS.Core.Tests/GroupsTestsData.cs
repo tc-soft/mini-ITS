@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests
 {
     public class GroupsTestsData
     {
+        private static IMapper _mapper;
+
         public static IEnumerable<SqlPagedQuery<Groups>> SqlPagedQueryCases
         {
             get
@@ -77,6 +82,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<SqlPagedQuery<GroupsDto>> SqlPagedQueryCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Groups>, SqlPagedQuery<GroupsDto>>());
+                _mapper = config.CreateMapper();
+
+                return SqlPagedQueryCases.Select(item => _mapper.Map<SqlPagedQuery<GroupsDto>>(item));
+            }
+        }
         public static IEnumerable<Groups> GroupsCases
         {
             get
@@ -127,6 +142,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<GroupsDto> GroupsCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>());
+                _mapper = config.CreateMapper();
+
+                return GroupsCases.Select(item => _mapper.Map<GroupsDto>(item));
+            }
+        }
         public static IEnumerable<Groups> CRUDCases
         {
             get
@@ -175,6 +200,16 @@ namespace mini_ITS.Core.Tests
                     UserModGroupFullName = "Demi Balode",
                     GroupName = "Test Pilots United"
                 };
+            }
+        }
+        public static IEnumerable<GroupsDto> CRUDCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>());
+                _mapper = config.CreateMapper();
+
+                return CRUDCases.Select(item => _mapper.Map<GroupsDto>(item));
             }
         }
     }

@@ -7,6 +7,7 @@ using NUnit.Framework;
 using mini_ITS.Core;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
+using mini_ITS.Core.Tests;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
@@ -15,8 +16,8 @@ namespace mini_ITS.Web.Tests.Controllers
     {
         [Test, Combinatorial]
         public async Task IndexAsync_Unauthorized(
-            [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-            [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.SqlPagedQueryCases))] SqlPagedQuery<GroupsDto> sqlPagedQuery)
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedIndexGroupCases))] LoginData loginData,
+            [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.SqlPagedQueryCasesDto))] SqlPagedQuery<GroupsDto> sqlPagedQuery)
         {
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
@@ -26,8 +27,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task IndexAsync_Authorized(
-            [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedAllCases))] LoginData loginData,
-            [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.SqlPagedQueryCases))] SqlPagedQuery<GroupsDto> sqlPagedQuery)
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedIndexGroupCases))] LoginData loginData,
+            [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.SqlPagedQueryCasesDto))] SqlPagedQuery<GroupsDto> sqlPagedQuery)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -120,7 +121,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedCreateCases))]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCreateGroupCases))]
         public async Task CreateAsync_Unauthorized(
             LoginData loginUnauthorizedCases,
             LoginData loginUnauthorizedCreateCases,
@@ -141,8 +142,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task CreateAsync_Authorized(
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedCreateCases))] LoginData loginData,
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.CRUDCases))] GroupsDto groupsDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCreateGroupCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))] GroupsDto groupsDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -158,7 +159,7 @@ namespace mini_ITS.Web.Tests.Controllers
             GroupsControllerTestsHelper.CheckDeleteGroupAuthorizedCase(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedEditCases))]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditGroupCases))]
         public async Task EditGetAsync_Unauthorized(
             LoginData loginUnauthorizedCases,
             LoginData loginUnauthorizedEditCases,
@@ -179,8 +180,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Authorized(
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedEditCases))] LoginData loginData,
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.GroupsCases))] GroupsDto groupsDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditGroupCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.GroupsCasesDto))] GroupsDto groupsDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -195,7 +196,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedEditCases))]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditGroupCases))]
         public async Task EditPutAsync_Unauthorized(
             LoginData loginUnauthorizedCases,
             LoginData loginUnauthorizedEditCases,
@@ -216,15 +217,29 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task EditPutAsync_Authorized(
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedEditCases))] LoginData loginData,
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.GroupsCases))] GroupsDto groupsDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditGroupCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))] GroupsDto groupsDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before update");
+            response = await CreateAsync(groupsDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
+
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+            GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before update:");
+
             var caesarHelper = new CaesarHelper();
             groupsDto = GroupsControllerTestsHelper.Encrypt(caesarHelper, groupsDto);
-            GroupsControllerTestsHelper.Print(groupsDto, $"Modification");
+            GroupsControllerTestsHelper.Print(groupsDto, $"Modification:");
 
             response = await EditPutAsync(groupsDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
@@ -236,21 +251,25 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 2 (Decrypt)");
             TestContext.Out.WriteLine($"Response after EditPutAsync (Decrypt): {response.StatusCode}");
 
-            response = await EditGetAsync(groupsDto.Id);
+            response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
-            var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
+            results = await response.Content.ReadFromJsonAsync<GroupsDto>();
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             GroupsControllerTestsHelper.Check(results, groupsDto);
             TestContext.Out.WriteLine($"Comparing with the original test data: OK\n");
-            GroupsControllerTestsHelper.Print(groupsDto, $"User after updates");
+            GroupsControllerTestsHelper.Print(groupsDto, $"Group after updates:");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete group...");
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+            GroupsControllerTestsHelper.CheckDeleteGroups(await DeleteAsync(id));
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, TestCaseSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginUnauthorizedDeleteCases))]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteGroupCases))]
         public async Task DeleteAsync_Unauthorized(
             LoginData loginUnauthorizedCases,
             LoginData loginUnauthorizedEditCases,
@@ -270,8 +289,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task DeleteAsync_Authorized(
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.LoginAuthorizedDeleteCases))] LoginData loginData,
-                [ValueSource(typeof(GroupsControllerTestsData), nameof(GroupsControllerTestsData.CRUDCases))] GroupsDto groupsDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedDeleteGroupCases))] LoginData loginData,
+                [ValueSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))] GroupsDto groupsDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 

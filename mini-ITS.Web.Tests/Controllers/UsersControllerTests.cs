@@ -6,30 +6,31 @@ using NUnit.Framework;
 using mini_ITS.Core;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
+using mini_ITS.Core.Tests;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
 {
     public class UsersControllerTests : UsersIntegrationTest
     {
-        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))]
+        [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCases))]
         public async Task LoginAsync_Unauthorized(LoginData loginData)
         {
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
         }
-        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
+        [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCases))]
         public async Task LoginAsync_Authorized(LoginData loginData)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
+        [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCases))]
         public async Task LogoutAsync(LoginData loginData)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))]
+        [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCases))]
         public async Task LoginStatus_Unauthorized(LoginData loginData)
         {
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
@@ -38,7 +39,7 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check login status");
             TestContext.Out.WriteLine($"Response after check login status: {response.StatusCode}");
         }
-        [TestCaseSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))]
+        [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCases))]
         public async Task LoginStatus_Authorized(LoginData loginData)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
@@ -53,21 +54,29 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedIndexUserCases))]
         public async Task IndexAsync_Unauthorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.SqlPagedQueryCases))] SqlPagedQuery<UsersDto> sqlPagedQuery)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            SqlPagedQuery<UsersDto> sqlPagedQueryDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
 
-            response = await IndexAsync(sqlPagedQuery);
+            response = await IndexAsync(sqlPagedQueryDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task IndexAsync_Authorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.SqlPagedQueryCases))] SqlPagedQuery<UsersDto> sqlPagedQuery)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedIndexUserCases))] LoginData loginData,
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.SqlPagedQueryCasesDto))] SqlPagedQuery<UsersDto> sqlPagedQuery)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -155,12 +164,20 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCreateUserCases))]
         public async Task CreateAsync_Unauthorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
 
             response = await CreateAsync(usersDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
@@ -168,8 +185,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task CreateAsync_Authorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCreateUserCases))] LoginData loginData,
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -181,12 +198,20 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditUserCases))]
         public async Task EditGetAsync_Unauthorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
 
             response = await EditGetAsync(usersDto.Id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
@@ -194,8 +219,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Authorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditUserCases))] LoginData loginData,
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -210,12 +235,20 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditUserCases))]
         public async Task EditPutAsync_Unauthorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
 
             UsersControllerTestsHelper.Print(usersDto, "\nUser before update");
             
@@ -225,8 +258,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task EditPutAsync_Authorized(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditUserCases))] LoginData loginData,
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -258,19 +291,28 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteUserCases))]
         public async Task DeleteAsync_Unauthorized(
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
+
             UsersControllerTestsHelper.Print(usersDto, "\nUser before delete");
             UsersControllerTestsHelper.CheckDeleteUserUnauthorizedCase(await DeleteAsync(usersDto.Id));
         }
         [Test, Combinatorial]
         public async Task DeleteAsync_Authorized(
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+                 [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedDeleteUserCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -294,12 +336,20 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
-        [Test, Combinatorial]
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedChangePasswordUserCases))]
         public async Task ChangePasswordAsync_Unauthorized(
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginUnauthorizedCases))] LoginData loginData,
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.UsersCases))] UsersDto usersDto)
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
         {
-            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
 
             UsersControllerTestsHelper.Print(usersDto, "\nUser before change password");
             
@@ -320,8 +370,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task ChangePasswordAsync_Authorized(
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                 [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+                 [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedChangePasswordUserCases))] LoginData loginData,
+                 [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
@@ -364,8 +414,8 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task SetPasswordAsync(
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.LoginAuthorizedCases))] LoginData loginData,
-                [ValueSource(typeof(UsersControllerTestsData), nameof(UsersControllerTestsData.CRUDCases))] UsersDto usersDto)
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedSetPasswordUserCases))] LoginData loginData,
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 

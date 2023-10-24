@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\mini-ITS.Core.Tests\mini-ITS.Core.Tests.csproj" />
     <ProjectReference Include="..\mini-ITS.Web\mini-ITS.Web.csproj" />
   </ItemGroup>
 

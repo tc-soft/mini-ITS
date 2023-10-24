@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests
 {
     public class EnrollmentsTestsData
     {
+        private static IMapper _mapper;
+
         public static IEnumerable<SqlPagedQuery<Enrollments>> SqlPagedQueryCases
         {
             get
@@ -75,6 +80,16 @@ namespace mini_ITS.Core.Tests
                     Page = 1,
                     ResultsPerPage = 3
                 };
+            }
+        }
+        public static IEnumerable<SqlPagedQuery<EnrollmentsDto>> SqlPagedQueryCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Enrollments>, SqlPagedQuery<EnrollmentsDto>>());
+                _mapper = config.CreateMapper();
+
+                return SqlPagedQueryCases.Select(item => _mapper.Map<SqlPagedQuery<EnrollmentsDto>>(item));
             }
         }
         public static IEnumerable<Enrollments> EnrollmentsCases
@@ -211,6 +226,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<EnrollmentsDto> EnrollmentsCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>());
+                _mapper = config.CreateMapper();
+
+                return EnrollmentsCases.Select(item => _mapper.Map<EnrollmentsDto>(item));
+            }
+        }
         public static IEnumerable<Enrollments> CRUDCases
         {
             get
@@ -343,6 +368,16 @@ namespace mini_ITS.Core.Tests
                     ActionExecuted = 0,
                     ActionFinished = false
                 };
+            }
+        }
+        public static IEnumerable<EnrollmentsDto> CRUDCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>());
+                _mapper = config.CreateMapper();
+
+                return CRUDCases.Select(item => _mapper.Map<EnrollmentsDto>(item));
             }
         }
     }

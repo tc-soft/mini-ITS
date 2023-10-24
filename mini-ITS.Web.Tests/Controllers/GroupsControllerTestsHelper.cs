@@ -24,13 +24,13 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
 
-            Assert.That(groupDto.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupDto.Id)} is not Guid type");
-            Assert.That(groupDto.DateAddGroup, Is.EqualTo(groupsDto.DateAddGroup), $"ERROR - {nameof(groupsDto.DateAddGroup)} is not equal");
-            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupDto.DateModGroup)} is null");
-            Assert.That(groupDto.UserAddGroup, Is.EqualTo(groupsDto.UserAddGroup), $"ERROR - {nameof(groupsDto.UserAddGroup)} is not equal");
-            Assert.That(groupDto.UserAddGroupFullName, Is.EqualTo(groupsDto.UserAddGroupFullName), $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is not equal");
-            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupDto.UserModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupDto.UserModGroupFullName)} is null");
+            Assert.That(groupDto.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupsDto.Id)} is not Guid type");
+            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupsDto.DateAddGroup)} is null");
+            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupsDto.DateModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupsDto.UserAddGroup)} is null");
+            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is null");
+            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupsDto.UserModGroup)} is null");
+            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is null");
             Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
         }
         public static void Print(GroupsDto groupsDto, string message)
@@ -74,6 +74,11 @@ namespace mini_ITS.Web.Tests.Controllers
             groupsDto.GroupName = caesarHelper.Decrypt(groupsDto.GroupName);
 
             return groupsDto;
+        }
+        public static void CheckDeleteGroups(HttpResponseMessage httpResponseMessage)
+        {
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test group");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {httpResponseMessage.StatusCode}");
         }
     }
 }

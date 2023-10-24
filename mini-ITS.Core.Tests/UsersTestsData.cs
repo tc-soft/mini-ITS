@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests
 {
     public class UsersTestsData
     {
+        private static IMapper _mapper;
+
         public static IEnumerable<string> TestDepartment
         {
             get
@@ -119,6 +124,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<SqlPagedQuery<UsersDto>> SqlPagedQueryCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Users>, SqlPagedQuery<UsersDto>>());
+                _mapper = config.CreateMapper();
+
+                return SqlPagedQueryCases.Select(item => _mapper.Map<SqlPagedQuery<UsersDto>>(item));
+            }
+        }
         public static IEnumerable<Users> UsersCases
         {
             get
@@ -173,6 +188,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<UsersDto> UsersCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Users, UsersDto>());
+                _mapper = config.CreateMapper();
+
+                return UsersCases.Select(item => _mapper.Map<UsersDto>(item));
+            }
+        }
         public static IEnumerable<Users> CRUDCases
         {
             get
@@ -225,6 +250,16 @@ namespace mini_ITS.Core.Tests
                     Role = "Manager",
                     PasswordHash = "ECs22TDv0tnZqSdytxkhl3dli3BkZNkYBM1tsCFppYsb1O3j5pHPIsGzMBEHqV7+a808svugByEe7rR0DVgBwg=="
                 };
+            }
+        }
+        public static IEnumerable<UsersDto> CRUDCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Users, UsersDto>());
+                _mapper = config.CreateMapper();
+
+                return CRUDCases.Select(item => _mapper.Map<UsersDto>(item));
             }
         }
     }

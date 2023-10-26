@@ -19,6 +19,7 @@ namespace mini_ITS.Web.Tests
     {
         protected readonly HttpClient TestClient;
         protected HttpResponseMessage response;
+        protected HttpResponseMessage responsePage;
 
         protected UsersIntegrationTest()
         {

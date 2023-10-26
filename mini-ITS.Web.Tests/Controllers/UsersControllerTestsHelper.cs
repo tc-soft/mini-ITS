@@ -125,6 +125,27 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Phone      : {usersDto.Phone}");
             TestContext.Out.WriteLine($"Role       : {usersDto.Role}\n");
         }
+        public static void PrintRecordHeader()
+        {
+            TestContext.Out.WriteLine($"" +
+                $"{"| Login",-15}" +
+                $"{"| FirstName",-20}" +
+                $"{"| LastName",-20}" +
+                $"{"| Department",-20}" +
+                $"{"| Email",-40}" +
+                $"{"| Role",-20}|");
+            TestContext.Out.WriteLine(new string('-', 136));
+        }
+        public static void PrintRecord(UsersDto usersDto)
+        {
+            TestContext.Out.WriteLine($"" +
+                $"| {usersDto.Login,-13}" +
+                $"| {usersDto.FirstName,-18}" +
+                $"| {usersDto.LastName,-18}" +
+                $"| {usersDto.Department,-18}" +
+                $"| {usersDto.Email,-38}" +
+                $"| {usersDto.Role,-18}|");
+        }
         public static UsersDto Encrypt(CaesarHelper caesarHelper, UsersDto usersDto)
         {
             usersDto.Login = caesarHelper.Encrypt(usersDto.Login);

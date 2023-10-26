@@ -82,82 +82,83 @@ namespace mini_ITS.Web.Tests.Controllers
 
             response = await IndexAsync(sqlPagedQuery);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after check IndexAsync");
-            TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<SqlPagedResult<UsersDto>>();
             Assert.IsNotNull(results, $"ERROR - UsersDto is null");
-            TestContext.Out.WriteLine($"Response after load Json data: OK");
+            TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
-            string filterString = null;
-            sqlPagedQuery.Filter.ForEach(x =>
+            for (int i = 1; i <= results.TotalPages; i++)
             {
-                if (x == sqlPagedQuery.Filter.First() || x == sqlPagedQuery.Filter.Last())
-                    filterString += $", {x.Name}={x.Value}";
-                else
-                    filterString += $" {x.Name}={x.Value}";
-            });
+                sqlPagedQuery.Page = i;
 
-            Assert.That(results.Results.Count() > 0, "ERROR - users is empty");
-            TestContext.Out.WriteLine($"Check the number of records is greater than 0: OK");
-            Assert.That(results, Is.TypeOf<SqlPagedResult<UsersDto>>(), "ERROR - return type");
-            TestContext.Out.WriteLine($"Check the records is type of SqlPagedResult<UsersDto>: OK");
-            Assert.That(results.Results, Is.All.InstanceOf<UsersDto>(), "ERROR - all instance is not of <Users>(): OK");
-            TestContext.Out.WriteLine($"Check the records all instance of <UsersDto>: OK");
-            
-            TestContext.Out.WriteLine($"\n" +
-                $"Page {results.Page}/{results.TotalPages} - ResultsPerPage={results.ResultsPerPage}, " +
-                $"TotalResults={results.TotalResults}{filterString}, " +
-                $"Sort={sqlPagedQuery.SortColumnName}, " +
-                $"Sort direction={sqlPagedQuery.SortDirection}");
-
-            TestContext.Out.WriteLine($"" +
-                $"{"Login",-15}" +
-                $"{"FirstName",-20}" +
-                $"{"LastName",-20}" +
-                $"{"Department",-20}" +
-                $"{"Email",-40}" +
-                $"{"Role",-20}");
-
-            switch (sqlPagedQuery.SortDirection)
-            {
-                case "ASC":
-                    Assert.That(results.Results, Is.Ordered.Ascending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
-                    break;
-                case "DESC":
-                    Assert.That(results.Results, Is.Ordered.Descending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
-                    break;
-                default:
-                    Assert.Fail("ERROR - SortDirection is not T-SQL");
-                    break;
-            };
-
-            Assert.That(results.Results, Is.Unique);
-
-            foreach (var item in results.Results)
-            {
-                UsersControllerTestsHelper.Check(item);
-
+                string filterString = null;
                 sqlPagedQuery.Filter.ForEach(x =>
                 {
-                    if (x.Value is not null)
-                    {
-                        Assert.That(
-                            item.GetType().GetProperty(x.Name).GetValue(item, null),
-                            Is.EqualTo(x.Value),
-                            $"ERROR - Filter {x.Name} is not equal");
-                    }
+                    if (x == sqlPagedQuery.Filter.First() || x == sqlPagedQuery.Filter.Last())
+                        filterString += $", {x.Name}={x.Value}";
+                    else
+                        filterString += $" {x.Name}={x.Value}";
                 });
 
+                responsePage = await IndexAsync(sqlPagedQuery);
+                Assert.That(responsePage.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after check IndexAsync");
+                TestContext.Out.WriteLine($"Page {i}/{results.TotalPages} : Response after run API IndexAsync: {responsePage.StatusCode}");
+
+                var resultsPage = await responsePage.Content.ReadFromJsonAsync<SqlPagedResult<UsersDto>>();
+                Assert.IsNotNull(resultsPage, $"ERROR - UsersDto is null");
+                TestContext.Out.WriteLine($"Page {i}/{resultsPage.TotalPages} : response after load Json data: OK");
+
                 TestContext.Out.WriteLine($"" +
-                    $"{item.Login,-15}" +
-                    $"{item.FirstName,-20}" +
-                    $"{item.LastName,-20}" +
-                    $"{item.Department,-20}" +
-                    $"{item.Email,-40}" +
-                    $"{item.Role,-20}");
+                    $"Page {i}/{results.TotalPages} : ResultsPerPage={results.ResultsPerPage}, " +
+                    $"TotalResults={results.TotalResults}{filterString}, " +
+                    $"Sort={sqlPagedQuery.SortColumnName}, " +
+                    $"Sort direction={sqlPagedQuery.SortDirection}");
+                TestContext.Out.WriteLine(new string('-', 136));
+
+                UsersControllerTestsHelper.PrintRecordHeader();
+
+                Assert.That(resultsPage.Results.Count() > 0, "ERROR - users is empty");
+                Assert.That(resultsPage, Is.TypeOf<SqlPagedResult<UsersDto>>(), "ERROR - return type");
+                Assert.That(resultsPage.Results, Is.All.InstanceOf<UsersDto>(), "ERROR - all instance is not of <UsersDto>()");
+
+                switch (sqlPagedQuery.SortDirection)
+                {
+                    case "ASC":
+                        Assert.That(results.Results, Is.Ordered.Ascending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    case "DESC":
+                        Assert.That(results.Results, Is.Ordered.Descending.By(sqlPagedQuery.SortColumnName), "ERROR - sort");
+                        break;
+                    default:
+                        Assert.Fail("ERROR - SortDirection is not T-SQL");
+                        break;
+                };
+
+                Assert.That(results.Results, Is.Unique);
+
+                foreach (var item in results.Results)
+                {
+                    UsersControllerTestsHelper.Check(item);
+
+                    sqlPagedQuery.Filter.ForEach(x =>
+                    {
+                        if (x.Value is not null)
+                        {
+                            Assert.That(
+                                item.GetType().GetProperty(x.Name).GetValue(item, null),
+                                Is.EqualTo(x.Value == "NULL" ? null : x.Value),
+                                $"ERROR - Filter {x.Name} is not equal");
+                        }
+                    });
+
+                    UsersControllerTestsHelper.PrintRecord(item);
+                }
+
+                TestContext.Out.WriteLine(new string('-', 136));
+                TestContext.Out.WriteLine();
             }
 
-            TestContext.Out.WriteLine();
             TestContext.Out.WriteLine($"Check sorted direction: OK");
             TestContext.Out.WriteLine($"Check sorted collumn: OK");
             TestContext.Out.WriteLine($"Check filter: OK");

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using AutoMapper;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -54,8 +54,7 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(login);
             return user == null ? null : _mapper.Map<UsersDto>(user);
         }
-
-        public async Task CreateAsync(UsersDto usersDto)
+        public async Task<Guid> CreateAsync(UsersDto usersDto)
         {
             var existingUser = await _usersRepository.GetAsync(usersDto.Login);
             if (existingUser != null)
@@ -64,7 +63,7 @@ namespace mini_ITS.Core.Services
             }
 
             var newUser = new Users(
-                usersDto.Id == Guid.Empty ? Guid.NewGuid() : usersDto.Id,
+                Guid.NewGuid(),
                 usersDto.Login,
                 usersDto.FirstName,
                 usersDto.LastName,
@@ -73,8 +72,10 @@ namespace mini_ITS.Core.Services
                 usersDto.Phone,
                 usersDto.Role,
                 usersDto.PasswordHash);
+
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, usersDto.PasswordHash);
             await _usersRepository.CreateAsync(newUser);
+            return newUser.Id;
         }
         public async Task UpdateAsync(UsersDto usersDto)
         {

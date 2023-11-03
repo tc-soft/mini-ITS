@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
@@ -192,11 +193,19 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
             response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
 
-            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get test user");
+            var userDto = await response.Content.ReadFromJsonAsync<UsersDto>();
+            TestContext.Out.WriteLine($"Response after load Json data of test user: OK");
+            UsersControllerTestsHelper.Check(userDto, usersDto);
+
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditUserCases))]
@@ -260,36 +269,55 @@ namespace mini_ITS.Web.Tests.Controllers
         [Test, Combinatorial]
         public async Task EditPutAsync_Authorized(
                 [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditUserCases))] LoginData loginData,
-                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.UsersCasesDto))] UsersDto usersDto)
+                [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            UsersControllerTestsHelper.Print(usersDto, "\nUser before update");
-            var caesarHelper = new CaesarHelper();
-            usersDto = UsersControllerTestsHelper.Encrypt(caesarHelper, usersDto);
-            UsersControllerTestsHelper.Print(usersDto, "Modification");
+            response = await CreateAsync(usersDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
 
-            response = await EditPutAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
-            TestContext.Out.WriteLine($"Response after EditPutAsync (Encrypt): {response.StatusCode}");
-
-            usersDto = UsersControllerTestsHelper.Decrypt(caesarHelper, usersDto);
-
-            response = await EditPutAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 2 (Decrypt)");
-            TestContext.Out.WriteLine($"Response after EditPutAsync (Decrypt): {response.StatusCode}");
-
-            response = await EditGetAsync(usersDto.Id);
+            response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get user");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
-            var results = await response.Content.ReadFromJsonAsync<UsersDto>();
-            Assert.IsNotNull(results, $"ERROR - UsersDto is null");
-            TestContext.Out.WriteLine($"Response after load Json data: OK");
-            UsersControllerTestsHelper.Check(usersDto, results);
-            TestContext.Out.WriteLine($"Comparing with the original test data: OK\n");
-            UsersControllerTestsHelper.Print(results, "User after updates");
+            var userDto = await response.Content.ReadFromJsonAsync<UsersDto>();
+            Assert.IsNotNull(userDto, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
+            var caesarHelper = new CaesarHelper();
+            userDto = UsersControllerTestsHelper.Encrypt(caesarHelper, userDto);
+            UsersControllerTestsHelper.Print(userDto, $"Modification:");
+
+            response = await EditPutAsync(userDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
+            TestContext.Out.WriteLine($"Response after EditPutAsync (Encrypt): {response.StatusCode}");
+
+            userDto = UsersControllerTestsHelper.Decrypt(caesarHelper, userDto);
+
+            response = await EditPutAsync(userDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 2 (Decrypt)");
+            TestContext.Out.WriteLine($"Response after EditPutAsync (Decrypt): {response.StatusCode}");
+
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get user");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            userDto = await response.Content.ReadFromJsonAsync<UsersDto>();
+            Assert.IsNotNull(userDto, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+
+            UsersControllerTestsHelper.Check(userDto, usersDto);
+            TestContext.Out.WriteLine($"Comparing with the original test data: OK\n");
+            UsersControllerTestsHelper.Print(userDto, $"User after updates:");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete user...");
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+            UsersControllerTestsHelper.CheckDeleteUsers(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteUserCases))]
@@ -317,19 +345,14 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            UsersControllerTestsHelper.Print(usersDto, "\nCreate test user");
-            
             response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after create test user");
-            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}");
-            
-            response = await EditGetAsync(usersDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get test user");
-            var results = await response.Content.ReadFromJsonAsync<UsersDto>();
-            TestContext.Out.WriteLine($"Response after load Json data of test user: OK");
-            UsersControllerTestsHelper.Check(results, usersDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
 
-            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
 
             response = await EditGetAsync(usersDto.Id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after get test user");
@@ -376,11 +399,12 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            UsersControllerTestsHelper.Print(usersDto, "\nCreate test user");
-
             response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after create test user");
-            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}\n");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
 
             var caesarHelper = new CaesarHelper();
             var changePassword = new ChangePassword()
@@ -390,6 +414,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 NewPassword = caesarHelper.Encrypt(usersDto.PasswordHash)
             };
 
+            TestContext.Out.WriteLine($"Change password");
             TestContext.Out.WriteLine($"Old password : {changePassword.OldPassword}");
             TestContext.Out.WriteLine($"New password : {changePassword.NewPassword}\n");
 
@@ -399,17 +424,20 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
 
+            TestContext.Out.WriteLine($"Login user with a new password and check valid...");
+
             var loginUserData = new LoginData()
             {
                 Login = usersDto.Login,
                 Password = changePassword.NewPassword
             };
+
             TestContext.Out.WriteLine();
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUserData));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
-            TestContext.Out.WriteLine();
+            
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
-            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
@@ -420,39 +448,44 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            UsersControllerTestsHelper.Print(usersDto, "\nCreate test user");
-
             response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after create test user");
-            TestContext.Out.WriteLine($"Response after create test user: {response.StatusCode}\n");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
 
             var caesarHelper = new CaesarHelper();
             var setPassword = new SetPassword()
             {
-                Id = usersDto.Id,
+                Id = id,
                 NewPassword = caesarHelper.Encrypt(usersDto.PasswordHash)
             };
 
+            TestContext.Out.WriteLine($"Change password");
             TestContext.Out.WriteLine($"Old password : {usersDto.PasswordHash}");
             TestContext.Out.WriteLine($"New password : {setPassword.NewPassword}\n");
 
             response = await SetPasswordAsync(setPassword);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after change password");
-            TestContext.Out.WriteLine($"Response after change password: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after set password: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+
+            TestContext.Out.WriteLine($"Login user with a new password and check valid...");
 
             var loginUserData = new LoginData()
             {
                 Login = usersDto.Login,
                 Password = setPassword.NewPassword
             };
+
             TestContext.Out.WriteLine();
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUserData));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
             TestContext.Out.WriteLine();
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
-            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(usersDto.Id));
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

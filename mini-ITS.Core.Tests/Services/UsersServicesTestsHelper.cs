@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using mini_ITS.Core.Dto;
-using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Services
 {
@@ -29,32 +28,18 @@ namespace mini_ITS.Core.Tests.Services
             Assert.IsNotNull(usersDto.Role, $"ERROR - {nameof(usersDto.Role)} is null");
             Assert.IsNotNull(usersDto.PasswordHash, $"ERROR - {nameof(usersDto.PasswordHash)} is null");
         }
-        public static void Check(UsersDto usersDto, Users users)
+        public static void Check(UsersDto userDto, UsersDto usersDto)
         {
-            Assert.That(usersDto, Is.TypeOf<UsersDto>(), "ERROR - return type");
+            Assert.That(userDto, Is.TypeOf<UsersDto>(), "ERROR - return type");
 
-            Assert.That(usersDto.Id, Is.EqualTo(users.Id), $"ERROR - {nameof(users.Id)} is not equal");
-            Assert.That(usersDto.Login, Is.EqualTo(users.Login), $"ERROR - {nameof(users.Login)} is not equal");
-            Assert.That(usersDto.FirstName, Is.EqualTo(users.FirstName), $"ERROR - {nameof(users.FirstName)} is not equal");
-            Assert.That(usersDto.LastName, Is.EqualTo(users.LastName), $"ERROR - {nameof(users.LastName)} is not equal");
-            Assert.That(usersDto.Department, Is.EqualTo(users.Department), $"ERROR - {nameof(users.Department)} is not equal");
-            Assert.That(usersDto.Email, Is.EqualTo(users.Email), $"ERROR - {nameof(users.Email)} is not equal");
-            Assert.That(usersDto.Phone, Is.EqualTo(users.Phone), $"ERROR - {nameof(users.Phone)} is not equal");
-            Assert.That(usersDto.Role, Is.EqualTo(users.Role), $"ERROR - {nameof(users.Role)} is not equal");
-            Assert.That(usersDto.PasswordHash, Is.EqualTo(users.PasswordHash), $"ERROR - {nameof(users.PasswordHash)} is not equal");
-        }
-        public static void Check(UsersDto usersDto, UsersDto users)
-        {
-            Assert.That(usersDto, Is.TypeOf<UsersDto>(), "ERROR - return type");
-
-            Assert.That(usersDto.Id, Is.EqualTo(users.Id), $"ERROR - {nameof(users.Id)} is not equal");
-            Assert.That(usersDto.Login, Is.EqualTo(users.Login), $"ERROR - {nameof(users.Login)} is not equal");
-            Assert.That(usersDto.FirstName, Is.EqualTo(users.FirstName), $"ERROR - {nameof(users.FirstName)} is not equal");
-            Assert.That(usersDto.LastName, Is.EqualTo(users.LastName), $"ERROR - {nameof(users.LastName)} is not equal");
-            Assert.That(usersDto.Department, Is.EqualTo(users.Department), $"ERROR - {nameof(users.Department)} is not equal");
-            Assert.That(usersDto.Email, Is.EqualTo(users.Email), $"ERROR - {nameof(users.Email)} is not equal");
-            Assert.That(usersDto.Phone, Is.EqualTo(users.Phone), $"ERROR - {nameof(users.Phone)} is not equal");
-            Assert.That(usersDto.Role, Is.EqualTo(users.Role), $"ERROR - {nameof(users.Role)} is not equal");
+            Assert.That(userDto.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(usersDto.Id)} is not Guid type");
+            Assert.That(userDto.Login, Is.EqualTo(usersDto.Login), $"ERROR - {nameof(usersDto.Login)} is not equal");
+            Assert.That(userDto.FirstName, Is.EqualTo(usersDto.FirstName), $"ERROR - {nameof(usersDto.FirstName)} is not equal");
+            Assert.That(userDto.LastName, Is.EqualTo(usersDto.LastName), $"ERROR - {nameof(usersDto.LastName)} is not equal");
+            Assert.That(userDto.Department, Is.EqualTo(usersDto.Department), $"ERROR - {nameof(usersDto.Department)} is not equal");
+            Assert.That(userDto.Email, Is.EqualTo(usersDto.Email), $"ERROR - {nameof(usersDto.Email)} is not equal");
+            Assert.That(userDto.Phone, Is.EqualTo(usersDto.Phone), $"ERROR - {nameof(usersDto.Phone)} is not equal");
+            Assert.That(userDto.Role, Is.EqualTo(usersDto.Role), $"ERROR - {nameof(usersDto.Role)} is not equal");
         }
         public static void Print(UsersDto usersDto)
         {

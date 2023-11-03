@@ -16,7 +16,7 @@ namespace mini_ITS.Core.Services
         Task<UsersDto> GetAsync(Guid id);
         Task<UsersDto> GetAsync(string login);
 
-        Task CreateAsync(UsersDto usersDto);
+        Task<Guid> CreateAsync(UsersDto usersDto);
         Task UpdateAsync(UsersDto usersDto);
         Task DeleteAsync(Guid id);
 

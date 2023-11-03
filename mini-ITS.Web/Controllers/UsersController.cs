@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -133,9 +133,9 @@ namespace mini_ITS.Web.Controllers
         {
             try
             {
-                await _usersServices.CreateAsync(usersDto);
+                var id = await _usersServices.CreateAsync(usersDto);
 
-                return Ok();
+                return Ok(id);
             }
             catch (Exception ex)
             {

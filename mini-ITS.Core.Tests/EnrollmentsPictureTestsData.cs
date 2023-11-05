@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests
 {
     public class EnrollmentsPictureTestsData
     {
+        private static IMapper _mapper;
+
         public static IEnumerable<EnrollmentsPicture> EnrollmentsPictureCases
         {
             get
@@ -72,6 +77,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<EnrollmentsPictureDto> EnrollmentsPictureCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsPicture, EnrollmentsPictureDto>());
+                _mapper = config.CreateMapper();
+
+                return EnrollmentsPictureCases.Select(item => _mapper.Map<EnrollmentsPictureDto>(item));
+            }
+        }
         public static IEnumerable<EnrollmentsPicture> CRUDCases
         {
             get
@@ -136,6 +151,16 @@ namespace mini_ITS.Core.Tests
                     PicturePath = "/Files/9f38b77c-3444-4e69-bf2e-c1a71e4b5b6e/48f39f33-d2a8-46db-99f7-47dbeaf0b464.jpg",
                     PictureFullPath = "/app/wwwroot/Files/9f38b77c-3444-4e69-bf2e-c1a71e4b5b6e/48f39f33-d2a8-46db-99f7-47dbeaf0b464.jpg"
                 };
+            }
+        }
+        public static IEnumerable<EnrollmentsPictureDto> CRUDCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsPicture, EnrollmentsPictureDto>());
+                _mapper = config.CreateMapper();
+
+                return CRUDCases.Select(item => _mapper.Map<EnrollmentsPictureDto>(item));
             }
         }
     }

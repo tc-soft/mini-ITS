@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests
 {
     public class EnrollmentsDescriptionTestsData
     {
+        private static IMapper _mapper;
+
         public static IEnumerable<EnrollmentsDescription> EnrollmentsDescriptionCases
         {
             get
@@ -64,6 +69,16 @@ namespace mini_ITS.Core.Tests
                 };
             }
         }
+        public static IEnumerable<EnrollmentsDescriptionDto> EnrollmentsDescriptionCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>());
+                _mapper = config.CreateMapper();
+
+                return EnrollmentsDescriptionCases.Select(item => _mapper.Map<EnrollmentsDescriptionDto>(item));
+            }
+        }
         public static IEnumerable<EnrollmentsDescription> CRUDCases
         {
             get
@@ -120,6 +135,16 @@ namespace mini_ITS.Core.Tests
                     Description = "Test 4",
                     ActionExecuted = 1
                 };
+            }
+        }
+        public static IEnumerable<EnrollmentsDescriptionDto> CRUDCasesDto
+        {
+            get
+            {
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>());
+                _mapper = config.CreateMapper();
+
+                return CRUDCases.Select(item => _mapper.Map<EnrollmentsDescriptionDto>(item));
             }
         }
     }

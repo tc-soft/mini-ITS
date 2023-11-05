@@ -116,7 +116,6 @@ namespace mini_ITS.Web.Tests.Controllers
                     $"Sort={sqlPagedQuery.SortColumnName}, " +
                     $"Sort direction={sqlPagedQuery.SortDirection}");
                 TestContext.Out.WriteLine(new string('-', 136));
-
                 UsersControllerTestsHelper.PrintRecordHeader();
 
                 Assert.That(resultsPage.Results.Count() > 0, "ERROR - users is empty");
@@ -441,8 +440,54 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedSetPasswordUserCases))]
+        public async Task SetPasswordAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginAuthorizedCases,
+            UsersDto usersDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(new LoginData { Login = "admin", Password = "admin" }));
+
+            response = await CreateAsync(usersDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+            }
+
+            var caesarHelper = new CaesarHelper();
+            var setPassword = new SetPassword()
+            {
+                Id = id,
+                NewPassword = caesarHelper.Encrypt(usersDto.PasswordHash)
+            };
+
+            TestContext.Out.WriteLine($"Change password");
+            TestContext.Out.WriteLine($"Old password : {usersDto.PasswordHash}");
+            TestContext.Out.WriteLine($"New password : {setPassword.NewPassword}\n");
+
+            response = await SetPasswordAsync(setPassword);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after change password");
+            TestContext.Out.WriteLine($"Response after set password: {response.StatusCode}");
+
+            if (loginAuthorizedCases is not null) UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(new LoginData { Login = "admin", Password = "admin" }));
+            UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
         [Test, Combinatorial]
-        public async Task SetPasswordAsync(
+        public async Task SetPasswordAsync_Authorized(
                 [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedSetPasswordUserCases))] LoginData loginData,
                 [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {

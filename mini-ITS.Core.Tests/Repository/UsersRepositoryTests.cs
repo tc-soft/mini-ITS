@@ -251,7 +251,7 @@ namespace mini_ITS.Core.Tests.Repository
         {
             await _usersRepository.CreateAsync(users);
             var user = await _usersRepository.GetAsync(users.Id);
-            UsersRepositoryTestsHelper.Check(user);
+            UsersRepositoryTestsHelper.Check(user, users);
             UsersRepositoryTestsHelper.Print(user);
 
             await _usersRepository.DeleteAsync(user.Id);

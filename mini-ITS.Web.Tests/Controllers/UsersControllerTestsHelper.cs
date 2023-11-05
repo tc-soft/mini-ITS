@@ -115,7 +115,6 @@ namespace mini_ITS.Web.Tests.Controllers
         public static void Print(UsersDto usersDto, string message)
         {
             TestContext.Out.WriteLine($"{message}");
-            //TestContext.Out.WriteLine($"Id         : {usersDto.Id}");
             TestContext.Out.WriteLine($"Login      : {usersDto.Login}");
             TestContext.Out.WriteLine($"FirstName  : {usersDto.FirstName}");
             TestContext.Out.WriteLine($"LastName   : {usersDto.LastName}");

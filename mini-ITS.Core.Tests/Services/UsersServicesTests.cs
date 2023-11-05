@@ -47,10 +47,10 @@ namespace mini_ITS.Core.Tests.Services
         public async Task GetAsync_CheckAll()
         {
             TestContext.Out.WriteLine("Get users by GetAsync() and check valid...\n");
-            var users = await _usersServices.GetAsync();
-            UsersServicesTestsHelper.Check(users);
+            var usersDto = await _usersServices.GetAsync();
+            UsersServicesTestsHelper.Check(usersDto);
 
-            foreach (var item in users)
+            foreach (var item in usersDto)
             {
                 if (item.FirstName.Length >= 3 && item.LastName.Length >= 5)
                 {
@@ -75,7 +75,7 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
 
-            TestContext.Out.WriteLine($"\nNumber of records: {users.Count()}");
+            TestContext.Out.WriteLine($"\nNumber of records: {usersDto.Count()}");
         }
         [Test, Combinatorial]
         public async Task GetAsync_CheckDepartmentRole(
@@ -86,12 +86,12 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Department : {department}");
             TestContext.Out.WriteLine($"      Role : {role}\n");
 
-            var users = await _usersServices.GetAsync(department, role);
-            TestContext.Out.WriteLine($"Number of records: {users.Count()}");
+            var usersDto = await _usersServices.GetAsync(department, role);
+            TestContext.Out.WriteLine($"Number of records: {usersDto.Count()}");
             UsersServicesTestsHelper.PrintRecordHeader();
-            UsersServicesTestsHelper.Check(users);
+            UsersServicesTestsHelper.Check(usersDto);
 
-            foreach (var item in users)
+            foreach (var item in usersDto)
             {
                 UsersServicesTestsHelper.Check(item);
                 if (department is not null) Assert.That(item.Department, Is.EqualTo(department), $"ERROR - {nameof(item.Department)} is not equal");
@@ -124,12 +124,12 @@ namespace mini_ITS.Core.Tests.Services
                 }
             };
 
-            var users = await _usersServices.GetAsync(sqlQueryConditionList);
-            TestContext.Out.WriteLine($"Number of records: {users.Count()}");
+            var usersDto = await _usersServices.GetAsync(sqlQueryConditionList);
+            TestContext.Out.WriteLine($"Number of records: {usersDto.Count()}");
             UsersServicesTestsHelper.PrintRecordHeader();
-            UsersServicesTestsHelper.Check(users);
+            UsersServicesTestsHelper.Check(usersDto);
 
-            foreach (var item in users)
+            foreach (var item in usersDto)
             {
                 UsersServicesTestsHelper.Check(item);
                 if (department is not null) Assert.That(item.Department, Is.EqualTo(department), $"ERROR - {nameof(item.Department)} is not equal");
@@ -263,11 +263,10 @@ namespace mini_ITS.Core.Tests.Services
             userDto = UsersServicesTestsHelper.Decrypt(caesarHelper, userDto);
             await _usersServices.UpdateAsync(userDto);
             userDto = await _usersServices.GetAsync(id);
-            UsersServicesTestsHelper.Check(userDto);
+            UsersServicesTestsHelper.Check(userDto, usersDto);
             Assert.That(
                 _passwordHasher.VerifyHashedPassword(_mapper.Map<Users>(userDto), userDto.PasswordHash, passwordPlain),
                 Is.EqualTo(PasswordVerificationResult.Success), $"ERROR - {nameof(userDto.PasswordHash)} is not verification");
-            UsersServicesTestsHelper.Check(userDto, usersDto);
 
             TestContext.Out.WriteLine("Delete user by DeleteAsync(Guid id) and check valid...");
             await _usersServices.DeleteAsync(id);

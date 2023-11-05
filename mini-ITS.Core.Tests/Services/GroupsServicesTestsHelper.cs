@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using mini_ITS.Core.Dto;
-using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Services
 {
@@ -52,7 +51,7 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static void PrintRecordHeader()
         {
-            TestContext.Out.WriteLine($"" +
+            TestContext.Out.WriteLine(
                 $"{"Id",-40}" +
                 $"{"UserAddGroupFullName",-25}" +
                 $"{"UserModGroupFullName",-25}" +
@@ -67,21 +66,21 @@ namespace mini_ITS.Core.Tests.Services
                 $"{group.GroupName,-20}");
 
         }
-        public static Groups Encrypt(CaesarHelper caesarHelper, Groups groups)
+        public static GroupsDto Encrypt(CaesarHelper caesarHelper, GroupsDto groupsDto)
         {
-            groups.UserAddGroupFullName = caesarHelper.Encrypt(groups.UserAddGroupFullName);
-            groups.UserModGroupFullName = caesarHelper.Encrypt(groups.UserModGroupFullName);
-            groups.GroupName = caesarHelper.Encrypt(groups.GroupName);
+            groupsDto.UserAddGroupFullName = caesarHelper.Encrypt(groupsDto.UserAddGroupFullName);
+            groupsDto.UserModGroupFullName = caesarHelper.Encrypt(groupsDto.UserModGroupFullName);
+            groupsDto.GroupName = caesarHelper.Encrypt(groupsDto.GroupName);
 
-            return groups;
+            return groupsDto;
         }
-        public static Groups Decrypt(CaesarHelper caesarHelper, Groups groups)
+        public static GroupsDto Decrypt(CaesarHelper caesarHelper, GroupsDto groupsDto)
         {
-            groups.UserAddGroupFullName = caesarHelper.Decrypt(groups.UserAddGroupFullName);
-            groups.UserModGroupFullName = caesarHelper.Decrypt(groups.UserModGroupFullName);
-            groups.GroupName = caesarHelper.Decrypt(groups.GroupName);
+            groupsDto.UserAddGroupFullName = caesarHelper.Decrypt(groupsDto.UserAddGroupFullName);
+            groupsDto.UserModGroupFullName = caesarHelper.Decrypt(groupsDto.UserModGroupFullName);
+            groupsDto.GroupName = caesarHelper.Decrypt(groupsDto.GroupName);
 
-            return groups;
+            return groupsDto;
         }
     }
 }

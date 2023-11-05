@@ -58,7 +58,7 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.SqlPagedQueryCases))]
         public async Task GetAsync_CheckSqlPagedQuery(SqlPagedQuery<Groups> sqlPagedQuery)
         {
-            TestContext.Out.WriteLine("Get groups by GetAsync(sqlPagedQuery) and check valid...");
+            TestContext.Out.WriteLine("Get groups by GetAsync(SqlPagedQuery<Groups> sqlPagedQuery) and check valid...");
             var groupsList = await _groupsServices.GetAsync(sqlPagedQuery);
             Assert.That(groupsList.Results.Count() > 0, "ERROR - groups is empty");
 
@@ -81,11 +81,7 @@ namespace mini_ITS.Core.Tests.Services
                     $"TotalResults={groups.TotalResults}{filterString}, " +
                     $"Sort={sqlPagedQuery.SortColumnName}, " +
                     $"Sort direction={sqlPagedQuery.SortDirection}");
-                TestContext.Out.WriteLine(
-                    $"{"Id",-40}" +
-                    $"{"UserAddGroupFullName",-25}" +
-                    $"{"UserModGroupFullName",-25}" +
-                    $"{"GroupName",-20}");
+                GroupsServicesTestsHelper.PrintRecordHeader();
 
                 Assert.That(groups.Results.Count() > 0, "ERROR - groups is empty");
                 Assert.That(groups, Is.TypeOf<SqlPagedResult<GroupsDto>>(), "ERROR - return type");
@@ -116,7 +112,7 @@ namespace mini_ITS.Core.Tests.Services
                         {
                             Assert.That(
                                 item.GetType().GetProperty(x.Name).GetValue(item, null),
-                                Is.EqualTo(x.Value),
+                                Is.EqualTo(x.Value == "NULL" ? null : x.Value),
                                 $"ERROR - Filter {x.Name} is not equal");
                         }
                     });
@@ -125,76 +121,71 @@ namespace mini_ITS.Core.Tests.Services
                 }
             }
         }
-        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.GroupsCases))]
-        public async Task GetAsync_CheckId(Groups groups)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.GroupsCasesDto))]
+        public async Task GetAsync_CheckId(GroupsDto groupsDto)
         {
-            var groupsDto = _mapper.Map<GroupsDto>(groups);
-            TestContext.Out.WriteLine("Get group by GetAsync(id) and check valid...\n");
+            TestContext.Out.WriteLine("Get group by GetAsync(Guid id) and check valid...\n");
             var groupDto = await _groupsServices.GetAsync(groupsDto.Id);
             GroupsServicesTestsHelper.Check(groupDto, groupsDto);
             GroupsServicesTestsHelper.Print(groupDto);
         }
-        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
-        public async Task CreateAsync(Groups groups)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))]
+        public async Task CreateAsync(GroupsDto groupsDto)
         {
-            var groupsDto = _mapper.Map<GroupsDto>(groups);
-            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
+            TestContext.Out.WriteLine("Create group by CreateAsync(GroupsDto groupsDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserAddGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
             var groupDto = await _groupsServices.GetAsync(id);
             GroupsServicesTestsHelper.Check(groupDto, groupsDto);
             GroupsServicesTestsHelper.Print(groupDto);
 
-            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
-            await _groupsServices.DeleteAsync(groupDto.Id);
-            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(Guid id) and check valid...");
+            await _groupsServices.DeleteAsync(id);
+            groupDto = await _groupsServices.GetAsync(id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
-        public async Task UpdateAsync(Groups groups)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))]
+        public async Task UpdateAsync(GroupsDto groupsDto)
         {
-            var groupsDto = _mapper.Map<GroupsDto>(groups);
-            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
+            TestContext.Out.WriteLine("Create group by CreateAsync(GroupsDto groupsDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
             var groupDto = await _groupsServices.GetAsync(id);
             GroupsServicesTestsHelper.Check(groupDto, groupsDto);
             GroupsServicesTestsHelper.Print(groupDto);
 
-            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(groupsDto, username) and check valid...\n");
+            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(GroupsDto groupsDto, string username) and check valid...\n");
             var caesarHelper = new CaesarHelper();
-            groupDto.GroupName = caesarHelper.Encrypt(groupDto.GroupName);
+            groupDto = GroupsServicesTestsHelper.Encrypt(caesarHelper, groupDto);
             await _groupsServices.UpdateAsync(groupDto, user.Login);
-            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            groupDto = await _groupsServices.GetAsync(id);
             GroupsServicesTestsHelper.Check(groupDto);
             GroupsServicesTestsHelper.Print(groupDto);
 
-            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(groupsDto, username) and check valid...\n");
-            groupDto.GroupName = caesarHelper.Decrypt(groupDto.GroupName);
+            TestContext.Out.WriteLine("\nUpdate group by UpdateAsync(GroupsDto groupsDto, string username) and check valid...\n");
+            groupDto = GroupsServicesTestsHelper.Decrypt(caesarHelper, groupDto);
             await _groupsServices.UpdateAsync(groupDto, user.Login);
-            groupDto = await _groupsServices.GetAsync(groupDto.Id);
-            GroupsServicesTestsHelper.Check(groupDto);
-            GroupsServicesTestsHelper.Print(groupDto);
+            groupDto = await _groupsServices.GetAsync(id);
+            GroupsServicesTestsHelper.Check(groupDto, groupsDto);
 
-            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
-            await _groupsServices.DeleteAsync(groupDto.Id);
-            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            TestContext.Out.WriteLine("Delete group by DeleteAsync(Guid id) and check valid...");
+            await _groupsServices.DeleteAsync(id);
+            groupDto = await _groupsServices.GetAsync(id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
         }
-        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
-        public async Task DeleteAsync(Groups groups)
+        [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCasesDto))]
+        public async Task DeleteAsync(GroupsDto groupsDto)
         {
-            var groupsDto = _mapper.Map<GroupsDto>(groups);
-            TestContext.Out.WriteLine("Create group by CreateAsync(groupsDto, username) and check valid...\n");
+            TestContext.Out.WriteLine("Create group by CreateAsync(GroupsDto groupsDto, string username) and check valid...\n");
             var user = await _usersRepository.GetAsync(groupsDto.UserModGroup);
             var id = await _groupsServices.CreateAsync(groupsDto, user.Login);
             var groupDto = await _groupsServices.GetAsync(id);
             GroupsServicesTestsHelper.Check(groupDto, groupsDto);
             GroupsServicesTestsHelper.Print(groupDto);
 
-            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(id) and check valid...");
-            await _groupsServices.DeleteAsync(groupDto.Id);
-            groupDto = await _groupsServices.GetAsync(groupDto.Id);
+            TestContext.Out.WriteLine("\nDelete group by DeleteAsync(Guid id) and check valid...");
+            await _groupsServices.DeleteAsync(id);
+            groupDto = await _groupsServices.GetAsync(id);
             Assert.That(groupDto, Is.Null, "ERROR - delete group");
         }
     }

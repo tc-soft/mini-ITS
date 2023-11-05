@@ -15,7 +15,7 @@ namespace mini_ITS.Core.Tests.Repository
     // COLLECTION
     // - await _groupsRepository.xxx
     // - GroupsRepositoryTestsHelper.PrintRecordHeader();
-    // - GroupsRepositoryTestsHelper.Check(users);
+    // - GroupsRepositoryTestsHelper.Check(groups);
     // ITEM
     // - GroupsRepositoryTestsHelper.Check(item);
     // - Assert additional filters
@@ -125,7 +125,7 @@ namespace mini_ITS.Core.Tests.Repository
         {
             var group = await _groupsRepository.GetAsync(groups.Id);
             GroupsRepositoryTestsHelper.Check(group, groups);
-            GroupsRepositoryTestsHelper.Print(groups);
+            GroupsRepositoryTestsHelper.Print(group);
         }
         [TestCaseSource(typeof(GroupsTestsData), nameof(GroupsTestsData.CRUDCases))]
         public async Task CreateAsync(Groups groups)
@@ -171,7 +171,7 @@ namespace mini_ITS.Core.Tests.Repository
         {
             await _groupsRepository.CreateAsync(groups);
             var group = await _groupsRepository.GetAsync(groups.Id);
-            GroupsRepositoryTestsHelper.Check(group);
+            GroupsRepositoryTestsHelper.Check(group, groups);
             GroupsRepositoryTestsHelper.Print(group);
 
             await _groupsRepository.DeleteAsync(group.Id);

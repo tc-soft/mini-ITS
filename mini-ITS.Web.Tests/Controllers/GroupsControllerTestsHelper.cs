@@ -45,6 +45,15 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"UserModGroupFullName : {groupsDto.UserModGroupFullName}");
             TestContext.Out.WriteLine($"GroupName            : {groupsDto.GroupName}\n");
         }
+        public static void PrintRecordHeader()
+        {
+            TestContext.Out.WriteLine(
+                $"{"| Id",-39}" +
+                $"{"| UserAddGroupFullName",-27}" +
+                $"{"| UserModGroupFullName",-27}" +
+                $"{"| GroupName",-31}|");
+            TestContext.Out.WriteLine(new string('-', 125));
+        }
         public static void PrintRecord(GroupsDto groupsDto)
         {
             TestContext.Out.WriteLine($"" +

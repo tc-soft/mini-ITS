@@ -59,7 +59,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
                 var resultsPage = await responsePage.Content.ReadFromJsonAsync<SqlPagedResult<GroupsDto>>();
                 Assert.IsNotNull(resultsPage, $"ERROR - GroupsDto is null");
-                TestContext.Out.WriteLine($"Page {i}/{resultsPage.TotalPages} : response after load Json data: OK");
+                TestContext.Out.WriteLine($"Page {i}/{resultsPage.TotalPages} : Response after load Json data: OK");
 
                 TestContext.Out.WriteLine($"" +
                     $"Page {resultsPage.Page}/{resultsPage.TotalPages} : ResultsPerPage={resultsPage.ResultsPerPage}, " +
@@ -67,12 +67,7 @@ namespace mini_ITS.Web.Tests.Controllers
                     $"Sort={sqlPagedQuery.SortColumnName}, " +
                     $"Sort direction={sqlPagedQuery.SortDirection}");
                 TestContext.Out.WriteLine(new string('-', 125));
-                TestContext.Out.WriteLine(
-                    $"{"| Id",-39}" +
-                    $"{"| UserAddGroupFullName",-27}" +
-                    $"{"| UserModGroupFullName",-27}" +
-                    $"{"| GroupName",-31}|");
-                TestContext.Out.WriteLine(new string('-', 125));
+                GroupsControllerTestsHelper.PrintRecordHeader();
 
                 Assert.That(resultsPage.Results.Count() > 0, "ERROR - groups is empty");
                 Assert.That(resultsPage, Is.TypeOf<SqlPagedResult<GroupsDto>>(), "ERROR - return type");
@@ -103,7 +98,7 @@ namespace mini_ITS.Web.Tests.Controllers
                         {
                             Assert.That(
                                 item.GetType().GetProperty(x.Name).GetValue(item, null),
-                                Is.EqualTo(x.Value),
+                                Is.EqualTo(x.Value == "NULL" ? null : x.Value),
                                 $"ERROR - Filter {x.Name} is not equal");
                         }
                     });
@@ -272,16 +267,16 @@ namespace mini_ITS.Web.Tests.Controllers
         [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteGroupCases))]
         public async Task DeleteAsync_Unauthorized(
             LoginData loginUnauthorizedCases,
-            LoginData loginUnauthorizedEditCases,
+            LoginData loginUnauthorizedDeleteCases,
             GroupsDto groupsDto)
         {
-            if (loginUnauthorizedEditCases == null)
+            if (loginUnauthorizedDeleteCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
             }
             else
             {
-                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
             }
 
             GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before delete");

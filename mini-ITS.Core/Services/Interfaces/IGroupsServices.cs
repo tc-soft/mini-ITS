@@ -11,7 +11,7 @@ namespace mini_ITS.Core.Services
     {
         Task<IEnumerable<GroupsDto>> GetAsync();
         Task<SqlPagedResult<GroupsDto>> GetAsync(SqlPagedQuery<Groups> sqlPagedQuery);
-        Task<GroupsDto> GetAsync(Guid guid);
+        Task<GroupsDto> GetAsync(Guid id);
         Task<Guid> CreateAsync(GroupsDto groupsDto, string username);
         Task UpdateAsync(GroupsDto groupsDto, string username);
         Task DeleteAsync(Guid id);

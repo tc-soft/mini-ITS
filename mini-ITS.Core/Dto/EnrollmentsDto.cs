@@ -47,8 +47,9 @@ namespace mini_ITS.Core.Dto
         }
 
         public DateTime? DateAddEnrollment { get; set; }
+        public DateTime? DateModEnrollment { get; set; }
         public DateTime? DateEndEnrollment { get; set; }
-        public DateTime? DateLastChange { get; set; }
+        public DateTime? DateReeEnrollment { get; set; }
         public DateTime? DateEndDeclareByUser { get; set; }
         public DateTime? DateEndDeclareByDepartment { get; set; }
         public Guid DateEndDeclareByDepartmentUser { get; set; }
@@ -64,18 +65,19 @@ namespace mini_ITS.Core.Dto
         public bool MailToUserInfo { get; set; }
         public bool MailToAllInfo { get; set; }
 
-        public int ActionRequest { get; set; }
-        public int ActionExecuted { get; set; }
-        public bool ActionFinished { get; set; }
-
         public bool ReadyForClose { get; set; }
         public string State { get; set; }
-
         public Guid UserAddEnrollment { get; set; }
         public string UserAddEnrollmentFullName { get; set; }
+        public Guid UserModEnrollment { get; set; }
+        public string UserModEnrollmentFullName { get; set; }
         public Guid UserEndEnrollment { get; set; }
         public string UserEndEnrollmentFullName { get; set; }
         public Guid UserReeEnrollment { get; set; }
         public string UserReeEnrollmentFullName { get; set; }
+
+        public int ActionRequest { get; set; }
+        public int ActionExecuted { get; set; }
+        public bool ActionFinished { get; set; }
     }
 }

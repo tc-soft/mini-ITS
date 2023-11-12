@@ -222,7 +222,7 @@ namespace mini_ITS.Web.Tests.Controllers
             EnrollmentsControllerTestsHelper.Print(results, "\nEnrollment before update:");
 
             var caesarHelper = new CaesarHelper();
-            results.DateLastChange = DateTime.UtcNow;
+            results.DateModEnrollment = DateTime.UtcNow;
             results.Description = caesarHelper.Encrypt(results.Description);
             EnrollmentsControllerTestsHelper.Print(results, "Modification:");
 
@@ -230,7 +230,7 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
             TestContext.Out.WriteLine($"Response after EditPutAsync (Encrypt): {response.StatusCode}");
 
-            results.DateLastChange = DateTime.UtcNow;
+            results.DateModEnrollment = DateTime.UtcNow;
             results.Description = caesarHelper.Decrypt(results.Description);
 
             response = await EditPutAsync(results);

@@ -168,8 +168,9 @@ namespace mini_ITS.Core.Tests.Repository
             Assert.That(enrollment.Nr, Is.EqualTo(enrollments.Nr), $"ERROR - {nameof(enrollments.Nr)} is not equal");
             Assert.That(enrollment.Year, Is.EqualTo(enrollments.Year), $"ERROR - {nameof(enrollments.Year)} is not equal");
             Assert.That(enrollment.DateAddEnrollment, Is.EqualTo(enrollments.DateAddEnrollment), $"ERROR - {nameof(enrollments.DateAddEnrollment)} is not equal");
+            Assert.That(enrollment.DateModEnrollment, Is.EqualTo(enrollments.DateModEnrollment), $"ERROR - {nameof(enrollments.DateModEnrollment)} is not equal");
             Assert.That(enrollment.DateEndEnrollment, Is.EqualTo(enrollments.DateEndEnrollment), $"ERROR - {nameof(enrollments.DateEndEnrollment)} is not equal");
-            Assert.That(enrollment.DateLastChange, Is.EqualTo(enrollments.DateLastChange), $"ERROR - {nameof(enrollments.DateLastChange)} is not equal");
+            Assert.That(enrollment.DateReeEnrollment, Is.EqualTo(enrollments.DateReeEnrollment), $"ERROR - {nameof(enrollments.DateReeEnrollment)} is not equal");
             Assert.That(enrollment.DateEndDeclareByUser, Is.EqualTo(enrollments.DateEndDeclareByUser), $"ERROR - {nameof(enrollments.DateEndDeclareByUser)} is not equal");
             Assert.That(enrollment.DateEndDeclareByDepartment, Is.EqualTo(enrollments.DateEndDeclareByUser), $"ERROR - {nameof(enrollments.DateEndDeclareByDepartment)} is not equal");
             Assert.That(enrollment.DateEndDeclareByDepartmentUser, Is.EqualTo(new Guid("FBA6F4F6-BBD6-4088-8DD5-96E6AEF36E9C")), $"ERROR - {nameof(enrollments.DateEndDeclareByDepartmentUser)} is not equal");
@@ -186,6 +187,8 @@ namespace mini_ITS.Core.Tests.Repository
             Assert.That(enrollment.State, Is.EqualTo("Assigned"), $"ERROR - {nameof(enrollments.State)} is not equal");
             Assert.That(enrollment.UserAddEnrollment, Is.EqualTo(enrollments.UserAddEnrollment), $"ERROR - {nameof(enrollments.UserAddEnrollment)} is not equal");
             Assert.That(enrollment.UserAddEnrollmentFullName, Is.EqualTo(enrollments.UserAddEnrollmentFullName), $"ERROR - {nameof(enrollments.UserAddEnrollmentFullName)} is not equal");
+            Assert.That(enrollment.UserModEnrollment, Is.EqualTo(enrollments.UserModEnrollment), $"ERROR - {nameof(enrollments.UserModEnrollment)} is not equal");
+            Assert.That(enrollment.UserModEnrollmentFullName, Is.EqualTo(enrollments.UserModEnrollmentFullName), $"ERROR - {nameof(enrollments.UserModEnrollmentFullName)} is not equal");
             Assert.That(enrollment.UserEndEnrollment, Is.EqualTo(enrollments.UserEndEnrollment), $"ERROR - {nameof(enrollments.UserEndEnrollment)} is not equal");
             Assert.That(enrollment.UserEndEnrollmentFullName, Is.EqualTo(enrollments.UserEndEnrollmentFullName), $"ERROR - {nameof(enrollments.UserEndEnrollmentFullName)} is not equal");
             Assert.That(enrollment.UserReeEnrollment, Is.EqualTo(enrollments.UserReeEnrollment), $"ERROR - {nameof(enrollments.UserReeEnrollment)} is not equal");

@@ -58,11 +58,13 @@ namespace mini_ITS.Core.Services
             enrollment.Nr = await _enrollmentsRepository.GetMaxNumberAsync(DateTime.Now.Year) + 1;
             enrollment.Year = DateTime.Now.Year;
             enrollment.DateAddEnrollment = DateTime.UtcNow;
-            enrollment.DateLastChange = DateTime.UtcNow;
+            enrollment.DateModEnrollment = enrollment.DateAddEnrollment;
             enrollment.Description = WebUtility.HtmlEncode(enrollmentsDto.Description);
             enrollment.State = "New";
             enrollment.UserAddEnrollment = user.Id;
             enrollment.UserAddEnrollmentFullName = $"{user.FirstName} {user.LastName}";
+            enrollment.UserModEnrollment = user.Id;
+            enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";
 
             await _enrollmentsRepository.CreateAsync(enrollment);
             return enrollment.Id;
@@ -73,7 +75,9 @@ namespace mini_ITS.Core.Services
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
 
             var enrollment = _mapper.Map<Enrollments>(enrollmentsDto);
-            enrollment.DateLastChange = DateTime.UtcNow;
+            enrollment.DateModEnrollment = DateTime.UtcNow;
+            enrollment.UserModEnrollment = user.Id;
+            enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";
 
             await _enrollmentsRepository.UpdateAsync(enrollment);
         }

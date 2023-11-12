@@ -22,8 +22,7 @@ namespace mini_ITS.Core.Tests.Services
             Assert.IsNotNull(enrollmentsDto.Nr, $"ERROR - {nameof(enrollmentsDto.Nr)} is null");
             Assert.IsNotNull(enrollmentsDto.Year, $"ERROR - {nameof(enrollmentsDto.Year)} is null");
             Assert.IsNotNull(enrollmentsDto.DateAddEnrollment, $"ERROR - {nameof(enrollmentsDto.DateAddEnrollment)} is null");
-
-            Assert.IsNotNull(enrollmentsDto.DateLastChange, $"ERROR - {nameof(enrollmentsDto.DateLastChange)} is null");
+            Assert.IsNotNull(enrollmentsDto.DateModEnrollment, $"ERROR - {nameof(enrollmentsDto.DateModEnrollment)} is null");
             Assert.IsNotNull(enrollmentsDto.DateEndDeclareByUser, $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByUser)} is null");
             Assert.IsNotNull(enrollmentsDto.Department, $"ERROR - {nameof(enrollmentsDto.Department)} is null");
             Assert.IsNotNull(enrollmentsDto.Description, $"ERROR - {nameof(enrollmentsDto.Description)} is null");
@@ -37,7 +36,8 @@ namespace mini_ITS.Core.Tests.Services
             Assert.IsNotNull(enrollmentsDto.State, $"ERROR - {nameof(enrollmentsDto.State)} is null");
             Assert.IsNotNull(enrollmentsDto.UserAddEnrollment, $"ERROR - {nameof(enrollmentsDto.UserAddEnrollment)} is null");
             Assert.IsNotNull(enrollmentsDto.UserAddEnrollmentFullName, $"ERROR - {nameof(enrollmentsDto.UserAddEnrollmentFullName)} is null");
-            
+            Assert.IsNotNull(enrollmentsDto.UserModEnrollment, $"ERROR - {nameof(enrollmentsDto.UserModEnrollment)} is null");
+            Assert.IsNotNull(enrollmentsDto.UserModEnrollmentFullName, $"ERROR - {nameof(enrollmentsDto.UserModEnrollmentFullName)} is null");
             Assert.That(enrollmentsDto.UserReeEnrollment, Is.EqualTo(new Guid()), $"ERROR - {nameof(enrollmentsDto.UserReeEnrollment)} guid is not empty");
             Assert.IsNull(enrollmentsDto.UserReeEnrollmentFullName, $"ERROR - {nameof(enrollmentsDto.UserReeEnrollmentFullName)} is not null");
             Assert.IsNotNull(enrollmentsDto.ActionRequest, $"ERROR - {nameof(enrollmentsDto.ActionRequest)} is null");
@@ -52,8 +52,8 @@ namespace mini_ITS.Core.Tests.Services
             Assert.IsNotNull(enrollmentDto.Nr, $"ERROR - {nameof(enrollmentsDto.Nr)} is null");
             Assert.IsNotNull(enrollmentDto.Year, $"ERROR - {nameof(enrollmentsDto.Year)} is null");
             Assert.IsNotNull(enrollmentDto.DateAddEnrollment, $"ERROR - {nameof(enrollmentsDto.DateAddEnrollment)} is null");
+            Assert.IsNotNull(enrollmentDto.DateModEnrollment, $"ERROR - {nameof(enrollmentsDto.DateModEnrollment)} is null");
             Assert.That(enrollmentDto.DateEndEnrollment, Is.EqualTo(enrollmentsDto.DateEndEnrollment), $"ERROR - {nameof(enrollmentsDto.DateEndEnrollment)} is not equal");
-            Assert.IsNotNull(enrollmentDto.DateLastChange, $"ERROR - {nameof(enrollmentsDto.DateLastChange)} is null");
             Assert.That(enrollmentDto.DateEndDeclareByUser, Is.EqualTo(enrollmentsDto.DateEndDeclareByUser), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByUser)} is not equal");
             Assert.That(enrollmentDto.DateEndDeclareByDepartment, Is.EqualTo(enrollmentsDto.DateEndDeclareByDepartment), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByDepartment)} is not equal");
             Assert.That(enrollmentDto.DateEndDeclareByDepartmentUser, Is.EqualTo(enrollmentsDto.DateEndDeclareByDepartmentUser), $"ERROR - {nameof(enrollmentsDto.DateEndDeclareByDepartmentUser)} is not equal");
@@ -70,6 +70,8 @@ namespace mini_ITS.Core.Tests.Services
             Assert.IsNotNull(enrollmentDto.State, $"ERROR - {nameof(enrollmentsDto.State)} is null");
             Assert.That(enrollmentDto.UserAddEnrollment, Is.EqualTo(enrollmentsDto.UserAddEnrollment), $"ERROR - {nameof(enrollmentsDto.UserAddEnrollment)} is not equal");
             Assert.That(enrollmentDto.UserAddEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserAddEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserAddEnrollmentFullName)} is not equal");
+            Assert.That(enrollmentDto.UserModEnrollment, Is.EqualTo(enrollmentsDto.UserModEnrollment), $"ERROR - {nameof(enrollmentsDto.UserModEnrollment)} is not equal");
+            Assert.That(enrollmentDto.UserModEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserModEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserModEnrollmentFullName)} is not equal");
             Assert.That(enrollmentDto.UserEndEnrollment, Is.EqualTo(enrollmentsDto.UserEndEnrollment), $"ERROR - {nameof(enrollmentsDto.UserEndEnrollment)} is not equal");
             Assert.That(enrollmentDto.UserEndEnrollmentFullName, Is.EqualTo(enrollmentsDto.UserEndEnrollmentFullName), $"ERROR - {nameof(enrollmentsDto.UserEndEnrollmentFullName)} is not equal");
             Assert.That(enrollmentDto.UserReeEnrollment, Is.EqualTo(enrollmentsDto.UserReeEnrollment), $"ERROR - {nameof(enrollmentsDto.UserReeEnrollment)} is not equal");
@@ -84,8 +86,9 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine($"Nr                                     : {enrollmentsDto.Nr}");
             TestContext.Out.WriteLine($"Year                                   : {enrollmentsDto.Year}");
             TestContext.Out.WriteLine($"DateAddEnrollment                      : {enrollmentsDto.DateAddEnrollment}");
+            TestContext.Out.WriteLine($"DateModEnrollment                      : {enrollmentsDto.DateModEnrollment}");
             TestContext.Out.WriteLine($"DateEndEnrollment                      : {enrollmentsDto.DateEndEnrollment}");
-            TestContext.Out.WriteLine($"DateLastChange                         : {enrollmentsDto.DateLastChange}");
+            TestContext.Out.WriteLine($"DateReeEnrollment                      : {enrollmentsDto.DateReeEnrollment}");
             TestContext.Out.WriteLine($"DateEndDeclareByUser                   : {enrollmentsDto.DateEndDeclareByUser}");
             TestContext.Out.WriteLine($"DateEndDeclareByDepartment             : {enrollmentsDto.DateEndDeclareByDepartment}");
             TestContext.Out.WriteLine($"DateEndDeclareByDepartmentUser         : {enrollmentsDto.DateEndDeclareByDepartmentUser}");
@@ -132,7 +135,7 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static EnrollmentsDto Encrypt(CaesarHelper caesarHelper, EnrollmentsDto enrollmentDto)
         {
-            enrollmentDto.DateLastChange = DateTime.UtcNow;
+            enrollmentDto.DateModEnrollment = DateTime.UtcNow;
             enrollmentDto.DateEndDeclareByDepartment = enrollmentDto.DateEndDeclareByUser;
             enrollmentDto.DateEndDeclareByDepartmentUser = new Guid("FBA6F4F6-BBD6-4088-8DD5-96E6AEF36E9C");
             enrollmentDto.DateEndDeclareByDepartmentUserFullName = "Ida Beukema";
@@ -143,7 +146,7 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static EnrollmentsDto Decrypt(CaesarHelper caesarHelper, EnrollmentsDto enrollmentDto)
         {
-            enrollmentDto.DateLastChange = DateTime.UtcNow;
+            enrollmentDto.DateModEnrollment = DateTime.UtcNow;
             enrollmentDto.DateEndDeclareByDepartment = null;
             enrollmentDto.DateEndDeclareByDepartmentUser = new Guid();
             enrollmentDto.DateEndDeclareByDepartmentUserFullName = null;

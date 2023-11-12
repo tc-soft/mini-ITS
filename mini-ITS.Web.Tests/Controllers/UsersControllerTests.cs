@@ -12,7 +12,7 @@ using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
 {
-    public class UsersControllerTests : UsersIntegrationTest
+    internal class UsersControllerTests : UsersIntegrationTest
     {
         [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCases))]
         public async Task LoginAsync_Unauthorized(LoginData loginData)

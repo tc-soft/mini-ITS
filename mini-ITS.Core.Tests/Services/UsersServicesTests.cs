@@ -16,7 +16,7 @@ using mini_ITS.Core.Services;
 namespace mini_ITS.Core.Tests.Services
 {
     [TestFixture]
-    class UsersServicesTests
+    internal class UsersServicesTests
     {
         private IMapper _mapper;
         private IPasswordHasher<Users> _passwordHasher;

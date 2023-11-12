@@ -12,7 +12,7 @@ using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
 {
-    public class GroupsControllerTests : GroupsIntegrationTest
+    internal class GroupsControllerTests : GroupsIntegrationTest
     {
         [Test, Combinatorial]
         public async Task IndexAsync_Unauthorized(

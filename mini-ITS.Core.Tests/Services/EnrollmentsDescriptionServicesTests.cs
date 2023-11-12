@@ -15,7 +15,7 @@ using mini_ITS.Core.Services;
 namespace mini_ITS.Core.Tests.Services
 {
     [TestFixture]
-    public class EnrollmentsDescriptionServicesTests
+    internal class EnrollmentsDescriptionServicesTests
     {
         private IMapper _mapper;
         private IUsersRepository _usersRepository;

@@ -14,7 +14,7 @@ using mini_ITS.Core.Services;
 namespace mini_ITS.Core.Tests.Services
 {
     [TestFixture]
-    public class GroupsServicesTests
+    internal class GroupsServicesTests
     {
         private IMapper _mapper;
         private IUsersRepository _usersRepository;

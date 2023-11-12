@@ -23,7 +23,7 @@ namespace mini_ITS.Core.Tests.Repository
     // - EnrollmentsRepositoryTestsHelper.PrintRecord();
     //
     [TestFixture]
-    public class EnrollmentsRepositoryTests
+    internal class EnrollmentsRepositoryTests
     {
         private IOptions<DatabaseOptions> _databaseOptions;
         private ISqlConnectionString _sqlConnectionString;

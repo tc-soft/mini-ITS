@@ -22,7 +22,7 @@ namespace mini_ITS.Core.Tests.Repository
     // - GroupsRepositoryTestsHelper.PrintRecord();
     //
     [TestFixture]
-    public class GroupsRepositoryTests
+    internal class GroupsRepositoryTests
     {
         private IOptions<DatabaseOptions> _databaseOptions;
         private ISqlConnectionString _sqlConnectionString;

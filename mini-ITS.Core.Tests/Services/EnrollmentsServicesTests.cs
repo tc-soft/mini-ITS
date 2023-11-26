@@ -29,7 +29,7 @@ namespace mini_ITS.Core.Tests.Services
 
             var configuration = new ConfigurationBuilder()
                .SetBasePath(_path)
-               .AddJsonFile("appsettings.json", false)
+               .AddJsonFile("appsettings.Development.json", false)
                .Build();
 
             var _databaseOptions = Microsoft.Extensions.Options.Options.Create(configuration.GetSection("DatabaseOptions").Get<DatabaseOptions>());

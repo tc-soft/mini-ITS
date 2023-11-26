@@ -25,7 +25,7 @@ namespace mini_ITS.Core.Tests.Repository
 
             var configuration = new ConfigurationBuilder()
                .SetBasePath(_path)
-               .AddJsonFile("appsettings.json", false)
+               .AddJsonFile("appsettings.Development.json", false)
                .Build();
 
             _databaseOptions = Microsoft.Extensions.Options.Options.Create(configuration.GetSection("DatabaseOptions").Get<DatabaseOptions>());

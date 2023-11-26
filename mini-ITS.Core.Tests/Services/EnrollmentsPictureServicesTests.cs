@@ -88,7 +88,7 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))]
         public async Task CreateAsync(EnrollmentsPictureDto enrollmentsPictureDto)
         {
-            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
+            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);
             var enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(id);
@@ -103,14 +103,14 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))]
         public async Task UpdateAsync(EnrollmentsPictureDto enrollmentsPictureDto)
         {
-            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
+            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);
             var enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(id);
             EnrollmentsPictureServicesTestsHelper.Check(enrollmentPictureDto, enrollmentsPictureDto);
             EnrollmentsPictureServicesTestsHelper.Print(enrollmentPictureDto);
 
-            TestContext.Out.WriteLine("\nUpdate enrollmentPicture by UpdateAsync(enrollmentsPictureDto, string username) and check valid...\n");
+            TestContext.Out.WriteLine("\nUpdate enrollmentPicture by UpdateAsync(enrollmentsPictureDto, username) and check valid...\n");
             var caesarHelper = new CaesarHelper();
             enrollmentPictureDto = EnrollmentsPictureServicesTestsHelper.Encrypt(caesarHelper, enrollmentPictureDto);
             await _enrollmentsPictureServices.UpdateAsync(enrollmentPictureDto, user.Login);
@@ -118,7 +118,7 @@ namespace mini_ITS.Core.Tests.Services
             EnrollmentsPictureServicesTestsHelper.Check(enrollmentPictureDto);
             EnrollmentsPictureServicesTestsHelper.Print(enrollmentPictureDto);
 
-            TestContext.Out.WriteLine("\nUpdate enrollmentPicture by UpdateAsync(enrollmentsPictureDto, string username) and check valid...\n");
+            TestContext.Out.WriteLine("\nUpdate enrollmentPicture by UpdateAsync(enrollmentsPictureDto, username) and check valid...\n");
             enrollmentPictureDto = EnrollmentsPictureServicesTestsHelper.Decrypt(caesarHelper, enrollmentPictureDto);
             await _enrollmentsPictureServices.UpdateAsync(enrollmentPictureDto, user.Login);
             enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(id);
@@ -133,7 +133,7 @@ namespace mini_ITS.Core.Tests.Services
         [TestCaseSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))]
         public async Task DeleteAsync(EnrollmentsPictureDto enrollmentsPictureDto)
         {
-            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, string username) and check valid...\n");
+            TestContext.Out.WriteLine("Create enrollmentPicture by CreateAsync(enrollmentsPictureDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsPictureDto.UserAddPicture);
             var id = await _enrollmentsPictureServices.CreateAsync(enrollmentsPictureDto, user.Login);
             var enrollmentPictureDto = await _enrollmentsPictureServices.GetAsync(id);

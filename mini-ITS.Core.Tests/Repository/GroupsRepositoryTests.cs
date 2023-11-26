@@ -11,16 +11,6 @@ using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Repository
 {
-    // All tests follow the order :
-    // COLLECTION
-    // - await _groupsRepository.xxx
-    // - GroupsRepositoryTestsHelper.PrintRecordHeader();
-    // - GroupsRepositoryTestsHelper.Check(groups);
-    // ITEM
-    // - GroupsRepositoryTestsHelper.Check(item);
-    // - Assert additional filters
-    // - GroupsRepositoryTestsHelper.PrintRecord();
-    //
     [TestFixture]
     internal class GroupsRepositoryTests
     {

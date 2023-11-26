@@ -12,16 +12,6 @@ using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Tests.Repository
 {
-    // All tests follow the order :
-    // COLLECTION
-    // - await _enrollmentsRepository.xxx
-    // - EnrollmentsRepositoryTestsHelper.PrintRecordHeader();
-    // - EnrollmentsRepositoryTestsHelper.Check(enrollments);
-    // ITEM
-    // - EnrollmentsRepositoryTestsHelper.Check(item);
-    // - Assert additional filters
-    // - EnrollmentsRepositoryTestsHelper.PrintRecord();
-    //
     [TestFixture]
     internal class EnrollmentsRepositoryTests
     {

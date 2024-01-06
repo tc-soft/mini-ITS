@@ -1,4 +1,4 @@
-﻿namespace mini_ITS.Web.Tests
+namespace mini_ITS.Web.Tests
 {
     public static class ApiRoutes
     {
@@ -35,6 +35,12 @@
             public static readonly string Create = string.Concat(_enrollmentsControllerUrl, "/Create");
             public static readonly string Edit = string.Concat(_enrollmentsControllerUrl, "/Edit");
             public static readonly string Delete = string.Concat(_enrollmentsControllerUrl, "/Delete");
+        }
+        public static class EnrollmentsDescription
+        {
+            private static readonly string _enrollmentsDescriptionControllerUrl = string.Concat(_baseUrl, "EnrollmentsDescription");
+
+            public static readonly string Index = string.Concat(_enrollmentsDescriptionControllerUrl, "/Index");
         }
     }
 }

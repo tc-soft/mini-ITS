@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
+using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests
@@ -52,6 +53,12 @@ namespace mini_ITS.Web.Tests
             };
             var queryString = new FormUrlEncodedContent(queryParameters).ReadAsStringAsync();
             var response = await TestClient.GetAsync($"{ApiRoutes.EnrollmentsDescription.Index}?{queryString.Result}");
+
+            return response;
+        }
+        protected async Task<HttpResponseMessage> CreateAsync(EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            var response = await TestClient.PostAsJsonAsync(ApiRoutes.EnrollmentsDescription.Create, enrollmentsDescriptionDto);
 
             return response;
         }

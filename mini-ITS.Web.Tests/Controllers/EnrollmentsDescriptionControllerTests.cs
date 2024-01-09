@@ -143,5 +143,44 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Unauthorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedCreateEnrollmentCases))] LoginData loginData,
+            [ValueSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCasesDto))] EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            response = await CreateAsync(enrollmentsDescriptionDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
+            TestContext.Out.WriteLine($"Response after create enrollment: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Authorized(
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCreateEnrollmentCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCasesDto))] EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nEnrollmentDescription before create:");
+            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
+            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
+            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
+            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
+            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
+            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
+            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
+            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}");
+
+            response = await CreateAsync(enrollmentsDescriptionDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+
+            TestContext.Out.WriteLine($"\nResponse after create EnrollmentDescription: {response.StatusCode}");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

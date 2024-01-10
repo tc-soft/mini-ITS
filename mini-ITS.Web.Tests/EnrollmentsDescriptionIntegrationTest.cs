@@ -62,5 +62,11 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> EditGetAsync(Guid id)
+        {
+            var response = await TestClient.GetAsync($"{ApiRoutes.EnrollmentsDescription.Edit}/{id}");
+
+            return response;
+        }
     }
 }

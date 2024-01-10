@@ -59,5 +59,22 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpGet("{id:guid}")]
+        [CookieAuth]
+        public async Task<IActionResult> EditAsync(Guid? id)
+        {
+            try
+            {
+                if (id == null) return BadRequest("Error: id is null");
+                var enrollmentsDescriptionDto = await _enrollmentsDescriptionServices.GetAsync((Guid)id);
+                if (enrollmentsDescriptionDto == null) return NotFound("Error: enrollmentsDescriptionDto is empty");
+
+                return Ok(enrollmentsDescriptionDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

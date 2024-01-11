@@ -76,5 +76,21 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpPut("{id:guid}")]
+        [CookieAuth]
+        public async Task<IActionResult> EditAsync([FromBody] EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            try
+            {
+                if (enrollmentsDescriptionDto == null) return NotFound("Error: enrollmentsDescriptionDto is null");
+                await _enrollmentsDescriptionServices.UpdateAsync(enrollmentsDescriptionDto, User.Identity.Name);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

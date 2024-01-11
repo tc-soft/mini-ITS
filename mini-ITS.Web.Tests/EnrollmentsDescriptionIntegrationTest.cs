@@ -68,5 +68,11 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> EditPutAsync(EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            var response = await TestClient.PutAsJsonAsync($"{ApiRoutes.EnrollmentsDescription.Edit}/{enrollmentsDescriptionDto.Id}", enrollmentsDescriptionDto);
+
+            return response;
+        }
     }
 }

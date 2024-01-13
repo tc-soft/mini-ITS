@@ -155,6 +155,32 @@ namespace mini_ITS.Web.Tests
             }
         }
 
+        //EnrollmentsDescription
+        public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentDescriptionCases
+        {
+            get
+            {
+                foreach (var loginUnauthorizedCases in LoginUnauthorizedCases)
+                {
+                    foreach (var enrollmentsDescriptionDto in EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCasesDto)
+                    {
+                        yield return new TestCaseData(loginUnauthorizedCases, null, enrollmentsDescriptionDto);
+                    }
+                }
+
+                foreach (var loginAuthorizedUSRCases in LoginAuthorizedUSRCases)
+                {
+                    foreach (var enrollmentsDescriptionDto in EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCasesDto)
+                    {
+                        yield return new TestCaseData(null, loginAuthorizedUSRCases, enrollmentsDescriptionDto);
+                    }
+                }
+            }
+        }
+        public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentDescriptionCases =>
+            LoginAuthorizedADMCases
+            .Concat(LoginAuthorizedMNGCases);
+
         //Groups
         public static IEnumerable<LoginData> LoginAuthorizedIndexGroupCases =>
             LoginAuthorizedCases;

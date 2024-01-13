@@ -74,5 +74,10 @@ namespace mini_ITS.Web.Tests
 
             return response;
         }
+        protected async Task<HttpResponseMessage> DeleteAsync(Guid id)
+        {
+            var response = await TestClient.DeleteAsync($"{ApiRoutes.EnrollmentsDescription.Delete}/{id}");
+            return response;
+        }
     }
 }

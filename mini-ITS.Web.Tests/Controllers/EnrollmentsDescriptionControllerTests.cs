@@ -182,6 +182,13 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(id, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Unauthorized(
@@ -332,6 +339,82 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"ActionExecuted             : {results.ActionExecuted}\n");
 
             TestContext.Out.WriteLine($"Comparing with the original test data: OK");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+            
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteEnrollmentDescriptionCases))]
+        public async Task DeleteAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedDeleteCases,
+            EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            if (loginUnauthorizedDeleteCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
+            }
+
+            TestContext.Out.WriteLine($"\nEnrollmentsDescription before delete:");
+
+            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
+            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
+            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
+            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
+            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
+            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
+            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
+            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}\n");
+
+
+            response = await DeleteAsync(enrollmentsDescriptionDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsDescription");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Authorized(
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedDeleteEnrollmentDescriptionCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsDescriptionTestsData), nameof(EnrollmentsDescriptionTestsData.CRUDCasesDto))] EnrollmentsDescriptionDto enrollmentsDescriptionDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nEnrollmentsDescription before delete:");
+
+            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
+            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
+            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
+            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
+            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
+            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
+            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
+            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}\n");
+
+            response = await CreateAsync(enrollmentsDescriptionDto);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentsDescription");
+            var id = await response.Content.ReadFromJsonAsync<Guid>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
+
+            response = await DeleteAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            response = await EditGetAsync(id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test enrollmentsDescription");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

@@ -45,5 +45,11 @@ namespace mini_ITS.Web.Tests
             public static readonly string Edit = string.Concat(_enrollmentsDescriptionControllerUrl, "/Edit");
             public static readonly string Delete = string.Concat(_enrollmentsDescriptionControllerUrl, "/Delete");
         }
+        public static class EnrollmentsPicture
+        {
+            private static readonly string _enrollmentsPictureControllerUrl = string.Concat(_baseUrl, "EnrollmentsPicture");
+
+            public static readonly string Index = string.Concat(_enrollmentsPictureControllerUrl, "/Index");
+        }
     }
 }

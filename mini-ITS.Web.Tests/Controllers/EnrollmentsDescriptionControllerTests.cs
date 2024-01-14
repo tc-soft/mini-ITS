@@ -49,29 +49,8 @@ namespace mini_ITS.Web.Tests.Controllers
 
             foreach (var item in results)
             {
-                Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
-                Assert.IsNotNull(item.EnrollmentId, $"ERROR - {nameof(item.EnrollmentId)} is null");
-                Assert.IsNotNull(item.DateAddDescription, $"ERROR - {nameof(item.DateAddDescription)} is null");
-                Assert.IsNotNull(item.DateModDescription, $"ERROR - {nameof(item.DateModDescription)} is null");
-                Assert.IsNotNull(item.UserAddDescription, $"ERROR - {nameof(item.UserAddDescription)} is null");
-                Assert.IsNotNull(item.UserAddDescriptionFullName, $"ERROR - {nameof(item.UserAddDescriptionFullName)} is null");
-                Assert.IsNotNull(item.UserModDescription, $"ERROR - {nameof(item.UserModDescription)} is null");
-                Assert.IsNotNull(item.UserModDescriptionFullName, $"ERROR - {nameof(item.UserModDescriptionFullName)} is null");
-                Assert.IsNotNull(item.Description, $"ERROR - {nameof(item.Description)} is null");
-                Assert.That(item.ActionExecuted, Is.TypeOf<int>(), "ERROR - item.ActionExecuted is not <int> type");
-
-                TestContext.Out.WriteLine($"Id                         : {item.Id}");
-                TestContext.Out.WriteLine($"EnrollmentId               : {item.EnrollmentId}");
-                TestContext.Out.WriteLine($"DateAddDescription         : {item.DateAddDescription}");
-                TestContext.Out.WriteLine($"DateModDescription         : {item.DateModDescription}");
-                TestContext.Out.WriteLine($"UserAddDescription         : {item.UserAddDescription}");
-                TestContext.Out.WriteLine($"UserAddDescriptionFullName : {item.UserAddDescriptionFullName}");
-                TestContext.Out.WriteLine($"UserModDescription         : {item.UserModDescription}");
-                TestContext.Out.WriteLine($"UserModDescriptionFullName : {item.UserModDescriptionFullName}");
-                TestContext.Out.WriteLine($"Description                : {item.Description}");
-                TestContext.Out.WriteLine($"ActionExecuted             : {item.ActionExecuted}");
-
-                TestContext.Out.WriteLine(new string('-', 70));
+                EnrollmentsDescriptionControllerTestsHelper.Check(item);
+                EnrollmentsDescriptionControllerTestsHelper.PrintRecord(item);
             }
 
             TestContext.Out.WriteLine($"\nCheck: OK");
@@ -115,29 +94,8 @@ namespace mini_ITS.Web.Tests.Controllers
 
             foreach (var item in results)
             {
-                Assert.IsNotNull(item.Id, $"ERROR - {nameof(item.Id)} is null");
-                Assert.IsNotNull(item.EnrollmentId, $"ERROR - {nameof(item.EnrollmentId)} is null");
-                Assert.IsNotNull(item.DateAddDescription, $"ERROR - {nameof(item.DateAddDescription)} is null");
-                Assert.IsNotNull(item.DateModDescription, $"ERROR - {nameof(item.DateModDescription)} is null");
-                Assert.IsNotNull(item.UserAddDescription, $"ERROR - {nameof(item.UserAddDescription)} is null");
-                Assert.IsNotNull(item.UserAddDescriptionFullName, $"ERROR - {nameof(item.UserAddDescriptionFullName)} is null");
-                Assert.IsNotNull(item.UserModDescription, $"ERROR - {nameof(item.UserModDescription)} is null");
-                Assert.IsNotNull(item.UserModDescriptionFullName, $"ERROR - {nameof(item.UserModDescriptionFullName)} is null");
-                Assert.IsNotNull(item.Description, $"ERROR - {nameof(item.Description)} is null");
-                Assert.That(item.ActionExecuted, Is.TypeOf<int>(), "ERROR - item.ActionExecuted is not <int> type");
-
-                TestContext.Out.WriteLine($"Id                         : {item.Id}");
-                TestContext.Out.WriteLine($"EnrollmentId               : {item.EnrollmentId}");
-                TestContext.Out.WriteLine($"DateAddDescription         : {item.DateAddDescription}");
-                TestContext.Out.WriteLine($"DateModDescription         : {item.DateModDescription}");
-                TestContext.Out.WriteLine($"UserAddDescription         : {item.UserAddDescription}");
-                TestContext.Out.WriteLine($"UserAddDescriptionFullName : {item.UserAddDescriptionFullName}");
-                TestContext.Out.WriteLine($"UserModDescription         : {item.UserModDescription}");
-                TestContext.Out.WriteLine($"UserModDescriptionFullName : {item.UserModDescriptionFullName}");
-                TestContext.Out.WriteLine($"Description                : {item.Description}");
-                TestContext.Out.WriteLine($"ActionExecuted             : {item.ActionExecuted}");
-
-                TestContext.Out.WriteLine(new string('-', 70));
+                EnrollmentsDescriptionControllerTestsHelper.Check(item);
+                EnrollmentsDescriptionControllerTestsHelper.PrintRecord(item);
             }
 
             TestContext.Out.WriteLine($"\nCheck: OK");
@@ -153,7 +111,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             response = await CreateAsync(enrollmentsDescriptionDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
-            TestContext.Out.WriteLine($"Response after create enrollment: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task CreateAsync_Authorized(
@@ -162,32 +120,19 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            TestContext.Out.WriteLine($"\nEnrollmentDescription before create:");
-            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}");
+            EnrollmentsDescriptionControllerTestsHelper.Print(enrollmentsDescriptionDto, "\nEnrollmentsDescription before create:\n");
 
             response = await CreateAsync(enrollmentsDescriptionDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
 
-            TestContext.Out.WriteLine($"\nResponse after create EnrollmentDescription: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
             Assert.IsNotNull(id, $"ERROR - id is null");
-
+            
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete EnrollmentsDescription...");
             await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
-
-            response = await DeleteAsync(id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
-
+            EnrollmentsDescriptionControllerTestsHelper.CheckDeleteEnrollmentsDescription(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, Combinatorial]
@@ -199,7 +144,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             response = await EditGetAsync(enrollmentsDescriptionDto.Id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
-            TestContext.Out.WriteLine($"Response after EditGetAsync of test enrollment: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Authorized(
@@ -213,20 +158,10 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsDescriptionDto>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsDescriptionDto of test enrollmentDescription is null");
-            TestContext.Out.WriteLine($"Response after load Json data of test enrollment: {response.StatusCode}");
+            Assert.IsNotNull(results, $"ERROR - EnrollmentsDescriptionDto is null");
+            TestContext.Out.WriteLine($"Response after load Json data of test EnrollmentsDescription: {response.StatusCode}");
 
-            TestContext.Out.WriteLine($"\nEnrollmentDescription to edit:");
-            TestContext.Out.WriteLine($"Id                         : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {results.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {results.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {results.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {results.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {results.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {results.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {results.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {results.ActionExecuted}");
+            EnrollmentsDescriptionControllerTestsHelper.Print(results, "\nEnrollmentsDescription to edit:\n");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
@@ -263,35 +198,13 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
-            TestContext.Out.WriteLine($"\nEnrollmentDescription before update:");
-
-            TestContext.Out.WriteLine($"Id                         : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {results.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {results.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {results.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {results.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {results.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {results.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {results.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {results.ActionExecuted}");
+            EnrollmentsDescriptionControllerTestsHelper.Print(results, "\nEnrollmentsDescription before update:\n");
 
             var caesarHelper = new CaesarHelper();
             results.DateModDescription = DateTime.UtcNow;
             results.Description = caesarHelper.Encrypt(results.Description);
 
-            TestContext.Out.WriteLine($"\nModification:");
-
-            TestContext.Out.WriteLine($"Id                         : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {results.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {results.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {results.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {results.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {results.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {results.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {results.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {results.ActionExecuted}\n");
+            EnrollmentsDescriptionControllerTestsHelper.Print(results, "Modification:\n");
 
             response = await EditPutAsync(results);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update 1 (Encrypt)");
@@ -312,41 +225,14 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
-            Assert.That(results, Is.TypeOf<EnrollmentsDescriptionDto>(), "ERROR - return type");
-
-            Assert.IsNotNull(results.Id, $"ERROR - {nameof(results.Id)} is null");
-            Assert.That(results.EnrollmentId, Is.EqualTo(enrollmentsDescriptionDto.EnrollmentId), $"ERROR - {nameof(enrollmentsDescriptionDto.EnrollmentId)} is not equal");
-            Assert.IsNotNull(results.DateAddDescription, $"ERROR - {nameof(results.DateAddDescription)} is null");
-            Assert.IsNotNull(results.DateModDescription, $"ERROR - {nameof(results.DateModDescription)} is null");
-            Assert.IsNotNull(results.UserAddDescription, $"ERROR - {nameof(results.UserAddDescription)} is null");
-            Assert.IsNotNull(results.UserAddDescriptionFullName, $"ERROR - {nameof(results.UserAddDescriptionFullName)} is null");
-            Assert.IsNotNull(results.UserModDescription, $"ERROR - {nameof(results.UserModDescription)} is null");
-            Assert.IsNotNull(results.UserModDescriptionFullName, $"ERROR - {nameof(results.UserModDescriptionFullName)} is null");
-            Assert.That(results.Description, Is.EqualTo(enrollmentsDescriptionDto.Description), $"ERROR - {nameof(enrollmentsDescriptionDto.Description)} is not equal");
-            Assert.That(results.ActionExecuted, Is.EqualTo(enrollmentsDescriptionDto.ActionExecuted), $"ERROR - {nameof(enrollmentsDescriptionDto.ActionExecuted)} is not equal");
-
-            TestContext.Out.WriteLine($"\nEnrollmentsDescription after updates:");
-
-            TestContext.Out.WriteLine($"Id                         : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {results.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {results.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {results.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {results.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {results.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {results.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {results.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {results.ActionExecuted}\n");
-
+            EnrollmentsDescriptionControllerTestsHelper.Check(results, enrollmentsDescriptionDto);
+            EnrollmentsDescriptionControllerTestsHelper.Print(enrollmentsDescriptionDto, "\nEnrollmentsDescription after updates:\n");
             TestContext.Out.WriteLine($"Comparing with the original test data: OK");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete EnrollmentsDescription...");
             await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
-            
-            response = await DeleteAsync(id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
-
+            EnrollmentsDescriptionControllerTestsHelper.CheckDeleteEnrollmentsDescription(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteEnrollmentDescriptionCases))]
@@ -364,19 +250,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
             }
 
-            TestContext.Out.WriteLine($"\nEnrollmentsDescription before delete:");
-
-            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}\n");
-
+            EnrollmentsDescriptionControllerTestsHelper.Print(enrollmentsDescriptionDto, "\nEnrollmentsDescription before delete:\n");
 
             response = await DeleteAsync(enrollmentsDescriptionDto.Id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsDescription");
@@ -389,28 +263,16 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            TestContext.Out.WriteLine($"\nEnrollmentsDescription before delete:");
-
-            TestContext.Out.WriteLine($"Id                         : {enrollmentsDescriptionDto.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId               : {enrollmentsDescriptionDto.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddDescription         : {enrollmentsDescriptionDto.DateAddDescription}");
-            TestContext.Out.WriteLine($"DateModDescription         : {enrollmentsDescriptionDto.DateModDescription}");
-            TestContext.Out.WriteLine($"UserAddDescription         : {enrollmentsDescriptionDto.UserAddDescription}");
-            TestContext.Out.WriteLine($"UserAddDescriptionFullName : {enrollmentsDescriptionDto.UserAddDescriptionFullName}");
-            TestContext.Out.WriteLine($"UserModDescription         : {enrollmentsDescriptionDto.UserModDescription}");
-            TestContext.Out.WriteLine($"UserModDescriptionFullName : {enrollmentsDescriptionDto.UserModDescriptionFullName}");
-            TestContext.Out.WriteLine($"Description                : {enrollmentsDescriptionDto.Description}");
-            TestContext.Out.WriteLine($"ActionExecuted             : {enrollmentsDescriptionDto.ActionExecuted}\n");
+            EnrollmentsDescriptionControllerTestsHelper.Print(enrollmentsDescriptionDto, "\nEnrollmentsDescription before delete:\n");
 
             response = await CreateAsync(enrollmentsDescriptionDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentsDescription");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
             Assert.IsNotNull(id, $"ERROR - id is null");
-            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
 
-            response = await DeleteAsync(id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsDescription");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+            TestContext.Out.WriteLine($"Delete EnrollmentsDescription...");
+            EnrollmentsDescriptionControllerTestsHelper.CheckDeleteEnrollmentsDescription(await DeleteAsync(id));
 
             response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test enrollmentsDescription");

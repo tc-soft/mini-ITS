@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -48,6 +49,20 @@ namespace mini_ITS.Web.Tests
             var response = await TestClient.GetAsync($"{ApiRoutes.EnrollmentsPicture.Index}?{queryString.Result}");
 
             return response;
+        }
+        protected async Task<HttpResponseMessage> CreateAsync(Guid enrollmentId, string fileName, int largeImage)
+        {
+            using var content = new MultipartFormDataContent();
+
+            byte[] imageBytes = new byte[largeImage];
+            new Random().NextBytes(imageBytes);
+            var imageContent = new ByteArrayContent(imageBytes);
+            imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+            content.Add(new StringContent(enrollmentId.ToString()), "enrollmentId");
+            content.Add(imageContent, "files", fileName);
+
+            return await TestClient.PostAsync(ApiRoutes.EnrollmentsPicture.Create, content);
         }
     }
 }

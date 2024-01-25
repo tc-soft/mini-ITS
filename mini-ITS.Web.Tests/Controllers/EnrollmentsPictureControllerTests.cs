@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Tests;
 using mini_ITS.Web.Models.UsersController;
+using mini_ITS.Web.Models.EnrollmentsPictureController;
 
 namespace mini_ITS.Web.Tests.Controllers
 {
@@ -77,6 +79,49 @@ namespace mini_ITS.Web.Tests.Controllers
             }
 
             TestContext.Out.WriteLine($"\nCheck: OK");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Unauthorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedIndexEnrollmentCases))] LoginData loginData,
+            [ValueSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.EnrollmentsCasesDto))] EnrollmentsDto enrollmentsDto)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            string fileName = $"{Guid.NewGuid()}.jpg";
+
+            response = await CreateAsync(enrollmentsDto.Id, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - response status code is not 500 after CreateAsync");
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task CreateAsync_Authorized(
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCreateEnrollmentCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            TestContext.Out.WriteLine($"\nEnrollmentsPicture before create:\n");
+            TestContext.Out.WriteLine($"Id                     : {enrollmentsPictureDto.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentsPictureDto.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentsPictureDto.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentsPictureDto.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentsPictureDto.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentsPictureDto.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentsPictureDto.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentsPictureDto.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {enrollmentsPictureDto.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {enrollmentsPictureDto.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentsPictureDto.PictureFullPath}\n");
+
+            string fileName = $"{Guid.NewGuid()}.jpg";
+            response = await CreateAsync(enrollmentsPictureDto.EnrollmentId, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+
+            TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
+            var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

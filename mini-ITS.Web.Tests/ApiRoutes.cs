@@ -50,6 +50,7 @@ namespace mini_ITS.Web.Tests
             private static readonly string _enrollmentsPictureControllerUrl = string.Concat(_baseUrl, "EnrollmentsPicture");
 
             public static readonly string Index = string.Concat(_enrollmentsPictureControllerUrl, "/Index");
+            public static readonly string Create = string.Concat(_enrollmentsPictureControllerUrl, "/Create");
         }
     }
 }

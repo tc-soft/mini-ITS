@@ -112,5 +112,33 @@ namespace mini_ITS.Web.Controllers
 
             return Ok(new { Ids = ids });
         }
+        [HttpGet("{id:guid}")]
+        [CookieAuth]
+        public async Task<IActionResult> EditAsync(Guid? id)
+        {
+            try
+            {
+                if (id == Guid.Empty) return BadRequest("Error: id is null");
+
+                var enrollmentsPictureDto = await _enrollmentsPictureServices.GetAsync((Guid)id);
+                if (enrollmentsPictureDto == null) return NotFound("Error: enrollmentsPictureDto is empty");
+
+                var picturePath = enrollmentsPictureDto.PicturePath.TrimStart('/');
+                var pictureFullPath = Path.Combine(_webHostEnvironment.ContentRootPath, picturePath);
+
+                if (!System.IO.File.Exists(pictureFullPath))
+                {
+                    return NotFound("Error: Image file not found");
+                }
+
+                enrollmentsPictureDto.PictureBytes = await System.IO.File.ReadAllBytesAsync(pictureFullPath);
+
+                return Ok(enrollmentsPictureDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

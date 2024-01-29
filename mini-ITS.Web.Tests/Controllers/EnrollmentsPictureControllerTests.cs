@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
@@ -122,6 +123,80 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
             Assert.IsNotNull(id, $"ERROR - id is null");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Unauthorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditEnrollmentCases))] LoginData loginData,
+            [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            response = await EditGetAsync(enrollmentsPictureDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task EditGetAsync_Authorized(
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditEnrollmentCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            var projectPath = Path.GetFullPath(@"../../../../mini-ITS.Web");
+            var projectPathFiles = Path.Combine(projectPath, "Files");
+            var projectPathFilesEnrollment = Path.Combine(projectPathFiles, enrollmentsPictureDto.EnrollmentId.ToString());
+            Directory.CreateDirectory(projectPathFilesEnrollment);
+
+            byte[] data = new byte[100];
+            Random random = new Random();
+            random.NextBytes(data);
+
+            string filePath = Path.Combine(projectPath, enrollmentsPictureDto.PicturePath.TrimStart('/'));
+            filePath = filePath.Replace('\\', '/');
+            File.WriteAllBytes(filePath, data);
+
+            response = await EditGetAsync(enrollmentsPictureDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after EditGetAsync");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
+            Assert.IsNotNull(results, $"ERROR - EnrollmentsPictureDto is null");
+            TestContext.Out.WriteLine($"Response after load Json data of test EnrollmentsPicture: {response.StatusCode}");
+
+            TestContext.Out.WriteLine("\nEnrollmentsPicture to edit:\n");
+
+            TestContext.Out.WriteLine($"Id                     : {results.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
+            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
+                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
+                : "data too short or null")}\n");
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (Directory.Exists(directoryPath) && !Directory.EnumerateFileSystemEntries(directoryPath).Any())
+            {
+                Directory.Delete(directoryPath);
+
+                if (Directory.Exists(projectPathFiles) && !Directory.EnumerateFileSystemEntries(projectPathFiles).Any())
+                {
+                    Directory.Delete(projectPathFiles);
+                }
+            }
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

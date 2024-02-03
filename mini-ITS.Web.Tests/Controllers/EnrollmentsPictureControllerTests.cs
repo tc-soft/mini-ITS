@@ -200,5 +200,126 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, Combinatorial]
+        public async Task EditPutAsync_Unauthorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedEditEnrollmentCases))] LoginData loginData,
+            [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.EnrollmentsPictureCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            string fileName = $"{Guid.NewGuid()}.jpg";
+
+            response = await EditPutAsync(enrollmentsPictureDto, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task EditPutAsync_Authorized(
+        [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedEditEnrollmentCases))] LoginData loginData,
+        [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            string fileName = $"{Guid.NewGuid()}.jpg";
+            response = await CreateAsync(enrollmentsPictureDto.EnrollmentId, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
+
+            var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+
+            response = await EditGetAsync(id.Ids.First());
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentPicture");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+
+            TestContext.Out.WriteLine("\nEnrollmentsPicture before update:\n");
+
+            TestContext.Out.WriteLine($"Id                     : {results.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
+            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
+                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
+                : "data too short or null")}\n");
+
+            fileName = $"{Guid.NewGuid()}.jpg";
+            response = await EditPutAsync(results, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after update");
+            TestContext.Out.WriteLine($"Response after EditPutAsync (Update): {response.StatusCode}");
+
+            response = await EditGetAsync(id.Ids.First());
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentPicture");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+
+            Assert.That(results, Is.TypeOf<EnrollmentsPictureDto>(), "ERROR - return type");
+
+            Assert.IsNotNull(results.Id, $"ERROR - {nameof(enrollmentsPictureDto.Id)} is null");
+            Assert.That(results.EnrollmentId, Is.EqualTo(enrollmentsPictureDto.EnrollmentId), $"ERROR - {nameof(enrollmentsPictureDto.EnrollmentId)} is not equal");
+            Assert.IsNotNull(results.DateAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateAddPicture)} is null");
+            Assert.IsNotNull(results.DateModPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateModPicture)} is null");
+            Assert.IsNotNull(results.UserAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPicture)} is null");
+            Assert.IsNotNull(results.UserAddPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPictureFullName)} is null");
+            Assert.IsNotNull(results.UserModPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
+            Assert.IsNotNull(results.UserModPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
+            Assert.IsNotNull(results.PictureName, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPicture)} is null");
+            Assert.IsNotNull(results.PicturePath, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPictureFullName)} is null");
+            Assert.IsNotNull(results.PictureFullPath, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
+            Assert.IsNotNull(results.PictureBytes, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
+
+            TestContext.Out.WriteLine("\nEnrollmentsPicture after update:\n");
+
+            TestContext.Out.WriteLine($"Id                     : {results.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
+            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
+                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
+                : "data too short or null")}\n");
+
+            TestContext.Out.WriteLine($"Comparing with the original test data: OK");
+
+            if (File.Exists(results.PictureFullPath))
+            {
+                File.Delete(results.PictureFullPath);
+            }
+
+            var projectPath = Path.GetFullPath(@"../../../../mini-ITS.Web");
+            var projectPathFiles = Path.Combine(projectPath, "Files");
+            var directoryPath = Path.GetDirectoryName(results.PictureFullPath);
+
+            if (Directory.Exists(directoryPath) && !Directory.EnumerateFileSystemEntries(directoryPath).Any())
+            {
+                Directory.Delete(directoryPath);
+
+                if (Directory.Exists(projectPathFiles) && !Directory.EnumerateFileSystemEntries(projectPathFiles).Any())
+                {
+                    Directory.Delete(projectPathFiles);
+                }
+            }
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

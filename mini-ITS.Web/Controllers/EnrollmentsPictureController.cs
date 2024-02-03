@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
@@ -134,6 +135,65 @@ namespace mini_ITS.Web.Controllers
                 enrollmentsPictureDto.PictureBytes = await System.IO.File.ReadAllBytesAsync(pictureFullPath);
 
                 return Ok(enrollmentsPictureDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+        [HttpPut("{id:guid}")]
+        [CookieAuth]
+        public async Task<IActionResult> EditAsync([FromForm] EnrollmentsPictureDto enrollmentsPictureDto, IFormFile file)
+        {
+            try
+            {
+                if (enrollmentsPictureDto == null) return BadRequest("Error: enrollmentsPictureDto is null");
+                if (file == null || file.Length == 0) return NotFound("Error: no file provided");
+                
+                string[] allowedFormats = { "image/jpeg", "image/png", "image/gif" };
+                long maxFileSize = 2 * 1024 * 1024;
+
+                if (!allowedFormats.Contains(file.ContentType.ToLower()))
+                {
+                    return BadRequest("Error: invalid file type");
+                }
+
+                if (file.Length > maxFileSize)
+                {
+                    return BadRequest("Error: file size exceeds the 2MB limit.");
+                }
+
+                var projectPath = Path.GetFullPath(_webHostEnvironment.ContentRootPath);
+                var projectPathFiles = Path.Combine(projectPath, "Files");
+                var projectPathFilesEnrollment = Path.Combine(projectPathFiles, enrollmentsPictureDto.EnrollmentId.ToString());
+                var picturePath = enrollmentsPictureDto.PicturePath.TrimStart('/');
+                var pictureFullPath = Path.Combine(projectPath, picturePath);
+
+                if (!System.IO.File.Exists(pictureFullPath))
+                {
+                    return NotFound("Error: image file not found");
+                }
+                else
+                {
+                    System.IO.File.Delete(pictureFullPath);
+                }
+
+                var fileExtension = Path.GetExtension(file.FileName);
+                var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                picturePath = Path.Combine(projectPathFilesEnrollment, fileName);
+
+                using (var stream = new FileStream(picturePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                enrollmentsPictureDto.PictureName = file.FileName;
+                enrollmentsPictureDto.PicturePath = $"/Files/{enrollmentsPictureDto.EnrollmentId}/{fileName}";
+                enrollmentsPictureDto.PictureFullPath = picturePath.Replace("\\", "/");
+
+                await _enrollmentsPictureServices.UpdateAsync(enrollmentsPictureDto, User.Identity.Name);
+
+                return Ok();
             }
             catch (Exception ex)
             {

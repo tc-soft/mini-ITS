@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
+using mini_ITS.Core.Dto;
 using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests
@@ -69,6 +70,31 @@ namespace mini_ITS.Web.Tests
             var response = await TestClient.GetAsync($"{ApiRoutes.EnrollmentsPicture.Edit}/{id}");
 
             return response;
+        }
+        protected async Task<HttpResponseMessage> EditPutAsync(EnrollmentsPictureDto enrollmentsPictureDto, string fileName, int largeImage)
+        {
+            using var content = new MultipartFormDataContent();
+
+            byte[] imageBytes = new byte[largeImage];
+            new Random().NextBytes(imageBytes);
+            var imageContent = new ByteArrayContent(imageBytes);
+            imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+
+            content.Add(imageContent, "file", fileName);
+
+            content.Add(new StringContent(enrollmentsPictureDto.Id.ToString()), nameof(enrollmentsPictureDto.Id));
+            content.Add(new StringContent(enrollmentsPictureDto.EnrollmentId.ToString()), nameof(enrollmentsPictureDto.EnrollmentId));
+            content.Add(new StringContent(enrollmentsPictureDto.DateAddPicture.ToString()), nameof(enrollmentsPictureDto.DateAddPicture));
+            content.Add(new StringContent(enrollmentsPictureDto.DateModPicture.ToString()), nameof(enrollmentsPictureDto.DateModPicture));
+            content.Add(new StringContent(enrollmentsPictureDto.UserAddPicture.ToString()), nameof(enrollmentsPictureDto.UserAddPicture));
+            content.Add(new StringContent(enrollmentsPictureDto.UserAddPictureFullName), nameof(enrollmentsPictureDto.UserAddPictureFullName));
+            content.Add(new StringContent(enrollmentsPictureDto.UserModPicture.ToString()), nameof(enrollmentsPictureDto.UserModPicture));
+            content.Add(new StringContent(enrollmentsPictureDto.UserModPictureFullName), nameof(enrollmentsPictureDto.UserModPictureFullName));
+            content.Add(new StringContent(enrollmentsPictureDto.PictureName), nameof(enrollmentsPictureDto.PictureName));
+            content.Add(new StringContent(enrollmentsPictureDto.PicturePath), nameof(enrollmentsPictureDto.PicturePath));
+            content.Add(new StringContent(enrollmentsPictureDto.PictureFullPath), nameof(enrollmentsPictureDto.PictureFullPath));
+
+            return await TestClient.PutAsync($"{ApiRoutes.EnrollmentsPicture.Edit}/{enrollmentsPictureDto.Id}", content);
         }
     }
 }

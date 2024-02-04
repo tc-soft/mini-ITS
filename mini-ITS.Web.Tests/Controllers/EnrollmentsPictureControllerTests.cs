@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Tests;
-using mini_ITS.Web.Models.UsersController;
 using mini_ITS.Web.Models.EnrollmentsPictureController;
+using mini_ITS.Web.Models.UsersController;
 
 namespace mini_ITS.Web.Tests.Controllers
 {
@@ -52,31 +52,8 @@ namespace mini_ITS.Web.Tests.Controllers
 
             foreach (var item in results)
             {
-                Assert.IsNotNull(item.Id, $"ERROR - {nameof(enrollmentsPictureDto.Id)} is null");
-                Assert.IsNotNull(item.EnrollmentId, $"ERROR - {nameof(enrollmentsPictureDto.EnrollmentId)} is null");
-                Assert.IsNotNull(item.DateAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateAddPicture)} is null");
-                Assert.IsNotNull(item.DateModPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateModPicture)} is null");
-                Assert.IsNotNull(item.UserAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPicture)} is null");
-                Assert.IsNotNull(item.UserAddPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPictureFullName)} is null");
-                Assert.IsNotNull(item.UserModPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserModPicture)} is null");
-                Assert.IsNotNull(item.UserModPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
-                Assert.IsNotNull(item.PictureName, $"ERROR - {nameof(enrollmentsPictureDto.PictureName)} is null");
-                Assert.IsNotNull(item.PicturePath, $"ERROR - {nameof(enrollmentsPictureDto.PicturePath)} is null");
-                Assert.IsNotNull(item.PictureFullPath, $"ERROR - {nameof(enrollmentsPictureDto.PictureFullPath)} is null");
-
-                TestContext.Out.WriteLine($"Id                     : {item.Id}");
-                TestContext.Out.WriteLine($"EnrollmentId           : {item.EnrollmentId}");
-                TestContext.Out.WriteLine($"DateAddPicture         : {item.DateAddPicture}");
-                TestContext.Out.WriteLine($"DateModPicture         : {item.DateModPicture}");
-                TestContext.Out.WriteLine($"UserAddPicture         : {item.UserAddPicture}");
-                TestContext.Out.WriteLine($"UserAddPictureFullName : {item.UserAddPictureFullName}");
-                TestContext.Out.WriteLine($"UserModPicture         : {item.UserModPicture}");
-                TestContext.Out.WriteLine($"UserModPictureFullName : {item.UserModPictureFullName}");
-                TestContext.Out.WriteLine($"PictureName            : {item.PictureName}");
-                TestContext.Out.WriteLine($"PicturePath            : {item.PicturePath}");
-                TestContext.Out.WriteLine($"PictureFullPath        : {item.PictureFullPath}");
-
-                TestContext.Out.WriteLine(new string('-', 125));
+                EnrollmentsPictureControllerTestsHelper.Check(item);
+                EnrollmentsPictureControllerTestsHelper.PrintRecord(item);
             }
 
             TestContext.Out.WriteLine($"\nCheck: OK");
@@ -103,18 +80,7 @@ namespace mini_ITS.Web.Tests.Controllers
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
-            TestContext.Out.WriteLine($"\nEnrollmentsPicture before create:\n");
-            TestContext.Out.WriteLine($"Id                     : {enrollmentsPictureDto.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentsPictureDto.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentsPictureDto.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentsPictureDto.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentsPictureDto.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentsPictureDto.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentsPictureDto.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentsPictureDto.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentsPictureDto.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentsPictureDto.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentsPictureDto.PictureFullPath}\n");
+            EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture before create:\n");
 
             string fileName = $"{Guid.NewGuid()}.jpg";
             response = await CreateAsync(enrollmentsPictureDto.EnrollmentId, fileName, 100);
@@ -125,12 +91,9 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(id, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete EnrollmentsPicture...");
             await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
-            
-            response = await DeleteAsync(id.Ids.First());
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
-            
+            EnrollmentsPictureControllerTestsHelper.CheckDeleteEnrollmentsPicture(await DeleteAsync(id.Ids.First()));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, Combinatorial]
@@ -172,22 +135,7 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - EnrollmentsPictureDto is null");
             TestContext.Out.WriteLine($"Response after load Json data of test EnrollmentsPicture: {response.StatusCode}");
 
-            TestContext.Out.WriteLine("\nEnrollmentsPicture to edit:\n");
-
-            TestContext.Out.WriteLine($"Id                     : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
-            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
-                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
-                : "data too short or null")}\n");
+            EnrollmentsPictureControllerTestsHelper.Print(results, "\nEnrollmentsPicture to edit:\n");
 
             if (File.Exists(filePath))
             {
@@ -198,11 +146,6 @@ namespace mini_ITS.Web.Tests.Controllers
             if (Directory.Exists(directoryPath) && !Directory.EnumerateFileSystemEntries(directoryPath).Any())
             {
                 Directory.Delete(directoryPath);
-
-                if (Directory.Exists(projectPathFiles) && !Directory.EnumerateFileSystemEntries(projectPathFiles).Any())
-                {
-                    Directory.Delete(projectPathFiles);
-                }
             }
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
@@ -215,7 +158,6 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             string fileName = $"{Guid.NewGuid()}.jpg";
-
             response = await EditPutAsync(enrollmentsPictureDto, fileName, 100);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
             TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
@@ -243,22 +185,7 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
-            TestContext.Out.WriteLine("\nEnrollmentsPicture before update:\n");
-
-            TestContext.Out.WriteLine($"Id                     : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
-            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
-                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
-                : "data too short or null")}\n");
+            EnrollmentsPictureControllerTestsHelper.Print(results, "\nEnrollmentsPicture before update:\n");
 
             fileName = $"{Guid.NewGuid()}.jpg";
             response = await EditPutAsync(results, fileName, 100);
@@ -273,47 +200,14 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
-            Assert.That(results, Is.TypeOf<EnrollmentsPictureDto>(), "ERROR - return type");
-
-            Assert.IsNotNull(results.Id, $"ERROR - {nameof(enrollmentsPictureDto.Id)} is null");
-            Assert.That(results.EnrollmentId, Is.EqualTo(enrollmentsPictureDto.EnrollmentId), $"ERROR - {nameof(enrollmentsPictureDto.EnrollmentId)} is not equal");
-            Assert.IsNotNull(results.DateAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateAddPicture)} is null");
-            Assert.IsNotNull(results.DateModPicture, $"ERROR - {nameof(enrollmentsPictureDto.DateModPicture)} is null");
-            Assert.IsNotNull(results.UserAddPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPicture)} is null");
-            Assert.IsNotNull(results.UserAddPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPictureFullName)} is null");
-            Assert.IsNotNull(results.UserModPicture, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
-            Assert.IsNotNull(results.UserModPictureFullName, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
-            Assert.IsNotNull(results.PictureName, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPicture)} is null");
-            Assert.IsNotNull(results.PicturePath, $"ERROR - {nameof(enrollmentsPictureDto.UserAddPictureFullName)} is null");
-            Assert.IsNotNull(results.PictureFullPath, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
-            Assert.IsNotNull(results.PictureBytes, $"ERROR - {nameof(enrollmentsPictureDto.UserModPictureFullName)} is null");
-
-            TestContext.Out.WriteLine("\nEnrollmentsPicture after update:\n");
-
-            TestContext.Out.WriteLine($"Id                     : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
-            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
-                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
-                : "data too short or null")}\n");
-
+            EnrollmentsPictureControllerTestsHelper.Check(results, enrollmentsPictureDto);
+            EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture after update:\n");
             TestContext.Out.WriteLine($"Comparing with the original test data: OK");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            TestContext.Out.WriteLine($"Delete EnrollmentsPicture...");
             await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
-
-            response = await DeleteAsync(id.Ids.First());
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
-
+            EnrollmentsPictureControllerTestsHelper.CheckDeleteEnrollmentsPicture(await DeleteAsync(id.Ids.First()));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteEnrollmentPictureCases))]
@@ -331,22 +225,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
             }
 
-            TestContext.Out.WriteLine("\nEnrollmentsPicture before delete:\n");
-
-            TestContext.Out.WriteLine($"Id                     : {enrollmentsPictureDto.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentsPictureDto.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentsPictureDto.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentsPictureDto.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentsPictureDto.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentsPictureDto.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentsPictureDto.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentsPictureDto.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {enrollmentsPictureDto.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {enrollmentsPictureDto.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentsPictureDto.PictureFullPath}");
-            TestContext.Out.WriteLine($"PictureBytes           : {(enrollmentsPictureDto.PictureBytes != null
-                ? Convert.ToBase64String(enrollmentsPictureDto.PictureBytes.Take(50).ToArray())
-                : "data too short or null")}\n");
+            EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture before delete:\n");
 
             response = await DeleteAsync(enrollmentsPictureDto.Id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsPicture");
@@ -375,29 +254,12 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(results, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
-            TestContext.Out.WriteLine("\nEnrollmentsPicture before delete:\n");
-
-            TestContext.Out.WriteLine($"Id                     : {results.Id}");
-            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
-            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
-            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
-            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
-            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
-            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
-            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
-            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
-            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
-            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
-            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
-                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
-                : "data too short or null")}\n");
+            EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture before delete:\n");
 
             TestContext.Out.WriteLine($"Delete EnrollmentsPicture...");
-            response = await DeleteAsync(results.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+            EnrollmentsPictureControllerTestsHelper.CheckDeleteEnrollmentsPicture(await DeleteAsync(id.Ids.First()));
 
-            response = await EditGetAsync(results.Id);
+            response = await EditGetAsync(id.Ids.First());
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test enrollmentsPicture");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 

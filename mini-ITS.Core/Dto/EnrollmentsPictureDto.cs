@@ -17,5 +17,7 @@ namespace mini_ITS.Core.Dto
         public string PictureName { get; set; }
         public string PicturePath { get; set; }
         public string PictureFullPath { get; set; }
+
+        public byte[] PictureBytes { get; set; }
     }
 }

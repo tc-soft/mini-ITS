@@ -46,6 +46,17 @@ mini-ITS - a small reporting system to your comany.
 | /Edit/{id}             |                                   | Edit<br> enrollmentsDescription                     | Update<br> enrollmentsDescription |       |                                   |
 | /Delete/{id}           |                                   |                                                     |                                   |       | Delete<br> enrollmentsDescription |
 
+### <span style="color:blue">**RestAPI of EnrollmentsPicture**</span>
+*route : api/EnrollmentsPicture*
+
+| Resource / HTTP method | POST (create)                     | GET (read)                                          | PUT (update)                      | PATCH | DELETE (delete)                   |
+| ---------------------- | --------------------------------- | --------------------------------------------------- | --------------------------------- | ----- |---------------------------------- |
+| /Index/{id}            |                                   | List<br> enrollmentsPicture<br> by EnrollmentId     |                                   |       |                                   |
+| /Create                | Create<br> enrollmentsPicture     |                                                     |                                   |       |                                   |
+| /Edit/{id}             |                                   | Edit<br> enrollmentsPicture                         | Update<br> enrollmentsPicture     |       |                                   |
+| /Delete/{id}           |                                   |                                                     |                                   |       | Delete<br> enrollmentsPicture     |
+
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
 

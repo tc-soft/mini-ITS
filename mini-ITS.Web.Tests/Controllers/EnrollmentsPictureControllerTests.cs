@@ -125,6 +125,13 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.IsNotNull(id, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+            
+            response = await DeleteAsync(id.Ids.First());
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+            
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Unauthorized(
@@ -300,24 +307,99 @@ namespace mini_ITS.Web.Tests.Controllers
 
             TestContext.Out.WriteLine($"Comparing with the original test data: OK");
 
-            if (File.Exists(results.PictureFullPath))
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+            await LoginAsync(new LoginData { Login = "admin", Password = "admin" });
+
+            response = await DeleteAsync(id.Ids.First());
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
+        [Test, TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedDeleteEnrollmentPictureCases))]
+        public async Task DeleteAsync_Unauthorized(
+            LoginData loginUnauthorizedCases,
+            LoginData loginUnauthorizedDeleteCases,
+            EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            if (loginUnauthorizedDeleteCases == null)
             {
-                File.Delete(results.PictureFullPath);
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
             }
 
-            var projectPath = Path.GetFullPath(@"../../../../mini-ITS.Web");
-            var projectPathFiles = Path.Combine(projectPath, "Files");
-            var directoryPath = Path.GetDirectoryName(results.PictureFullPath);
+            TestContext.Out.WriteLine("\nEnrollmentsPicture before delete:\n");
 
-            if (Directory.Exists(directoryPath) && !Directory.EnumerateFileSystemEntries(directoryPath).Any())
-            {
-                Directory.Delete(directoryPath);
+            TestContext.Out.WriteLine($"Id                     : {enrollmentsPictureDto.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {enrollmentsPictureDto.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {enrollmentsPictureDto.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {enrollmentsPictureDto.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {enrollmentsPictureDto.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {enrollmentsPictureDto.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {enrollmentsPictureDto.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {enrollmentsPictureDto.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {enrollmentsPictureDto.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {enrollmentsPictureDto.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {enrollmentsPictureDto.PictureFullPath}");
+            TestContext.Out.WriteLine($"PictureBytes           : {(enrollmentsPictureDto.PictureBytes != null
+                ? Convert.ToBase64String(enrollmentsPictureDto.PictureBytes.Take(50).ToArray())
+                : "data too short or null")}\n");
 
-                if (Directory.Exists(projectPathFiles) && !Directory.EnumerateFileSystemEntries(projectPathFiles).Any())
-                {
-                    Directory.Delete(projectPathFiles);
-                }
-            }
+            response = await DeleteAsync(enrollmentsPictureDto.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsPicture");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task DeleteAsync_Authorized(
+                [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedDeleteEnrollmentPictureCases))] LoginData loginData,
+                [ValueSource(typeof(EnrollmentsPictureTestsData), nameof(EnrollmentsPictureTestsData.CRUDCasesDto))] EnrollmentsPictureDto enrollmentsPictureDto)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            string fileName = $"{Guid.NewGuid()}.jpg";
+            response = await CreateAsync(enrollmentsPictureDto.EnrollmentId, fileName, 100);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
+            TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
+
+            var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
+            Assert.IsNotNull(id, $"ERROR - id is null");
+
+            response = await EditGetAsync(id.Ids.First());
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentPicture");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
+            Assert.IsNotNull(results, $"ERROR - results is null");
+            TestContext.Out.WriteLine($"Response after load Json data: OK");
+
+            TestContext.Out.WriteLine("\nEnrollmentsPicture before delete:\n");
+
+            TestContext.Out.WriteLine($"Id                     : {results.Id}");
+            TestContext.Out.WriteLine($"EnrollmentId           : {results.EnrollmentId}");
+            TestContext.Out.WriteLine($"DateAddPicture         : {results.DateAddPicture}");
+            TestContext.Out.WriteLine($"DateModPicture         : {results.DateModPicture}");
+            TestContext.Out.WriteLine($"UserAddPicture         : {results.UserAddPicture}");
+            TestContext.Out.WriteLine($"UserAddPictureFullName : {results.UserAddPictureFullName}");
+            TestContext.Out.WriteLine($"UserModPicture         : {results.UserModPicture}");
+            TestContext.Out.WriteLine($"UserModPictureFullName : {results.UserModPictureFullName}");
+            TestContext.Out.WriteLine($"PictureName            : {results.PictureName}");
+            TestContext.Out.WriteLine($"PicturePath            : {results.PicturePath}");
+            TestContext.Out.WriteLine($"PictureFullPath        : {results.PictureFullPath}");
+            TestContext.Out.WriteLine($"PictureBytes           : {(results.PictureBytes != null
+                ? Convert.ToBase64String(results.PictureBytes.Take(50).ToArray())
+                : "data too short or null")}\n");
+
+            TestContext.Out.WriteLine($"Delete EnrollmentsPicture...");
+            response = await DeleteAsync(results.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after delete test enrollmentsPicture");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
+
+            response = await EditGetAsync(results.Id);
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not NotFound after get test enrollmentsPicture");
+            TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }

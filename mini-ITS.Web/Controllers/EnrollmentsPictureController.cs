@@ -200,5 +200,45 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpDelete("{id:guid}")]
+        [CookieAuth(roles: "Administrator, Manager")]
+        public async Task<IActionResult> DeleteAsync(Guid? id)
+        {
+            try
+            {
+                if (id == Guid.Empty) return BadRequest("Error: id is null");
+
+                var enrollmentsPictureDto = await _enrollmentsPictureServices.GetAsync((Guid)id);
+                if (enrollmentsPictureDto == null) return NotFound("Error: enrollmentsPictureDto is empty");
+
+                var projectPath = Path.GetFullPath(_webHostEnvironment.ContentRootPath);
+                var projectPathFiles = Path.Combine(projectPath, "Files");
+                var projectPathFilesEnrollment = Path.Combine(projectPathFiles, enrollmentsPictureDto.EnrollmentId.ToString());
+                var picturePath = enrollmentsPictureDto.PicturePath.TrimStart('/');
+                var pictureFullPath = Path.Combine(projectPath, picturePath);
+
+                if (!System.IO.File.Exists(pictureFullPath))
+                {
+                    return NotFound("Error: image file not found");
+                }
+                else
+                {
+                    System.IO.File.Delete(pictureFullPath);
+                }
+
+                if (Directory.Exists(projectPathFilesEnrollment) && !Directory.EnumerateFileSystemEntries(projectPathFilesEnrollment).Any())
+                {
+                    Directory.Delete(projectPathFilesEnrollment);
+                }
+
+                await _enrollmentsPictureServices.DeleteAsync((Guid)id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

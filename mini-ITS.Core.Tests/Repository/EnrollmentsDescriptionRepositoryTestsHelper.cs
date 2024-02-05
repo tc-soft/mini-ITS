@@ -17,16 +17,16 @@ namespace mini_ITS.Core.Tests.Repository
         }
         public static void Check(EnrollmentsDescription enrollmentDescription)
         {
-            Assert.IsNotNull(enrollmentDescription.Id, $"ERROR - {nameof(enrollmentDescription.Id)} is null");
-            Assert.IsNotNull(enrollmentDescription.EnrollmentId, $"ERROR - {nameof(enrollmentDescription.EnrollmentId)} is null");
-            Assert.IsNotNull(enrollmentDescription.DateAddDescription, $"ERROR - {nameof(enrollmentDescription.DateAddDescription)} is null");
-            Assert.IsNotNull(enrollmentDescription.DateModDescription, $"ERROR - {nameof(enrollmentDescription.DateModDescription)} is null");
-            Assert.IsNotNull(enrollmentDescription.UserAddDescription, $"ERROR - {nameof(enrollmentDescription.UserAddDescription)} is null");
-            Assert.IsNotNull(enrollmentDescription.UserAddDescriptionFullName, $"ERROR - {nameof(enrollmentDescription.UserAddDescriptionFullName)} is null");
-            Assert.IsNotNull(enrollmentDescription.UserModDescription, $"ERROR - {nameof(enrollmentDescription.UserModDescription)} is null");
-            Assert.IsNotNull(enrollmentDescription.UserModDescriptionFullName, $"ERROR - {nameof(enrollmentDescription.UserModDescriptionFullName)} is null");
-            Assert.IsNotNull(enrollmentDescription.Description, $"ERROR - {nameof(enrollmentDescription.Description)} is null");
-            Assert.IsNotNull(enrollmentDescription.ActionExecuted, $"ERROR - {nameof(enrollmentDescription.ActionExecuted)} is null");
+            Assert.That(enrollmentDescription.Id, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.Id)} is null");
+            Assert.That(enrollmentDescription.EnrollmentId, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.EnrollmentId)} is null");
+            Assert.That(enrollmentDescription.DateAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.DateAddDescription)} is null");
+            Assert.That(enrollmentDescription.DateModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.DateModDescription)} is null");
+            Assert.That(enrollmentDescription.UserAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.UserAddDescription)} is null");
+            Assert.That(enrollmentDescription.UserAddDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.UserAddDescriptionFullName)} is null");
+            Assert.That(enrollmentDescription.UserModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.UserModDescription)} is null");
+            Assert.That(enrollmentDescription.UserModDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.UserModDescriptionFullName)} is null");
+            Assert.That(enrollmentDescription.Description, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.Description)} is null");
+            Assert.That(enrollmentDescription.ActionExecuted, Is.Not.Null, $"ERROR - {nameof(enrollmentDescription.ActionExecuted)} is null");
         }
         public static void Check(EnrollmentsDescription enrollmentDescription, EnrollmentsDescription enrollmentsDescription)
         {

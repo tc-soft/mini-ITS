@@ -17,17 +17,17 @@ namespace mini_ITS.Core.Tests.Repository
         }
         public static void Check(EnrollmentsPicture enrollmentPicture)
         {
-            Assert.IsNotNull(enrollmentPicture.Id, $"ERROR - {nameof(enrollmentPicture.Id)} is null");
-            Assert.IsNotNull(enrollmentPicture.EnrollmentId, $"ERROR - {nameof(enrollmentPicture.EnrollmentId)} is null");
-            Assert.IsNotNull(enrollmentPicture.DateAddPicture, $"ERROR - {nameof(enrollmentPicture.DateAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.DateModPicture, $"ERROR - {nameof(enrollmentPicture.DateModPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserAddPicture, $"ERROR - {nameof(enrollmentPicture.UserAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserAddPictureFullName, $"ERROR - {nameof(enrollmentPicture.UserAddPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserModPicture, $"ERROR - {nameof(enrollmentPicture.UserModPicture)} is null");
-            Assert.IsNotNull(enrollmentPicture.UserModPictureFullName, $"ERROR - {nameof(enrollmentPicture.UserModPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPicture.PictureName, $"ERROR - {nameof(enrollmentPicture.PictureName)} is null");
-            Assert.IsNotNull(enrollmentPicture.PicturePath, $"ERROR - {nameof(enrollmentPicture.PicturePath)} is null");
-            Assert.IsNotNull(enrollmentPicture.PictureFullPath, $"ERROR - {nameof(enrollmentPicture.PictureFullPath)} is null");
+            Assert.That(enrollmentPicture.Id, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.Id)} is null");
+            Assert.That(enrollmentPicture.EnrollmentId, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.EnrollmentId)} is null");
+            Assert.That(enrollmentPicture.DateAddPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.DateAddPicture)} is null");
+            Assert.That(enrollmentPicture.DateModPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.DateModPicture)} is null");
+            Assert.That(enrollmentPicture.UserAddPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.UserAddPicture)} is null");
+            Assert.That(enrollmentPicture.UserAddPictureFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.UserAddPictureFullName)} is null");
+            Assert.That(enrollmentPicture.UserModPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.UserModPicture)} is null");
+            Assert.That(enrollmentPicture.UserModPictureFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.UserModPictureFullName)} is null");
+            Assert.That(enrollmentPicture.PictureName, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.PictureName)} is null");
+            Assert.That(enrollmentPicture.PicturePath, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.PicturePath)} is null");
+            Assert.That(enrollmentPicture.PictureFullPath, Is.Not.Null, $"ERROR - {nameof(enrollmentPicture.PictureFullPath)} is null");
         }
         public static void Check(EnrollmentsPicture enrollmentPicture, EnrollmentsPicture enrollmentsPicture)
         {

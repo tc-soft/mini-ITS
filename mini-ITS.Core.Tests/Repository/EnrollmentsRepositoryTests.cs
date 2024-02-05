@@ -166,7 +166,7 @@ namespace mini_ITS.Core.Tests.Repository
             Assert.That(enrollment.DateEndDeclareByDepartmentUser, Is.EqualTo(new Guid("FBA6F4F6-BBD6-4088-8DD5-96E6AEF36E9C")), $"ERROR - {nameof(enrollments.DateEndDeclareByDepartmentUser)} is not equal");
             Assert.That(enrollment.DateEndDeclareByDepartmentUserFullName, Is.EqualTo("Ida Beukema"), $"ERROR - {nameof(enrollments.DateEndDeclareByDepartmentUserFullName)} is not equal");
             Assert.That(enrollment.Department, Is.EqualTo(enrollments.Department), $"ERROR - {nameof(enrollments.Department)} is not equal");
-            Assert.IsNotNull(enrollment.Description, $"ERROR - {nameof(enrollments.Description)} is null");
+            Assert.That(enrollment.Description, Is.Not.Null, $"ERROR - {nameof(enrollments.Description)} is null");
             Assert.That(enrollment.Group, Is.EqualTo(enrollments.Group), $"ERROR - {nameof(enrollments.Group)} is not equal");
             Assert.That(enrollment.Priority, Is.EqualTo(enrollments.Priority), $"ERROR - {nameof(enrollments.Priority)} is not equal");
             Assert.That(enrollment.SMSToUserInfo, Is.EqualTo(enrollments.SMSToUserInfo), $"ERROR - {nameof(enrollments.SMSToUserInfo)} is not equal");

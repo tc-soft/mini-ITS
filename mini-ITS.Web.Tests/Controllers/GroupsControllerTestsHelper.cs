@@ -11,26 +11,26 @@ namespace mini_ITS.Web.Tests.Controllers
     {
         public static void Check(GroupsDto groupsDto)
         {
-            Assert.IsNotNull(groupsDto.Id, $"ERROR - {nameof(groupsDto.Id)} is null");
-            Assert.IsNotNull(groupsDto.DateAddGroup, $"ERROR - {nameof(groupsDto.DateAddGroup)} is null");
-            Assert.IsNotNull(groupsDto.DateModGroup, $"ERROR - {nameof(groupsDto.DateModGroup)} is null");
-            Assert.IsNotNull(groupsDto.UserAddGroup, $"ERROR - {nameof(groupsDto.UserAddGroup)} is null");
-            Assert.IsNotNull(groupsDto.UserAddGroupFullName, $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is null");
-            Assert.IsNotNull(groupsDto.UserModGroup, $"ERROR - {nameof(groupsDto.UserModGroup)} is null");
-            Assert.IsNotNull(groupsDto.UserModGroupFullName, $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is null");
-            Assert.IsNotNull(groupsDto.GroupName, $"ERROR - {nameof(groupsDto.GroupName)} is null");
+            Assert.That(groupsDto.Id, Is.Not.Null, $"ERROR - {nameof(groupsDto.Id)} is null");
+            Assert.That(groupsDto.DateAddGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.DateAddGroup)} is null");
+            Assert.That(groupsDto.DateModGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.DateModGroup)} is null");
+            Assert.That(groupsDto.UserAddGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserAddGroup)} is null");
+            Assert.That(groupsDto.UserAddGroupFullName, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is null");
+            Assert.That(groupsDto.UserModGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserModGroup)} is null");
+            Assert.That(groupsDto.UserModGroupFullName, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is null");
+            Assert.That(groupsDto.GroupName, Is.Not.Null, $"ERROR - {nameof(groupsDto.GroupName)} is null");
         }
         public static void Check(GroupsDto groupDto, GroupsDto groupsDto)
         {
             Assert.That(groupDto, Is.TypeOf<GroupsDto>(), "ERROR - return type");
 
             Assert.That(groupDto.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupsDto.Id)} is not Guid type");
-            Assert.IsNotNull(groupDto.DateAddGroup, $"ERROR - {nameof(groupsDto.DateAddGroup)} is null");
-            Assert.IsNotNull(groupDto.DateModGroup, $"ERROR - {nameof(groupsDto.DateModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroup, $"ERROR - {nameof(groupsDto.UserAddGroup)} is null");
-            Assert.IsNotNull(groupDto.UserAddGroupFullName, $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is null");
-            Assert.IsNotNull(groupDto.UserModGroup, $"ERROR - {nameof(groupsDto.UserModGroup)} is null");
-            Assert.IsNotNull(groupDto.UserModGroupFullName, $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is null");
+            Assert.That(groupDto.DateAddGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.DateAddGroup)} is null");
+            Assert.That(groupDto.DateModGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.DateModGroup)} is null");
+            Assert.That(groupDto.UserAddGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserAddGroup)} is null");
+            Assert.That(groupDto.UserAddGroupFullName, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserAddGroupFullName)} is null");
+            Assert.That(groupDto.UserModGroup, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserModGroup)} is null");
+            Assert.That(groupDto.UserModGroupFullName, Is.Not.Null, $"ERROR - {nameof(groupsDto.UserModGroupFullName)} is null");
             Assert.That(groupDto.GroupName, Is.EqualTo(groupsDto.GroupName), $"ERROR - {nameof(groupsDto.GroupName)} is not equal");
         }
         public static void Print(GroupsDto groupsDto, string message)

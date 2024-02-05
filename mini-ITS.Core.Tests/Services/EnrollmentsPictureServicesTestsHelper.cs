@@ -18,17 +18,17 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static void Check(EnrollmentsPictureDto enrollmentPictureDto)
         {
-            Assert.IsNotNull(enrollmentPictureDto.Id, $"ERROR - {nameof(enrollmentPictureDto.Id)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.EnrollmentId, $"ERROR - {nameof(enrollmentPictureDto.EnrollmentId)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.DateAddPicture, $"ERROR - {nameof(enrollmentPictureDto.DateAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.DateModPicture, $"ERROR - {nameof(enrollmentPictureDto.DateModPicture)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.UserAddPicture, $"ERROR - {nameof(enrollmentPictureDto.UserAddPicture)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.UserAddPictureFullName, $"ERROR - {nameof(enrollmentPictureDto.UserAddPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.UserModPicture, $"ERROR - {nameof(enrollmentPictureDto.UserModPicture)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.UserModPictureFullName, $"ERROR - {nameof(enrollmentPictureDto.UserModPictureFullName)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.PictureName, $"ERROR - {nameof(enrollmentPictureDto.PictureName)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.PicturePath, $"ERROR - {nameof(enrollmentPictureDto.PicturePath)} is null");
-            Assert.IsNotNull(enrollmentPictureDto.PictureFullPath, $"ERROR - {nameof(enrollmentPictureDto.PictureFullPath)} is null");
+            Assert.That(enrollmentPictureDto.Id, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.Id)} is null");
+            Assert.That(enrollmentPictureDto.EnrollmentId, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.EnrollmentId)} is null");
+            Assert.That(enrollmentPictureDto.DateAddPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.DateAddPicture)} is null");
+            Assert.That(enrollmentPictureDto.DateModPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.DateModPicture)} is null");
+            Assert.That(enrollmentPictureDto.UserAddPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.UserAddPicture)} is null");
+            Assert.That(enrollmentPictureDto.UserAddPictureFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.UserAddPictureFullName)} is null");
+            Assert.That(enrollmentPictureDto.UserModPicture, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.UserModPicture)} is null");
+            Assert.That(enrollmentPictureDto.UserModPictureFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.UserModPictureFullName)} is null");
+            Assert.That(enrollmentPictureDto.PictureName, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.PictureName)} is null");
+            Assert.That(enrollmentPictureDto.PicturePath, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.PicturePath)} is null");
+            Assert.That(enrollmentPictureDto.PictureFullPath, Is.Not.Null, $"ERROR - {nameof(enrollmentPictureDto.PictureFullPath)} is null");
         }
         public static void Check(EnrollmentsPictureDto enrollmentPictureDto, EnrollmentsPictureDto enrollmentsPictureDto)
         {

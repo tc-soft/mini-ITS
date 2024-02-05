@@ -18,29 +18,29 @@ namespace mini_ITS.Core.Tests.Repository
         }
         public static void Check(Enrollments enrollments)
         {
-            Assert.IsNotNull(enrollments.Id, $"ERROR - {nameof(enrollments.Id)} is null");
-            Assert.IsNotNull(enrollments.Nr, $"ERROR - {nameof(enrollments.Nr)} is null");
-            Assert.IsNotNull(enrollments.Year, $"ERROR - {nameof(enrollments.Year)} is null");
-            Assert.IsNotNull(enrollments.DateAddEnrollment, $"ERROR - {nameof(enrollments.DateAddEnrollment)} is null");
-            Assert.IsNotNull(enrollments.DateModEnrollment, $"ERROR - {nameof(enrollments.DateModEnrollment)} is null");
-            Assert.IsNotNull(enrollments.DateEndDeclareByUser, $"ERROR - {nameof(enrollments.DateEndDeclareByUser)} is null");
-            Assert.IsNotNull(enrollments.Department, $"ERROR - {nameof(enrollments.Department)} is null");
-            Assert.IsNotNull(enrollments.Description, $"ERROR - {nameof(enrollments.Description)} is null");
-            Assert.IsNotNull(enrollments.Group, $"ERROR - {nameof(enrollments.Group)} is null");
-            Assert.IsNotNull(enrollments.Priority, $"ERROR - {nameof(enrollments.Priority)} is null");
-            Assert.IsNotNull(enrollments.SMSToUserInfo, $"ERROR - {nameof(enrollments.SMSToUserInfo)} is null");
-            Assert.IsNotNull(enrollments.SMSToAllInfo, $"ERROR - {nameof(enrollments.SMSToAllInfo)} is null");
-            Assert.IsNotNull(enrollments.MailToUserInfo, $"ERROR - {nameof(enrollments.MailToUserInfo)} is null");
-            Assert.IsNotNull(enrollments.MailToAllInfo, $"ERROR - {nameof(enrollments.MailToAllInfo)} is null");
-            Assert.IsNotNull(enrollments.ReadyForClose, $"ERROR - {nameof(enrollments.ReadyForClose)} is null");
-            Assert.IsNotNull(enrollments.State, $"ERROR - {nameof(enrollments.State)} is null");
-            Assert.IsNotNull(enrollments.UserAddEnrollment, $"ERROR - {nameof(enrollments.UserAddEnrollment)} is null");
-            Assert.IsNotNull(enrollments.UserAddEnrollmentFullName, $"ERROR - {nameof(enrollments.UserAddEnrollmentFullName)} is null");
-            Assert.IsNotNull(enrollments.UserModEnrollment, $"ERROR - {nameof(enrollments.UserModEnrollment)} is null");
-            Assert.IsNotNull(enrollments.UserModEnrollmentFullName, $"ERROR - {nameof(enrollments.UserModEnrollmentFullName)} is null");
-            Assert.IsNotNull(enrollments.ActionRequest, $"ERROR - {nameof(enrollments.ActionRequest)} is null");
-            Assert.IsNotNull(enrollments.ActionExecuted, $"ERROR - {nameof(enrollments.ActionExecuted)} is null");
-            Assert.IsNotNull(enrollments.ActionFinished, $"ERROR - {nameof(enrollments.ActionFinished)} is null");
+            Assert.That(enrollments.Id, Is.Not.Null, $"ERROR - {nameof(enrollments.Id)} is null");
+            Assert.That(enrollments.Nr, Is.Not.Null, $"ERROR - {nameof(enrollments.Nr)} is null");
+            Assert.That(enrollments.Year, Is.Not.Null, $"ERROR - {nameof(enrollments.Year)} is null");
+            Assert.That(enrollments.DateAddEnrollment, Is.Not.Null, $"ERROR - {nameof(enrollments.DateAddEnrollment)} is null");
+            Assert.That(enrollments.DateModEnrollment, Is.Not.Null, $"ERROR - {nameof(enrollments.DateModEnrollment)} is null");
+            Assert.That(enrollments.DateEndDeclareByUser, Is.Not.Null, $"ERROR - {nameof(enrollments.DateEndDeclareByUser)} is null");
+            Assert.That(enrollments.Department, Is.Not.Null, $"ERROR - {nameof(enrollments.Department)} is null");
+            Assert.That(enrollments.Description, Is.Not.Null, $"ERROR - {nameof(enrollments.Description)} is null");
+            Assert.That(enrollments.Group, Is.Not.Null, $"ERROR - {nameof(enrollments.Group)} is null");
+            Assert.That(enrollments.Priority, Is.Not.Null, $"ERROR - {nameof(enrollments.Priority)} is null");
+            Assert.That(enrollments.SMSToUserInfo, Is.Not.Null, $"ERROR - {nameof(enrollments.SMSToUserInfo)} is null");
+            Assert.That(enrollments.SMSToAllInfo, Is.Not.Null, $"ERROR - {nameof(enrollments.SMSToAllInfo)} is null");
+            Assert.That(enrollments.MailToUserInfo, Is.Not.Null, $"ERROR - {nameof(enrollments.MailToUserInfo)} is null");
+            Assert.That(enrollments.MailToAllInfo, Is.Not.Null, $"ERROR - {nameof(enrollments.MailToAllInfo)} is null");
+            Assert.That(enrollments.ReadyForClose, Is.Not.Null, $"ERROR - {nameof(enrollments.ReadyForClose)} is null");
+            Assert.That(enrollments.State, Is.Not.Null, $"ERROR - {nameof(enrollments.State)} is null");
+            Assert.That(enrollments.UserAddEnrollment, Is.Not.Null, $"ERROR - {nameof(enrollments.UserAddEnrollment)} is null");
+            Assert.That(enrollments.UserAddEnrollmentFullName, Is.Not.Null, $"ERROR - {nameof(enrollments.UserAddEnrollmentFullName)} is null");
+            Assert.That(enrollments.UserModEnrollment, Is.Not.Null, $"ERROR - {nameof(enrollments.UserModEnrollment)} is null");
+            Assert.That(enrollments.UserModEnrollmentFullName, Is.Not.Null, $"ERROR - {nameof(enrollments.UserModEnrollmentFullName)} is null");
+            Assert.That(enrollments.ActionRequest, Is.Not.Null, $"ERROR - {nameof(enrollments.ActionRequest)} is null");
+            Assert.That(enrollments.ActionExecuted, Is.Not.Null, $"ERROR - {nameof(enrollments.ActionExecuted)} is null");
+            Assert.That(enrollments.ActionFinished, Is.Not.Null, $"ERROR - {nameof(enrollments.ActionFinished)} is null");
         }
         public static void Check(Enrollments enrollment, Enrollments enrollments)
         {

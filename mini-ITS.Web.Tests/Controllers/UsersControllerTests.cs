@@ -50,7 +50,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after check login status: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<LoginJsonResults>();
-            Assert.IsNotNull(results, $"ERROR - LoginJsonResults is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - LoginJsonResults is null");
             UsersControllerTestsHelper.Print(results, "\nJson results of login status");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
@@ -86,7 +86,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<SqlPagedResult<UsersDto>>();
-            Assert.IsNotNull(results, $"ERROR - UsersDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - UsersDto is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             for (int i = 1; i <= results.TotalPages; i++)
@@ -107,7 +107,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 TestContext.Out.WriteLine($"Page {i}/{results.TotalPages} : Response after run API IndexAsync: {responsePage.StatusCode}");
 
                 var resultsPage = await responsePage.Content.ReadFromJsonAsync<SqlPagedResult<UsersDto>>();
-                Assert.IsNotNull(resultsPage, $"ERROR - UsersDto is null");
+                Assert.That(resultsPage, Is.Not.Null, $"ERROR - UsersDto is null");
                 TestContext.Out.WriteLine($"Page {i}/{resultsPage.TotalPages} : response after load Json data: OK");
 
                 TestContext.Out.WriteLine($"" +
@@ -196,7 +196,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get test user");
@@ -238,7 +238,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync of test user: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<UsersDto>();
-            Assert.IsNotNull(results, $"ERROR - UsersDto of test user is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - UsersDto of test user is null");
             TestContext.Out.WriteLine($"Response after load Json data of test user: OK");
             UsersControllerTestsHelper.Print(results, "\nUser to edit");
 
@@ -277,14 +277,14 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get user");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var userDto = await response.Content.ReadFromJsonAsync<UsersDto>();
-            Assert.IsNotNull(userDto, $"ERROR - results is null");
+            Assert.That(userDto, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             var caesarHelper = new CaesarHelper();
@@ -306,7 +306,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             userDto = await response.Content.ReadFromJsonAsync<UsersDto>();
-            Assert.IsNotNull(userDto, $"ERROR - results is null");
+            Assert.That(userDto, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             UsersControllerTestsHelper.Check(userDto, usersDto);
@@ -349,7 +349,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
 
@@ -402,7 +402,7 @@ namespace mini_ITS.Web.Tests.Controllers
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
 
             var caesarHelper = new CaesarHelper();
@@ -453,7 +453,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
 
@@ -498,7 +498,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
             TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             var caesarHelper = new CaesarHelper();
             var setPassword = new SetPassword()

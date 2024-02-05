@@ -37,7 +37,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<SqlPagedResult<GroupsDto>>();
-            Assert.IsNotNull(results, $"ERROR - GroupsDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - GroupsDto is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             for (int i = 1; i <= results.TotalPages; i++)
@@ -58,7 +58,7 @@ namespace mini_ITS.Web.Tests.Controllers
                 TestContext.Out.WriteLine($"Page {i}/{results.TotalPages} : Response after run API IndexAsync: {responsePage.StatusCode}");
 
                 var resultsPage = await responsePage.Content.ReadFromJsonAsync<SqlPagedResult<GroupsDto>>();
-                Assert.IsNotNull(resultsPage, $"ERROR - GroupsDto is null");
+                Assert.That(resultsPage, Is.Not.Null, $"ERROR - GroupsDto is null");
                 TestContext.Out.WriteLine($"Page {i}/{resultsPage.TotalPages} : Response after load Json data: OK");
 
                 TestContext.Out.WriteLine($"" +
@@ -149,7 +149,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             GroupsControllerTestsHelper.CheckDeleteGroupAuthorizedCase(await DeleteAsync(id));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
@@ -185,7 +185,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
-            Assert.IsNotNull(results, $"ERROR - GroupsDto of test group is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - GroupsDto of test group is null");
             TestContext.Out.WriteLine($"Response after load Json data of test group: {response.StatusCode}");
             GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup to edit");
 
@@ -222,13 +222,13 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
 
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
             GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before update:");
 
@@ -251,7 +251,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             results = await response.Content.ReadFromJsonAsync<GroupsDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             GroupsControllerTestsHelper.Check(results, groupsDto);
@@ -295,7 +295,7 @@ namespace mini_ITS.Web.Tests.Controllers
             response = await CreateAsync(groupsDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get group");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
 
             response = await EditGetAsync(id);
@@ -303,7 +303,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<GroupsDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             Assert.That(results.Id, Is.TypeOf<Guid>(), $"ERROR - {nameof(groupsDto.Id)} is not Guid type");

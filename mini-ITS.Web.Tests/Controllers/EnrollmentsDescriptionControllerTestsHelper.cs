@@ -9,29 +9,29 @@ namespace mini_ITS.Web.Tests.Controllers
     {
         public static void Check(EnrollmentsDescriptionDto enrollmentsDescriptionDto)
         {
-            Assert.IsNotNull(enrollmentsDescriptionDto.Id, $"ERROR - {nameof(enrollmentsDescriptionDto.Id)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.EnrollmentId, $"ERROR - {nameof(enrollmentsDescriptionDto.EnrollmentId)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.DateAddDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.DateAddDescription)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.DateModDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.DateModDescription)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.UserAddDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescription)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.UserAddDescriptionFullName, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescriptionFullName)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.UserModDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescription)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.UserModDescriptionFullName, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescriptionFullName)} is null");
-            Assert.IsNotNull(enrollmentsDescriptionDto.Description, $"ERROR - {nameof(enrollmentsDescriptionDto.Description)} is null");
+            Assert.That(enrollmentsDescriptionDto.Id, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.Id)} is null");
+            Assert.That(enrollmentsDescriptionDto.EnrollmentId, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.EnrollmentId)} is null");
+            Assert.That(enrollmentsDescriptionDto.DateAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.DateAddDescription)} is null");
+            Assert.That(enrollmentsDescriptionDto.DateModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.DateModDescription)} is null");
+            Assert.That(enrollmentsDescriptionDto.UserAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescription)} is null");
+            Assert.That(enrollmentsDescriptionDto.UserAddDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescriptionFullName)} is null");
+            Assert.That(enrollmentsDescriptionDto.UserModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescription)} is null");
+            Assert.That(enrollmentsDescriptionDto.UserModDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescriptionFullName)} is null");
+            Assert.That(enrollmentsDescriptionDto.Description, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.Description)} is null");
             Assert.That(enrollmentsDescriptionDto.ActionExecuted, Is.TypeOf<int>(), "ERROR - item.ActionExecuted is not <int> type");
         }
         public static void Check(EnrollmentsDescriptionDto enrollmentDescriptionDto, EnrollmentsDescriptionDto enrollmentsDescriptionDto)
         {
             Assert.That(enrollmentDescriptionDto, Is.TypeOf<EnrollmentsDescriptionDto>(), "ERROR - return type");
 
-            Assert.IsNotNull(enrollmentDescriptionDto.Id, $"ERROR - {nameof(enrollmentsDescriptionDto.Id)} is null");
+            Assert.That(enrollmentDescriptionDto.Id, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.Id)} is null");
             Assert.That(enrollmentDescriptionDto.EnrollmentId, Is.EqualTo(enrollmentsDescriptionDto.EnrollmentId), $"ERROR - {nameof(enrollmentsDescriptionDto.EnrollmentId)} is not equal");
-            Assert.IsNotNull(enrollmentDescriptionDto.DateAddDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.DateAddDescription)} is null");
-            Assert.IsNotNull(enrollmentDescriptionDto.DateModDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.DateModDescription)} is null");
-            Assert.IsNotNull(enrollmentDescriptionDto.UserAddDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescription)} is null");
-            Assert.IsNotNull(enrollmentDescriptionDto.UserAddDescriptionFullName, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescriptionFullName)} is null");
-            Assert.IsNotNull(enrollmentDescriptionDto.UserModDescription, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescription)} is null");
-            Assert.IsNotNull(enrollmentDescriptionDto.UserModDescriptionFullName, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescriptionFullName)} is null");
+            Assert.That(enrollmentDescriptionDto.DateAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.DateAddDescription)} is null");
+            Assert.That(enrollmentDescriptionDto.DateModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.DateModDescription)} is null");
+            Assert.That(enrollmentDescriptionDto.UserAddDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescription)} is null");
+            Assert.That(enrollmentDescriptionDto.UserAddDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserAddDescriptionFullName)} is null");
+            Assert.That(enrollmentDescriptionDto.UserModDescription, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescription)} is null");
+            Assert.That(enrollmentDescriptionDto.UserModDescriptionFullName, Is.Not.Null, $"ERROR - {nameof(enrollmentsDescriptionDto.UserModDescriptionFullName)} is null");
             Assert.That(enrollmentDescriptionDto.Description, Is.EqualTo(enrollmentsDescriptionDto.Description), $"ERROR - {nameof(enrollmentsDescriptionDto.Description)} is not equal");
             Assert.That(enrollmentDescriptionDto.ActionExecuted, Is.EqualTo(enrollmentsDescriptionDto.ActionExecuted), $"ERROR - {nameof(enrollmentsDescriptionDto.ActionExecuted)} is not equal");
         }

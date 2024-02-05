@@ -35,7 +35,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<IEnumerable<EnrollmentsDescriptionDto>>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsDescriptionDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - EnrollmentsDescriptionDto is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             Assert.That(results.Count() > 0, "ERROR - enrollments is empty");
@@ -80,7 +80,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<IEnumerable<EnrollmentsDescriptionDto>>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsDescriptionDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - EnrollmentsDescriptionDto is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             Assert.That(results.Count() > 0, "ERROR - enrollments is empty");
@@ -127,7 +127,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
             TestContext.Out.WriteLine($"Delete EnrollmentsDescription...");
@@ -158,7 +158,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsDescriptionDto>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsDescriptionDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - EnrollmentsDescriptionDto is null");
             TestContext.Out.WriteLine($"Response after load Json data of test EnrollmentsDescription: {response.StatusCode}");
 
             EnrollmentsDescriptionControllerTestsHelper.Print(results, "\nEnrollmentsDescription to edit:\n");
@@ -188,14 +188,14 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
 
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             
             response = await EditGetAsync(id);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollment");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsDescriptionDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             EnrollmentsDescriptionControllerTestsHelper.Print(results, "\nEnrollmentsDescription before update:\n");
@@ -222,7 +222,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             results = await response.Content.ReadFromJsonAsync<EnrollmentsDescriptionDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             EnrollmentsDescriptionControllerTestsHelper.Check(results, enrollmentsDescriptionDto);
@@ -268,7 +268,7 @@ namespace mini_ITS.Web.Tests.Controllers
             response = await CreateAsync(enrollmentsDescriptionDto);
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentsDescription");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
 
             TestContext.Out.WriteLine($"Delete EnrollmentsDescription...");

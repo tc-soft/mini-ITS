@@ -174,7 +174,7 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
 
             EnrollmentsServicesTestsHelper.Check(enrollmentDto);
-            Assert.IsNull(enrollmentDto.DateEndEnrollment, $"ERROR - {nameof(enrollmentDto.DateEndEnrollment)} is not null");
+            Assert.That(enrollmentDto.DateEndEnrollment, Is.Null, $"ERROR - {nameof(enrollmentDto.DateEndEnrollment)} is not null");
             Assert.That(enrollmentDto.DateEndDeclareByDepartment, Is.EqualTo(enrollmentDto.DateEndDeclareByUser), $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartment)} is not equal");
             Assert.That(enrollmentDto.DateEndDeclareByDepartmentUser, Is.EqualTo(new Guid("FBA6F4F6-BBD6-4088-8DD5-96E6AEF36E9C")), $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartmentUser)} is not equal");
             Assert.That(enrollmentDto.DateEndDeclareByDepartmentUserFullName, Is.EqualTo("Ida Beukema"), $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartmentUserFullName)} is not equal");
@@ -188,10 +188,10 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
 
             EnrollmentsServicesTestsHelper.Check(enrollmentDto);
-            Assert.IsNull(enrollmentDto.DateEndEnrollment, $"ERROR - {nameof(enrollmentDto.DateEndEnrollment)} is not null");
-            Assert.IsNull(enrollmentDto.DateEndDeclareByDepartment, $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartment)} is not null");
+            Assert.That(enrollmentDto.DateEndEnrollment, Is.Null, $"ERROR - {nameof(enrollmentDto.DateEndEnrollment)} is not null");
+            Assert.That(enrollmentDto.DateEndDeclareByDepartment, Is.Null, $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartment)} is not null");
             Assert.That(enrollmentDto.DateEndDeclareByDepartmentUser, Is.EqualTo(new Guid()), $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartmentUser)} is not equal");
-            Assert.IsNull(enrollmentDto.DateEndDeclareByDepartmentUserFullName, $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartmentUserFullName)} is not null");
+            Assert.That(enrollmentDto.DateEndDeclareByDepartmentUserFullName, Is.Null, $"ERROR - {nameof(enrollmentDto.DateEndDeclareByDepartmentUserFullName)} is not null");
             Assert.That(enrollmentDto.State, Is.EqualTo("New"), $"ERROR - {nameof(enrollmentDto.State)} is not equal");
 
             EnrollmentsServicesTestsHelper.Print(enrollmentDto);

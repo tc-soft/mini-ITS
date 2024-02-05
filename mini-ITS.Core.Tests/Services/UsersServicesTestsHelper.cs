@@ -18,15 +18,15 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static void Check(UsersDto usersDto)
         {
-            Assert.IsNotNull(usersDto.Id, $"ERROR - {nameof(usersDto.Id)} is null");
-            Assert.IsNotNull(usersDto.Login, $"ERROR - {nameof(usersDto.Login)} is null");
-            Assert.IsNotNull(usersDto.FirstName, $"ERROR - {nameof(usersDto.FirstName)} is null");
-            Assert.IsNotNull(usersDto.LastName, $"ERROR - {nameof(usersDto.LastName)} is null");
-            Assert.IsNotNull(usersDto.Department, $"ERROR - {nameof(usersDto.Department)} is null");
-            Assert.IsNotNull(usersDto.Email, $"ERROR - {nameof(usersDto.Email)} is null");
-            Assert.IsNotNull(usersDto.Phone, $"ERROR - {nameof(usersDto.Phone)} is null");
-            Assert.IsNotNull(usersDto.Role, $"ERROR - {nameof(usersDto.Role)} is null");
-            Assert.IsNotNull(usersDto.PasswordHash, $"ERROR - {nameof(usersDto.PasswordHash)} is null");
+            Assert.That(usersDto.Id, Is.Not.Null, $"ERROR - {nameof(usersDto.Id)} is null");
+            Assert.That(usersDto.Login, Is.Not.Null, $"ERROR - {nameof(usersDto.Login)} is null");
+            Assert.That(usersDto.FirstName, Is.Not.Null, $"ERROR - {nameof(usersDto.FirstName)} is null");
+            Assert.That(usersDto.LastName, Is.Not.Null, $"ERROR - {nameof(usersDto.LastName)} is null");
+            Assert.That(usersDto.Department, Is.Not.Null, $"ERROR - {nameof(usersDto.Department)} is null");
+            Assert.That(usersDto.Email, Is.Not.Null, $"ERROR - {nameof(usersDto.Email)} is null");
+            Assert.That(usersDto.Phone, Is.Not.Null, $"ERROR - {nameof(usersDto.Phone)} is null");
+            Assert.That(usersDto.Role, Is.Not.Null, $"ERROR - {nameof(usersDto.Role)} is null");
+            Assert.That(usersDto.PasswordHash, Is.Not.Null, $"ERROR - {nameof(usersDto.PasswordHash)} is null");
         }
         public static void Check(UsersDto userDto, UsersDto usersDto)
         {

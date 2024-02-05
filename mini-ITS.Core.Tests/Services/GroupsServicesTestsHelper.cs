@@ -18,14 +18,14 @@ namespace mini_ITS.Core.Tests.Services
         }
         public static void Check(GroupsDto group)
         {
-            Assert.IsNotNull(group.Id, $"ERROR - {nameof(group.Id)} is null");
-            Assert.IsNotNull(group.DateAddGroup, $"ERROR - {nameof(group.DateAddGroup)} is null");
-            Assert.IsNotNull(group.DateModGroup, $"ERROR - {nameof(group.DateModGroup)} is null");
-            Assert.IsNotNull(group.UserAddGroup, $"ERROR - {nameof(group.UserAddGroup)} is null");
-            Assert.IsNotNull(group.UserAddGroupFullName, $"ERROR - {nameof(group.UserAddGroupFullName)} is null");
-            Assert.IsNotNull(group.UserModGroup, $"ERROR - {nameof(group.UserModGroup)} is null");
-            Assert.IsNotNull(group.UserModGroupFullName, $"ERROR - {nameof(group.UserModGroupFullName)} is null");
-            Assert.IsNotNull(group.GroupName, $"ERROR - {nameof(group.GroupName)} is null");
+            Assert.That(group.Id, Is.Not.Null, $"ERROR - {nameof(group.Id)} is null");
+            Assert.That(group.DateAddGroup, Is.Not.Null, $"ERROR - {nameof(group.DateAddGroup)} is null");
+            Assert.That(group.DateModGroup, Is.Not.Null, $"ERROR - {nameof(group.DateModGroup)} is null");
+            Assert.That(group.UserAddGroup, Is.Not.Null, $"ERROR - {nameof(group.UserAddGroup)} is null");
+            Assert.That(group.UserAddGroupFullName, Is.Not.Null, $"ERROR - {nameof(group.UserAddGroupFullName)} is null");
+            Assert.That(group.UserModGroup, Is.Not.Null, $"ERROR - {nameof(group.UserModGroup)} is null");
+            Assert.That(group.UserModGroupFullName, Is.Not.Null, $"ERROR - {nameof(group.UserModGroupFullName)} is null");
+            Assert.That(group.GroupName, Is.Not.Null, $"ERROR - {nameof(group.GroupName)} is null");
         }
         public static void Check(GroupsDto groupDto, GroupsDto groupsDto)
         {

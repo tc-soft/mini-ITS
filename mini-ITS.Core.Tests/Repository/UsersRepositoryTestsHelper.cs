@@ -17,14 +17,14 @@ namespace mini_ITS.Core.Tests.Repository
         }
         public static void Check(Users users)
         {
-            Assert.IsNotNull(users.Id, $"ERROR - {nameof(users.Id)} is null");
-            Assert.IsNotNull(users.Login, $"ERROR - {nameof(users.Login)} is null");
-            Assert.IsNotNull(users.FirstName, $"ERROR - {nameof(users.FirstName)} is null");
-            Assert.IsNotNull(users.LastName, $"ERROR - {nameof(users.LastName)} is null");
-            Assert.IsNotNull(users.Department, $"ERROR - {nameof(users.Department)} is null");
-            Assert.IsNotNull(users.Email, $"ERROR - {nameof(users.Email)} is null");
-            Assert.IsNotNull(users.Role, $"ERROR - {nameof(users.Role)} is null");
-            Assert.IsNotNull(users.PasswordHash, $"ERROR - {nameof(users.PasswordHash)} is null");
+            Assert.That(users.Id, Is.Not.Null, $"ERROR - {nameof(users.Id)} is null");
+            Assert.That(users.Login, Is.Not.Null, $"ERROR - {nameof(users.Login)} is null");
+            Assert.That(users.FirstName, Is.Not.Null, $"ERROR - {nameof(users.FirstName)} is null");
+            Assert.That(users.LastName, Is.Not.Null, $"ERROR - {nameof(users.LastName)} is null");
+            Assert.That(users.Department, Is.Not.Null, $"ERROR - {nameof(users.Department)} is null");
+            Assert.That(users.Email, Is.Not.Null, $"ERROR - {nameof(users.Email)} is null");
+            Assert.That(users.Role, Is.Not.Null, $"ERROR - {nameof(users.Role)} is null");
+            Assert.That(users.PasswordHash, Is.Not.Null, $"ERROR - {nameof(users.PasswordHash)} is null");
         }
         public static void Check(Users user, Users users)
         {

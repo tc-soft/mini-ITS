@@ -38,7 +38,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after run API IndexAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<IEnumerable<EnrollmentsPictureDto>>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsPictureDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - EnrollmentsPictureDto is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK\n");
 
             Assert.That(results.Count() > 0, "ERROR - enrollments is empty");
@@ -88,7 +88,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}\n");
             var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
             TestContext.Out.WriteLine($"Delete EnrollmentsPicture...");
@@ -132,7 +132,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
-            Assert.IsNotNull(results, $"ERROR - EnrollmentsPictureDto is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - EnrollmentsPictureDto is null");
             TestContext.Out.WriteLine($"Response after load Json data of test EnrollmentsPicture: {response.StatusCode}");
 
             EnrollmentsPictureControllerTestsHelper.Print(results, "\nEnrollmentsPicture to edit:\n");
@@ -175,14 +175,14 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
 
             var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             response = await EditGetAsync(id.Ids.First());
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentPicture");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             EnrollmentsPictureControllerTestsHelper.Print(results, "\nEnrollmentsPicture before update:\n");
@@ -197,7 +197,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             EnrollmentsPictureControllerTestsHelper.Check(results, enrollmentsPictureDto);
@@ -244,14 +244,14 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"\nResponse after CreateAsync: {response.StatusCode}");
 
             var id = await response.Content.ReadFromJsonAsync<EnrollmentsPictureJsonResults>();
-            Assert.IsNotNull(id, $"ERROR - id is null");
+            Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
             response = await EditGetAsync(id.Ids.First());
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after get enrollmentPicture");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
 
             var results = await response.Content.ReadFromJsonAsync<EnrollmentsPictureDto>();
-            Assert.IsNotNull(results, $"ERROR - results is null");
+            Assert.That(results, Is.Not.Null, $"ERROR - results is null");
             TestContext.Out.WriteLine($"Response after load Json data: OK");
 
             EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture before delete:\n");

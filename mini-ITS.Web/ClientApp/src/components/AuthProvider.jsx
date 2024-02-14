@@ -14,8 +14,11 @@ const AuthProvider = ({ children }) => {
             try {
                 const response = await usersServices.loginStatus();
                 if (response.ok) {
-                    const data = await response.json();
-                    setCurrentUser(data);
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        setCurrentUser(data);
+                    }
                 };
 
                 setLoginStatus(true);

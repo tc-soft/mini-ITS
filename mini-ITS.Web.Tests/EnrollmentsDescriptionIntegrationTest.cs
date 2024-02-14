@@ -19,7 +19,7 @@ namespace mini_ITS.Web.Tests
 
         protected EnrollmentsDescriptionIntegrationTest()
         {
-            var appFactory = new WebApplicationFactory<Startup>();
+            var appFactory = new WebApplicationFactory<Program>();
             TestClient = appFactory.CreateClient();
         }
         protected async Task<HttpResponseMessage> LoginAsync(LoginData loginData)

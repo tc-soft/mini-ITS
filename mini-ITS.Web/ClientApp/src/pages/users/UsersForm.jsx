@@ -1,14 +1,14 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm } from 'react-hook-form';
 import { usersServices } from '../../services/UsersServices';
-import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
-import { ReactComponent as IconUser } from '../../images/iconUser.svg';
-import { ReactComponent as IconShowPassword } from '../../images/iconShowPassword.svg';
-import { ReactComponent as IconHidePassword } from '../../images/iconHidePassword.svg';
-import { ReactComponent as IconSave } from '../../images/iconSave.svg';
-import { ReactComponent as IconCancel } from '../../images/iconCancel.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconUser from '../../images/iconUser.svg';
+import iconShowPassword from '../../images/iconShowPassword.svg';
+import iconHidePassword from '../../images/iconHidePassword.svg';
+import iconSave from '../../images/iconSave.svg';
+import iconCancel from '../../images/iconCancel.svg';
 
 import '../../styles/pages/Users.scss';
 
@@ -121,12 +121,12 @@ const UsersForm = (props) => {
     return (
         <div className='usersForm'>
             <div className='usersForm-title'>
-                <IconEdit height='17px' />
+                <img src={iconEdit} height='17px'  alt='iconEdit' />
                 <p>{title[isMode]}</p>
             </div>
 
             <div className='usersForm-userInfo'>
-                <IconUser />
+                <img src={iconUser} alt='iconUser' />
                 <p>Użytkownik:<span>{getValues('login')}</span></p>
             </div>
 
@@ -339,7 +339,7 @@ const UsersForm = (props) => {
                                                 disabled={!activePassword}
                                                 onClick={() => activePassword && setShowPassword(prevState => ([!showPassword[0], prevState[1], prevState[2]]))}
                                             >
-                                                {showPassword[0] ? <IconShowPassword /> : <IconHidePassword />}
+                                        {showPassword[0] ? <img src={iconShowPassword} alt='iconShowPassword' /> : <img src={iconHidePassword} alt='iconHidePassword' /> }
                                             </button>
                                         </div>
                                         {errors.oldPassword ?
@@ -385,7 +385,7 @@ const UsersForm = (props) => {
                                         disabled={!activePassword}
                                         onClick={() => activePassword && setShowPassword(prevState => ([prevState[0], !showPassword[1], prevState[2]]))}
                                     >
-                                        {showPassword[1] ? <IconShowPassword /> : <IconHidePassword />}
+                                    {showPassword[1] ? <img src={iconShowPassword} alt='iconShowPassword' /> : <img src={iconHidePassword} alt='iconHidePassword' />}
                                     </button>
                                 </div>
                                 {errors.passwordHash ?
@@ -423,7 +423,7 @@ const UsersForm = (props) => {
                                         disabled={!activePassword}
                                         onClick={() => activePassword && setShowPassword(prevState => ([prevState[0], prevState[1], !showPassword[2]]))}
                                     >
-                                        {showPassword[2] ? <IconShowPassword /> : <IconHidePassword />}
+                                    {showPassword[2] ? <img src={iconShowPassword} alt='iconShowPassword' /> : <img src={iconHidePassword} alt='iconHidePassword' />}
                                     </button>
                                 </div>
                                 {errors.confirmPasswordHash ?
@@ -442,7 +442,7 @@ const UsersForm = (props) => {
                                 tabIndex='12'
                                 className='usersForm-submit__button usersForm-submit__button--saveButton'
                                 type='submit'>
-                                <IconSave />
+                                <img src={iconSave} alt='iconSave' />
                                 Zapisz
                             </button>
                         </>
@@ -451,7 +451,7 @@ const UsersForm = (props) => {
                         <button
                             tabIndex='13'
                             className='usersForm-submit__button usersForm-submit__button--cancelButton'>
-                            <IconCancel />
+                            <img src={iconCancel} alt='iconCancel' />
                             Anuluj
                         </button>
                     </Link>

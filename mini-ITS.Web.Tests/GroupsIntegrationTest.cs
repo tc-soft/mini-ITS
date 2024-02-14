@@ -21,7 +21,7 @@ namespace mini_ITS.Web.Tests
 
         protected GroupsIntegrationTest()
         {
-            var appFactory = new WebApplicationFactory<Startup>();
+            var appFactory = new WebApplicationFactory<Program>();
             TestClient = appFactory.CreateClient();
         }
 

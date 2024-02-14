@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { usersServices } from '../../services/UsersServices';
 import ModalDialog from '../../components/Modal';
-import { ReactComponent as IconAdd } from '../../images/iconAdd.svg';
-import { ReactComponent as IconDetail } from '../../images/iconDetail.svg';
-import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
-import { ReactComponent as IconDelete } from '../../images/iconDelete.svg';
-import { ReactComponent as IconFirstPage } from '../../images/iconFirstPage.svg';
-import { ReactComponent as IconPrevPage } from '../../images/iconPrevPage.svg';
-import { ReactComponent as IconNextPage } from '../../images/iconNextPage.svg';
-import { ReactComponent as IconLastPage } from '../../images/iconLastPage.svg';
+import iconAdd from '../../images/iconAdd.svg';
+import iconDetail from '../../images/iconDetail.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconDelete from '../../images/iconDelete.svg';
+import iconFirstPage from '../../images/iconFirstPage.svg';
+import iconPrevPage from '../../images/iconPrevPage.svg';
+import iconNextPage from '../../images/iconNextPage.svg';
+import iconLastPage from '../../images/iconLastPage.svg';
 
 import '../../styles/pages/Users.scss';
 
@@ -295,7 +295,7 @@ const UsersList = (props) => {
                     <p>Lista użytkowników</p>
                     <Link to='Create'>
                         <button title='Dodaj nowy'>
-                            <IconAdd />
+                            <img src={iconAdd} alt='iconAdd' />
                             <span>Dodaj</span>
                         </button>
                     </Link>
@@ -341,12 +341,12 @@ const UsersList = (props) => {
                                 <td>
                                     <span>
                                         <Link to={`Detail/${user.id}`}>
-                                            <IconDetail title='Szczegóły' />
+                                            <img src={iconDetail} alt='Szczegóły' title='Szczegóły' />
                                         </Link>
                                     </span>
                                     <span>
                                         <Link to={`Edit/${user.id}`}>
-                                            <IconEdit title='Edycja' />
+                                            <img src={iconEdit} alt='Edycja' title='Edycja' />
                                         </Link>
                                     </span>
                                     <span
@@ -354,7 +354,7 @@ const UsersList = (props) => {
                                         onClick={() => handleDeleteStage1(user.id, user.login)}
                                         style={{ cursor: 'pointer' }}
                                     >
-                                        <IconDelete title='Usuń' />
+                                        <img src={iconDelete} alt='Usuń' title='Usuń' />
                                     </span>
                                 </td>
                             </tr>
@@ -396,25 +396,26 @@ const UsersList = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        <IconFirstPage title='Początek' />
+                        <img src={iconFirstPage} alt='Początek' title='Początek' />
+
                     </button>
 
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        <IconPrevPage title='Wstecz' />
+                        <img src={iconPrevPage} alt='Wstecz' title='Wstecz' />
                     </button>
 
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        <IconNextPage title='Następna' />
+                        <img src={iconNextPage} alt='Następna' title='Następna' />
                     </button>
 
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        <IconLastPage title='Koniec' />
+                        <img src={iconLastPage} alt='Koniec' title='Koniec' />
                     </button>
                 </div>
             </div>

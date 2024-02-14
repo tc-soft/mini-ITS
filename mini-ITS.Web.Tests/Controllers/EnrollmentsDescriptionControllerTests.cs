@@ -21,7 +21,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await IndexAsync();
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check IndexAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -65,7 +65,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await IndexAsync(enrollmentsDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check IndexAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -110,7 +110,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await CreateAsync(enrollmentsDescriptionDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after CreateAsync");
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -143,7 +143,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await EditGetAsync(enrollmentsDescriptionDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditGetAsync");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -173,7 +173,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await EditPutAsync(enrollmentsDescriptionDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditPutAsync");
             TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -253,7 +253,7 @@ namespace mini_ITS.Web.Tests.Controllers
             EnrollmentsDescriptionControllerTestsHelper.Print(enrollmentsDescriptionDto, "\nEnrollmentsDescription before delete:\n");
 
             response = await DeleteAsync(enrollmentsDescriptionDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsDescription");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test enrollmentsDescription");
             TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]

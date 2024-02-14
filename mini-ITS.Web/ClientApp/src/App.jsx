@@ -1,12 +1,11 @@
-import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './components/AuthProvider';
 import RequireAuth from './pages/login/RequireAuth';
 import Login from './pages/login/Login';
 import Users from './pages/users/Users';
 import Groups from './pages/groups/Groups';
-import { ReactComponent as BrandIcon } from './images/mini-ITS.svg';
-import { ReactComponent as LogOut } from './images/LogOut.svg';
+import brandIcon from './images/mini-ITS.svg';
+import logOut from './images/LogOut.svg';
 
 import './styles/main.scss';
 
@@ -17,7 +16,7 @@ const App = () => {
         <main className='main'>
             <header className='main-header'>
                 <nav>
-                    <BrandIcon />
+                    <img src={brandIcon} alt="brand Icon" />
                     <ul>
                         <li className='main-header__link'>
                             {currentUser && <Link to="/">Home</Link>}
@@ -28,7 +27,11 @@ const App = () => {
                         <li className='main-header__link'>
                             {currentUser && (currentUser.role === 'Administrator') && <Link to='/Users'>Użytkownicy</Link>}
                         </li>
-                        <li className='main-header__icon'>{currentUser && <Link to='/' onClick={() => { handleLogout() }}><LogOut /></Link>}</li>
+                        <li className='main-header__icon'>
+                            {currentUser && <Link to='/' onClick={handleLogout}>
+                                <img src={logOut} alt="Log out" />
+                            </Link>}
+                        </li>
                     </ul>
                 </nav>
             </header>
@@ -55,7 +58,7 @@ const App = () => {
             </section>
 
             <footer className='main-footer'>
-                <p>©2023 mini-ITS</p>
+                <p>©2024 mini-ITS</p>
             </footer>
         </main>
     );

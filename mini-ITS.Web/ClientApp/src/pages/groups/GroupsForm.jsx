@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { groupsServices } from '../../services/GroupsServices';
-import { ReactComponent as IconEdit } from '../../images/iconEdit.svg';
-import { ReactComponent as IconGroup } from '../../images/iconGroup.svg';
-import { ReactComponent as IconSave } from '../../images/iconSave.svg';
-import { ReactComponent as IconCancel } from '../../images/iconCancel.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconGroup from '../../images/iconGroup.svg';
+import iconSave from '../../images/iconSave.svg';
+import iconCancel from '../../images/iconCancel.svg';
 
 import '../../styles/pages/Groups.scss';
 
@@ -81,12 +81,12 @@ const GroupsForm = (props) => {
     return (
         <div className='groupsForm'>
             <div className='groupsForm-title'>
-                <IconEdit height='17px' />
+                <img src={iconEdit} height='17px' alt='iconEdit' />
                 <p>{title[isMode]}</p>
             </div>
 
             <div className='groupsForm-groupsInfo'>
-                <IconGroup />
+                <img src={iconGroup} alt='iconGroup' />
                 <p>Grupa:<span>{getValues('groupName')}</span></p>
             </div>
 
@@ -121,7 +121,7 @@ const GroupsForm = (props) => {
                                 tabIndex='2'
                                 className='groupsForm-submit__button groupsForm-submit__button--saveButton'
                                 type='submit'>
-                                <IconSave />
+                                <img src={iconSave} alt='iconSave' />
                                 Zapisz
                             </button>
                         </>
@@ -130,7 +130,7 @@ const GroupsForm = (props) => {
                         <button
                             tabIndex='3'
                             className='groupsForm-submit__button groupsForm-submit__button--cancelButton'>
-                            <IconCancel />
+                            <img src={iconCancel} alt='iconCancel' />
                             Anuluj
                         </button>
                     </Link>

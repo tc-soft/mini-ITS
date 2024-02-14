@@ -22,7 +22,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await IndexAsync(sqlPagedQuery);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check IndexAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -132,7 +132,7 @@ namespace mini_ITS.Web.Tests.Controllers
             }
 
             response = await CreateAsync(groupsDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after CreateAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after CreateAsync");
             TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -170,7 +170,7 @@ namespace mini_ITS.Web.Tests.Controllers
             }
 
             response = await EditGetAsync(groupsDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditGetAsync");
             TestContext.Out.WriteLine($"Response after EditGetAsync of test group: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -207,7 +207,7 @@ namespace mini_ITS.Web.Tests.Controllers
             }
 
             response = await EditPutAsync(groupsDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditPutAsync");
             TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]

@@ -64,7 +64,7 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         public static void CheckDeleteGroupUnauthorizedCase(HttpResponseMessage httpResponseMessage)
         {
-            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test group");
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test group");
             TestContext.Out.WriteLine($"Response after DeleteAsync: {httpResponseMessage.StatusCode}");
         }
         public static void CheckDeleteGroupAuthorizedCase(HttpResponseMessage httpResponseMessage)

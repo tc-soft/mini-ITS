@@ -23,7 +23,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await IndexAsync(enrollmentsDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after check IndexAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -70,7 +70,7 @@ namespace mini_ITS.Web.Tests.Controllers
             string fileName = $"{Guid.NewGuid()}.jpg";
 
             response = await CreateAsync(enrollmentsDto.Id, fileName, 100);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - response status code is not 500 after CreateAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - response status code is not 500 after CreateAsync");
             TestContext.Out.WriteLine($"Response after CreateAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -104,7 +104,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await EditGetAsync(enrollmentsPictureDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditGetAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditGetAsync");
             TestContext.Out.WriteLine($"Response after EditGetAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -159,7 +159,7 @@ namespace mini_ITS.Web.Tests.Controllers
 
             string fileName = $"{Guid.NewGuid()}.jpg";
             response = await EditPutAsync(enrollmentsPictureDto, fileName, 100);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after EditPutAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditPutAsync");
             TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -228,7 +228,7 @@ namespace mini_ITS.Web.Tests.Controllers
             EnrollmentsPictureControllerTestsHelper.Print(enrollmentsPictureDto, "\nEnrollmentsPicture before delete:\n");
 
             response = await DeleteAsync(enrollmentsPictureDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError), "ERROR - respons status code is not 500 after delete test enrollmentsPicture");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test enrollmentsPicture");
             TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]

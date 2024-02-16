@@ -135,7 +135,7 @@ namespace mini_ITS.Core.Tests.Services
         public async Task GetMaxNumberAsync()
         {
             TestContext.Out.WriteLine("Get max number by GetMaxNumberAsync(int) and check valid...\n");
-            var maxNumber = await _enrollmentsServices.GetMaxNumberAsync(2023);
+            var maxNumber = await _enrollmentsServices.GetMaxNumberAsync(2024);
 
             Assert.That(maxNumber == 10, "ERROR - number of items is different than 10");
             Assert.That(maxNumber, Is.InstanceOf<int>(), "ERROR - return type");

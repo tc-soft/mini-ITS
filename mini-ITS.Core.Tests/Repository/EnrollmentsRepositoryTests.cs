@@ -121,7 +121,7 @@ namespace mini_ITS.Core.Tests.Repository
         [Test]
         public async Task GetMaxNumberAsync()
         {
-            var maxNumber = await _enrollmentsRepository.GetMaxNumberAsync(2023);
+            var maxNumber = await _enrollmentsRepository.GetMaxNumberAsync(2024);
             TestContext.Out.WriteLine($"Max number : {maxNumber}\n");
 
             Assert.That(maxNumber, Is.TypeOf<int>(), "ERROR - return type");

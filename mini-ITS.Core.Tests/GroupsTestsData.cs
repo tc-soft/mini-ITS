@@ -99,8 +99,8 @@ namespace mini_ITS.Core.Tests
                 yield return new Groups
                 {
                     Id = new Guid("B936FBEB-A52D-40F4-92FC-1258214CF6E8"),
-                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateAddGroup = new DateTime(2024, 3, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2024, 3, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
                     UserAddGroupFullName = "Admin Administrator",
                     UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
@@ -110,8 +110,8 @@ namespace mini_ITS.Core.Tests
                 yield return new Groups
                 {
                     Id = new Guid("9E8569C5-B198-43C7-93C4-260D185028BF"),
-                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateAddGroup = new DateTime(2024, 3, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2024, 3, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
                     UserAddGroupFullName = "Demi Balode",
                     UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
@@ -121,8 +121,8 @@ namespace mini_ITS.Core.Tests
                 yield return new Groups
                 {
                     Id = new Guid("5987D667-6072-41DC-A822-460ECD4C9DA6"),
-                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateAddGroup = new DateTime(2024, 3, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2024, 3, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
                     UserAddGroupFullName = "Admin Administrator",
                     UserModGroup = new Guid("FCC06ACA-BE27-46FA-9142-BB1BA1322EB3"),
@@ -132,8 +132,8 @@ namespace mini_ITS.Core.Tests
                 yield return new Groups
                 {
                     Id = new Guid("F3773676-24E4-413D-A600-60CB032E67DD"),
-                    DateAddGroup = new DateTime(2023, 8, 1, 0, 0, 0),
-                    DateModGroup = new DateTime(2023, 8, 1, 0, 0, 0),
+                    DateAddGroup = new DateTime(2024, 3, 1, 0, 0, 0),
+                    DateModGroup = new DateTime(2024, 3, 1, 0, 0, 0),
                     UserAddGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),
                     UserAddGroupFullName = "Demi Balode",
                     UserModGroup = new Guid("FBE24C52-15AE-4C92-9C24-2C735D81EAE7"),

@@ -231,9 +231,12 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 
-# appsettings.json
+mini-ITS.Web/Files/*
+
+# Ignore appsettings.json & appsettings.Development.json
 mini-ITS.Web/appsettings.json
 mini-ITS.Web/appsettings.Development.json
 
-# TestController
-mini-ITS.Web/Controllers/TestController.cs
+# Ignore everything in the Properties directory except the launchSettings.json file
+mini-ITS.Web/Properties/*
+!mini-ITS.Web/Properties/launchSettings.json

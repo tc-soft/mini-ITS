@@ -2,8 +2,9 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './components/AuthProvider';
 import RequireAuth from './pages/login/RequireAuth';
 import Login from './pages/login/Login';
-import Users from './pages/users/Users';
+import Enrollments from './pages/enrollments/Enrollments';
 import Groups from './pages/groups/Groups';
+import Users from './pages/users/Users';
 import brandIcon from './images/mini-ITS.svg';
 import logOut from './images/LogOut.svg';
 
@@ -20,6 +21,9 @@ const App = () => {
                     <ul>
                         <li className='main-header__link'>
                             {currentUser && <Link to="/">Home</Link>}
+                        </li>
+                        <li className='main-header__link'>
+                            {currentUser && <Link to="/Enrollments">Zgłoszenia</Link>}
                         </li>
                         <li className='main-header__link'>
                             {(currentUser && (currentUser.role === 'Administrator' || currentUser.role === 'Manager')) && <Link to='/Groups'>Grupy</Link>}
@@ -43,14 +47,19 @@ const App = () => {
                             <p>Strona główna</p>
                         </RequireAuth>}
                     />
-                    <Route path='/Users/*' element={
+                    <Route path='/Enrollments/*' element={
                         <RequireAuth>
-                            <Users />
+                            <Enrollments />
                         </RequireAuth>}
                     />
                     <Route path='/Groups/*' element={
                         <RequireAuth>
                             <Groups />
+                        </RequireAuth>}
+                    />
+                    <Route path='/Users/*' element={
+                        <RequireAuth>
+                            <Users />
                         </RequireAuth>}
                     />
                     <Route path='/Login' element={<Login />} />

@@ -5,7 +5,11 @@ import { enrollmentServices } from '../../services/EnrollmentServices';
 const EnrollmentsList = (props) => {
     const {
         pagedQuery,
-        setPagedQuery
+        setPagedQuery,
+        activeStateFilter,
+        setActiveStateFilter,
+        activeDepartmentFilter,
+        setActiveDepartmentFilter
     } = props;
 
     const [enrollments, setEnrollments] = useState({
@@ -15,6 +19,8 @@ const EnrollmentsList = (props) => {
         totalResults: null,
         totalPages: null
     });
+
+    const [mapDepartment, setMapDepartment] = useState([]);
 
     const mapPriority = {
         '0': 'Normalny',
@@ -28,6 +34,88 @@ const EnrollmentsList = (props) => {
         'Assigned': 'W trakcie',
         'Closed': 'Zamknięte',
         'ReOpened': 'Otwarte ponownie'
+    };
+
+    const handleStateFilter = (event) => {
+        if (pagedQuery.filter && pagedQuery.filter.find(x => x.name === 'State')) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter.filter(x => x.name !== 'State'), {
+                    name: 'State',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else if (pagedQuery.filter) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter, {
+                    name: 'State',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [{
+                    name: 'State',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        };
+
+        setActiveStateFilter(event.target.value);
+    };
+
+    const handleDepartmentFilter = (event) => {
+        if (pagedQuery.filter && pagedQuery.filter.find(x => x.name === 'Department')) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter.filter(x => x.name !== 'Department'), {
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else if (pagedQuery.filter) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [...prevState.filter, {
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        }
+        else {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                filter: [{
+                    name: 'Department',
+                    operator: '=',
+                    value: event.target.value
+                }],
+                page: 1
+            })
+            );
+        };
+
+        setActiveDepartmentFilter(event.target.value);
     };
 
     const handleSetResultsPerPage = (number) => {
@@ -77,6 +165,10 @@ const EnrollmentsList = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const departmentResponse = await fetch('/Department.json');
+                const departmentData = await departmentResponse.json();
+                setMapDepartment(departmentData.map((item) => item.value === '' ? { ...item, name: 'Wszyscy' } : item));
+
                 const response = await enrollmentServices.index(pagedQuery);
                 if (response.ok) {
                     const data = await response.json();
@@ -92,7 +184,7 @@ const EnrollmentsList = (props) => {
         };
 
         setTimeout(fetchData, 0);
-    }, [pagedQuery]);
+    }, [pagedQuery, activeStateFilter, activeDepartmentFilter]);
 
     return (
         <>
@@ -100,15 +192,23 @@ const EnrollmentsList = (props) => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <div>
                     Status : &nbsp;
-                    <select>
-                        <option value="Wszystkie">Wszystkie</option>
+                    <select value={activeStateFilter} onChange={handleStateFilter}>
+                        {Object.entries(mapState).map(([value, name], index) => (
+                            <option key={index} value={value}>
+                                {name}
+                            </option>
+                        ))}
                     </select>
                 </div>
-                    &nbsp;
+                &nbsp;
                 <div>
                     Dział docelowy : &nbsp;
-                    <select>
-                        <option value="Wszystkie">Wszystkie</option>
+                    <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                        {mapDepartment.map((department, index) => (
+                            <option key={index} value={department.value}>
+                                {department.name}
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>

@@ -10,6 +10,8 @@ const Enrollments = () => {
         page: 1,
         resultsPerPage: 10
     });
+    const [activeStateFilter, setActiveStateFilter] = useState('');
+    const [activeDepartmentFilter, setActiveDepartmentFilter] = useState('');
 
     return (
         <Routes>
@@ -17,6 +19,10 @@ const Enrollments = () => {
             <Route index element={<EnrollmentsList
                 pagedQuery={pagedQuery}
                 setPagedQuery={setPagedQuery}
+                activeStateFilter={activeStateFilter}
+                setActiveStateFilter={setActiveStateFilter}
+                activeDepartmentFilter={activeDepartmentFilter}
+                setActiveDepartmentFilter={setActiveDepartmentFilter}
             />}
             />
         </Routes>

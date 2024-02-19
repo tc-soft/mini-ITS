@@ -4,7 +4,8 @@ import { enrollmentServices } from '../../services/EnrollmentServices';
 
 const EnrollmentsList = (props) => {
     const {
-        pagedQuery
+        pagedQuery,
+        setPagedQuery
     } = props;
 
     const [enrollments, setEnrollments] = useState({
@@ -27,6 +28,50 @@ const EnrollmentsList = (props) => {
         'Assigned': 'W trakcie',
         'Closed': 'Zamknięte',
         'ReOpened': 'Otwarte ponownie'
+    };
+
+    const handleSetResultsPerPage = (number) => {
+        setPagedQuery(prevState => ({
+            ...prevState,
+            resultsPerPage: number,
+            page: 1
+        }));
+    };
+
+    const handleFirstPage = () => {
+        if (enrollments.page > 1) {
+            setPagedQuery((prevState) => ({
+                ...prevState,
+                page: 1
+            }));
+        };
+    };
+
+    const handlePrevPage = () => {
+        if (enrollments.page > 1) {
+            setPagedQuery((prevState) => ({
+                ...prevState,
+                page: enrollments.page - 1
+            }));
+        };
+    };
+
+    const handleNextPage = () => {
+        if (enrollments.page < enrollments.totalPages) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                page: enrollments.page + 1
+            }));
+        };
+    };
+
+    const handleLastPage = () => {
+        if (enrollments.page < enrollments.totalPages) {
+            setPagedQuery(prevState => ({
+                ...prevState,
+                page: enrollments.totalPages
+            }));
+        };
     };
 
     useEffect(() => {
@@ -117,16 +162,47 @@ const EnrollmentsList = (props) => {
             <br />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>Ilość wyników na stronie : &nbsp;
-                    <button style={{ backgroundColor: 'lightblue' }}>10</button>
-                    <button>20</button>
-                    <button>50</button>
+                    <button
+                        style={enrollments.resultsPerPage === 10 ? { backgroundColor: 'lightblue' } : {}}
+                        onClick={() => { handleSetResultsPerPage(10) }}
+                    >
+                        10
+                    </button>
+                    <button
+                        style={enrollments.resultsPerPage === 20 ? { backgroundColor: 'lightblue' } : {}}
+                        onClick={() => { handleSetResultsPerPage(20) }}
+                    >
+                        20
+                    </button>
+                    <button
+                        style={enrollments.resultsPerPage === 50 ? { backgroundColor: 'lightblue' } : {}}
+                        onClick={() => { handleSetResultsPerPage(50) }}
+                    >
+                        50
+                    </button>
                 </div>
-                <div>Strona 1 z 1 &nbsp;
-                    <button>&#60;&#60;</button>
-                    <button>&#60;</button>
-                    <button>&#62;</button>
-                    <button>&#62;&#62;</button>
-                </div>
+                <div>Strona {enrollments.page} z {enrollments.totalPages} &nbsp;
+                    <button
+                        onClick={() => { handleFirstPage() }}
+                    >
+                        &#60;&#60;
+                    </button>
+                    <button
+                        onClick={() => { handlePrevPage() }}
+                    >
+                        &#60;
+                    </button>
+                    <button
+                        onClick={() => { handleNextPage() }}
+                    >
+                        &#62;
+                    </button>
+                    <button
+                        onClick={() => { handleLastPage() }}
+                    >
+                        &#62;&#62;
+                    </button>
+                 </div>
             </div>
         </>
     );

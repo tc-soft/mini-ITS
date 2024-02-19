@@ -97,6 +97,21 @@ const EnrollmentsList = (props) => {
     return (
         <>
             <p>Lista zgłoszeń</p>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <div>
+                    Status : &nbsp;
+                    <select>
+                        <option value="Wszystkie">Wszystkie</option>
+                    </select>
+                </div>
+                    &nbsp;
+                <div>
+                    Dział docelowy : &nbsp;
+                    <select>
+                        <option value="Wszystkie">Wszystkie</option>
+                    </select>
+                </div>
+            </div>
             <table>
                 <thead>
                     <tr>

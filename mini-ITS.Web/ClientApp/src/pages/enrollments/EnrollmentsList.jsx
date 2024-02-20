@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { enrollmentServices } from '../../services/EnrollmentServices';
+import iconAdd from '../../images/iconAdd.svg';
+import iconDetail from '../../images/iconDetail.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconDelete from '../../images/iconDelete.svg';
+import iconFirstPage from '../../images/iconFirstPage.svg';
+import iconPrevPage from '../../images/iconPrevPage.svg';
+import iconNextPage from '../../images/iconNextPage.svg';
+import iconLastPage from '../../images/iconLastPage.svg';
+
+import '../../styles/pages/Enrollments.scss';
 
 const EnrollmentsList = (props) => {
     const {
@@ -187,32 +198,41 @@ const EnrollmentsList = (props) => {
     }, [pagedQuery, activeStateFilter, activeDepartmentFilter]);
 
     return (
-        <>
-            <p>Lista zgłoszeń</p>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <div>
-                    Status : &nbsp;
-                    <select value={activeStateFilter} onChange={handleStateFilter}>
-                        {Object.entries(mapState).map(([value, name], index) => (
-                            <option key={index} value={value}>
-                                {name}
-                            </option>
-                        ))}
-                    </select>
+        <div className='enrollmentsList'>
+            <div className='enrollmentsList-panel'>
+                <div className='enrollmentsList-panel-tittle'>
+                    <p>Lista zgłoszeń</p>
+                    <Link>
+                        <button title='Dodaj nowe'>
+                            <img src={iconAdd} alt='iconAdd' />
+                            <span>Dodaj</span>
+                        </button>
+                    </Link>
                 </div>
-                &nbsp;
-                <div>
-                    Dział docelowy : &nbsp;
-                    <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
-                        {mapDepartment.map((department, index) => (
-                            <option key={index} value={department.value}>
-                                {department.name}
-                            </option>
-                        ))}
-                    </select>
+                <div className='enrollmentsList-panel-filter'>
+                    <div>
+                        Status : &nbsp;
+                        <select value={activeStateFilter} onChange={handleStateFilter}>
+                            {Object.entries(mapState).map(([value, name], index) => (
+                                <option key={index} value={value}>
+                                    {name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        Dział docelowy : &nbsp;
+                        <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                            {mapDepartment.map((department, index) => (
+                                <option key={index} value={department.value}>
+                                    {department.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
             </div>
-            <table>
+            <table className='enrollmentsList-table'>
                 <thead>
                     <tr>
                         <th style={{ width: '07%' }}>Nr</th>
@@ -274,23 +294,22 @@ const EnrollmentsList = (props) => {
                     }
                 </tbody>
             </table>
-            <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className='enrollmentsList-paginationPanel'>
                 <div>Ilość wyników na stronie : &nbsp;
                     <button
-                        style={enrollments.resultsPerPage === 10 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 10 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(10) }}
                     >
                         10
                     </button>
                     <button
-                        style={enrollments.resultsPerPage === 20 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 20 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(20) }}
                     >
                         20
                     </button>
                     <button
-                        style={enrollments.resultsPerPage === 50 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 50 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(50) }}
                     >
                         50
@@ -300,26 +319,26 @@ const EnrollmentsList = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        &#60;&#60;
+                        <img src={iconFirstPage} alt='Początek' title='Początek' />
                     </button>
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        &#60;
+                        <img src={iconPrevPage} alt='Wstecz' title='Wstecz' />
                     </button>
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        &#62;
+                        <img src={iconNextPage} alt='Następna' title='Następna' />
                     </button>
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        &#62;&#62;
+                        <img src={iconLastPage} alt='Koniec' title='Koniec' />
                     </button>
-                 </div>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

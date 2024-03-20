@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import EnrollmentsList from './EnrollmentsList';
+import EnrollmentsForm from './EnrollmentsForm';
 
 const Enrollments = () => {
     const [pagedQuery, setPagedQuery] = useState({
@@ -10,12 +11,19 @@ const Enrollments = () => {
         page: 1,
         resultsPerPage: 10
     });
+    const [groupsPagedQuery, setGroupsPagedQuery] = useState({
+        filter: null,
+        sortColumnName: 'DateAddGroup',
+        sortDirection: 'ASC',
+        page: 1,
+        resultsPerPage: 100
+    });
     const [activeStateFilter, setActiveStateFilter] = useState('');
     const [activeDepartmentFilter, setActiveDepartmentFilter] = useState('');
 
     return (
         <Routes>
-            <Route path="/" element={<EnrollmentsList />} />
+            <Route path='/' element={<EnrollmentsList />} />
             <Route index element={<EnrollmentsList
                 pagedQuery={pagedQuery}
                 setPagedQuery={setPagedQuery}
@@ -23,6 +31,12 @@ const Enrollments = () => {
                 setActiveStateFilter={setActiveStateFilter}
                 activeDepartmentFilter={activeDepartmentFilter}
                 setActiveDepartmentFilter={setActiveDepartmentFilter}
+            />}
+            />
+            <Route path='/Detail/:enrollmentId' element={<EnrollmentsForm
+                isMode={'Detail'}
+                groupsPagedQuery={groupsPagedQuery}
+                setGroupsPagedQuery={setGroupsPagedQuery}
             />}
             />
         </Routes>

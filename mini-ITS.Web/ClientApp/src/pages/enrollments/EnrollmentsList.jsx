@@ -279,7 +279,13 @@ const EnrollmentsList = (props) => {
                                         readOnly
                                     />
                                 </td>
-                                <td></td>
+                                <td>
+                                    <span>
+                                        <Link to={`Detail/${enrollment.id}`}>
+                                            <img src={iconDetail} alt='Szczegóły' title='Szczegóły' />
+                                        </Link>
+                                    </span>
+                                </td>
                             </tr>
                         );
                     }

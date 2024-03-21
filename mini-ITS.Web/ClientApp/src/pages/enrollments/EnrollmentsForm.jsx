@@ -1,16 +1,21 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { parseISO, format } from 'date-fns';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../components/AuthProvider';
+import { useForm, Controller } from 'react-hook-form';
+import { parseISO, formatISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { groupsServices } from '../../services/GroupsServices';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 import { enrollmentPictureServices } from '../../services/EnrollmentPictureServices';
 import { enrollmentDescriptionServices } from '../../services/EnrollmentDescriptionServices';
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 const EnrollmentsForm = (props) => {
     const { isMode, groupsPagedQuery } = props;
+    const { currentUser } = useAuth();
     const isReadMode = isMode === 'Detail' ? true : false;
+    const navigate = useNavigate();
     const { enrollmentId } = useParams();
 
     const [enrollment, setEnrollment] = useState([]);
@@ -18,9 +23,26 @@ const EnrollmentsForm = (props) => {
     const [mapGroup, setMapGroup] = useState([]);
     const [mapEnrollmentsPicture, setMapEnrollmentsPicture] = useState([]);
     const [mapEnrollmentsDescription, setMapEnrollmentsDescription] = useState([]);
-    
-    const { register, reset, watch } = useForm();
+
+    const { handleSubmit, register, reset, watch, setFocus, setValue, control, formState: { errors } } = useForm();
+    const [formControls, setFormControls] = useState({
+        isDateEndDeclareByDepartmentDisabled: true,
+        isDepartmentDisabled: true,
+        isDescriptionDisabled: true,
+        isGroupDisabled: true,
+        isPriorityDisabled: true,
+        isReadyForCloseDisabled: true,
+        isStateDisabled: true,
+        isActionRequestDisabled: true
+    });
+
     const title = { Create: 'Dodaj zgłoszenie', Detail: 'Szczegóły zgłoszenia', Edit: 'Edycja' };
+
+    const mapPriority = {
+        '0': 'Normalny',
+        '1': 'Wysoki',
+        '2': 'Krytyczny'
+    };
 
     const mapState = {
         'New': 'Nowy',
@@ -34,6 +56,58 @@ const EnrollmentsForm = (props) => {
             const response = await enrollmentServices.edit(enrollmentId);
             if (response.ok) {
                 const data = await response.json();
+
+                setFormControls(prevFlags => ({
+                    ...prevFlags,
+
+                    isDateEndDeclareByDepartmentDisabled: isReadMode || data.state === 'New' || data.state === 'Closed' || currentUser.role !== 'Administrator',
+
+                    isDepartmentDisabled: isReadMode ||
+                        (currentUser.role !== 'Administrator' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            )
+                        ),
+
+                    isDescriptionDisabled: isReadMode ||
+                        (currentUser.role !== 'Administrator' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            )
+                        ),
+
+                    isGroupDisabled: isReadMode ||
+                        (currentUser.role !== 'Administrator' && currentUser.role !== 'Manager' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            )
+                        ),
+
+                    isPriorityDisabled: isReadMode ||
+                        (currentUser.role !== 'Administrator' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            )
+                        ),
+
+                    isReadyForCloseDisabled: isReadMode || data.state === 'New' || data.state === 'Closed',
+
+                    isStateDisabled: isReadMode || currentUser.role !== 'Administrator',
+
+                    isActionRequestDisabled: isReadMode ||
+                        (currentUser.role !== 'Administrator' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            ) ||
+                            currentUser.role !== 'Manager'
+                        ),
+                }));
+
                 reset(data);
                 setEnrollment(data);
             }
@@ -46,6 +120,25 @@ const EnrollmentsForm = (props) => {
             console.error(error);
         };
     }, [reset]);
+
+    const handleErrorResponse = (response, errorMessage) => {
+        if (!response.ok) throw errorMessage;
+    };
+
+    const onSubmit = async (values) => {
+        try {
+            if (isMode === 'Edit') {
+                handleErrorResponse(
+                    await enrollmentServices.update(values.id, values),
+                    'Aktualizacja nie powiodła się!');
+            };
+
+            navigate('/Enrollments');
+        }
+        catch (error) {
+            console.error(error);
+        };
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -127,6 +220,10 @@ const EnrollmentsForm = (props) => {
         fetchData();
     }, [enrollmentId]);
 
+    useEffect(() => {
+        setFocus('department');
+    }, [setFocus]);
+    
     return (
         <>
             <div>
@@ -137,7 +234,7 @@ const EnrollmentsForm = (props) => {
                 <h4>Dane zgłoszenia { enrollment.nr }/{ enrollment.year }</h4><br />
             </div>
 
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -149,38 +246,47 @@ const EnrollmentsForm = (props) => {
                             tabIndex='1'
                             selected={watch('dateAddEnrollment') ? parseISO(watch('dateAddEnrollment')) : null}
                             dateFormat='dd.MM.yyyy HH:mm'
-                            placeholderText={watch('DateAddEnrollment') ? undefined : 'Wybierz datę'}
-                            disabled={isReadMode}
-                            {...register('dateAddEnrollment', {
-                                required: { value: true, message: 'Pole wymagane.' }
-                            })}
+                            showTimeInput
+                            timeInputLabel='Godzina:'
+                            placeholderText='Wybierz datę'
+                            disabled={true}
+                            onChange={(date) => setValue('dateAddEnrollment', formatISO(date))}
+                            onBlur={() => setValue('dateAddEnrollment', watch('dateAddEnrollment'), { shouldValidate: true })}
                         />
+                        <br />
 
                         <label>Data ost. zmiany</label><br />
                         <DatePicker
                             tabIndex='2'
                             selected={watch('dateModEnrollment') ? parseISO(watch('dateModEnrollment')) : null}
                             dateFormat='dd.MM.yyyy HH:mm'
-                            placeholderText={watch('DateModEnrollment') ? undefined : 'Wybierz datę'}
-                            disabled={isReadMode}
-                            {...register('dateModEnrollment', {
-                                required: { value: true, message: 'Pole wymagane.' }
-                            })}
+                            showTimeInput
+                            timeInputLabel='Godzina:'
+                            placeholderText='Wybierz datę'
+                            disabled={true}
+                            onChange={(date) => setValue('dateModEnrollment', formatISO(date))}
+                            onBlur={() => setValue('dateModEnrollment', watch('dateModEnrollment'), { shouldValidate: true })}
                         />
+                        <br />
 
                         <label>Dział</label><br />
                         <select
                             tabIndex='3'
                             placeholder='Wybierz dział'
-                            disabled={isReadMode}
+                            disabled={formControls.isDepartmentDisabled}
                             style={isReadMode ? { pointerEvents: 'none' } : null}
-                            {...register('department')}
+                            {...register('department', {
+                                required: { value: true, message: 'Pole wymagane.' },
+                                pattern: {
+                                    value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.' },
+                                maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                            })}
                         >
                             {mapDepartment.map(option => (
                                 <option key={option.value} value={option.value}>{option.name}</option>
                             ))}
                         </select>
-                        <br />
+                        {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}
 
                         <label>Opis</label><br />
                         <textarea
@@ -188,112 +294,105 @@ const EnrollmentsForm = (props) => {
                             placeholder='Wpisz treść'
                             rows={4}
                             cols={50}
-                            disabled={isReadMode}
-                            {...register('description')}
+                            disabled={formControls.isDescriptionDisabled}
+                            {...register('description', {
+                                required: { value: true, message: 'Pole wymagane.' },
+                                pattern: {
+                                    value: /^[^\s](.|[\r\n])+[^\s]$/g, message: 'Niedozwolony znak.' },
+                                maxLength: { value: 2048, message: 'Za duża ilośc znaków.' }
+                            })}
                         />
-                        <br />
+                        {errors.description ? <p style={{ color: 'red' }} >{errors.description?.message}</p> : <p>&nbsp;</p>}
 
                         <label>Priorytet</label><br />
-                        <input
-                            tabIndex='5'
-                            type='text'
-                            placeholder='Wybierz priorytet'
-                            disabled={isReadMode}
-                            {...register('priority')}
-                        />
-                        <br />
-
-                        <label>Gotowe do zamkn.</label><br />
-                        <input
-                            tabIndex='6'
-                            type='checkbox'
-                            checked={watch('readyForCloseValue')}
-                            disabled={isReadMode}
-                            {...register('readyForClose')}
-                        />
-                        <br />
-
-                        <label>Status</label><br />
                         <select
-                            tabIndex='7'
-                            placeholder='Wybierz status'
-                            disabled={isReadMode}
-                            {...register('state')}
+                            tabIndex='5'
+                            placeholder='Wybierz priorytet'
+                            disabled={formControls.isPriorityDisabled}
+                            {...register('priority', {
+                                setValueAs: value => parseInt(value, 10)
+                            })}
                         >
-                            {Object.keys(mapState).map(key => (
+                            {Object.keys(mapPriority).map(key => (
                                 <option key={key} value={key}>
-                                    {mapState[key]}
+                                    {mapPriority[key]}
                                 </option>
                             ))}
                         </select>
                         <br />
 
-                        <label>Dodał/a</label><br />
-                        <input
-                            tabIndex='8'
-                            type='text'
-                            disabled={isReadMode}
-                            {...register('userAddEnrollmentFullName')}
-                        />
-                        <br />
+                        {isReadMode && (
+                            <>
+                                <label>Dodał/a</label><br />
+                                <input
+                                    tabIndex='6'
+                                    type='text'
+                                    disabled={isReadMode}
+                                    {...register('userAddEnrollmentFullName')}
+                                />
+                                <br />
 
-                        <label>Zakończył/a</label><br />
-                        <input
-                            tabIndex='9'
-                            type='text'
-                            disabled={isReadMode}
-                            {...register('userEndEnrollmentFullName')}
-                        />
-                        <br />
+                                <label>Zakończył/a</label><br />
+                                <input
+                                    tabIndex='7'
+                                    type='text'
+                                    disabled={isReadMode}
+                                    {...register('userEndEnrollmentFullName')}
+                                />
+                                <br />
 
-                        <label>Data zakończenia</label><br />
-                        <DatePicker
-                            tabIndex='10'
-                            selected={watch('DateEndEnrollment') ? parseISO(watch('DateEndEnrollment')) : null}
-                            dateFormat='dd.MM.yyyy HH:mm'
-                            placeholderText={watch('DateEndEnrollment') ? undefined : 'brak'}
-                            disabled={isReadMode}
-                            {...register('DateEndEnrollment')}
-                        />
+                                <label>Data zakończenia</label><br />
+                                <DatePicker
+                                    tabIndex='8'
+                                    selected={watch('dateEndEnrollment') ? parseISO(watch('dateEndEnrollment')) : null}
+                                    dateFormat='dd.MM.yyyy HH:mm'
+                                    placeholderText='Wybierz datę'
+                                    disabled={isReadMode}
+                                    onChange={(date) => setValue('dateEndEnrollment', formatISO(date))}
+                                    onBlur={() => setValue('dateEndEnrollment', watch('dateEndEnrollment'), { shouldValidate: true })}
+                                />
+                                <br />
 
-                        <label>Otworzył/a ponownie</label><br />
-                        <input
-                            tabIndex='11'
-                            type='text'
-                            value={watch('userReeEnrollmentFullName') || 'brak'}
-                            disabled={isReadMode}
-                        />
+                                <label>Otworzył/a ponownie</label><br />
+                                <input
+                                    tabIndex='9'
+                                    type='text'
+                                    value={watch('userReeEnrollmentFullName') || 'brak'}
+                                    disabled={isReadMode}
+                                    {...register('userEndEnrollmentFullName')}
+                                />
+                            </>
+                        )}
                     </div>
                     <div>
                         <label>Data zak. w/g zgł.</label><br />
                         <DatePicker
-                            tabIndex='12'
+                            tabIndex='10'
                             selected={watch('dateEndDeclareByUser') ? parseISO(watch('dateEndDeclareByUser')) : null}
-                            dateFormat='dd.MM.yyyy HH:mm'
-                            placeholderText={watch('dateEndDeclareByUser') ? undefined : 'Wybierz datę'}
-                            disabled={isReadMode}
-                            {...register('dateEndDeclareByUser', {
-                                required: { value: true, message: 'Pole wymagane.' }
-                            })}
+                            dateFormat='dd.MM.yyyy'
+                            placeholderText='Wybierz datę'
+                            disabled={true}
+                            onChange={(date) => setValue('dateEndDeclareByUser', formatISO(date))}
+                            onBlur={() => setValue('dateEndDeclareByUser', watch('dateEndDeclareByUser'), { shouldValidate: true })}
                         />
+                        <br />
 
                         <label>Data zak. w/g działu</label><br />
                         <DatePicker
-                            tabIndex='13'
+                            tabIndex='11'
                             selected={watch('dateEndDeclareByDepartment') ? parseISO(watch('dateEndDeclareByDepartment')) : null}
-                            dateFormat='dd.MM.yyyy HH:mm'
-                            placeholderText={watch('dateEndDeclareByDepartment') ? undefined : 'Wybierz datę'}
-                            disabled={isReadMode}
-                            {...register('dateEndDeclareByDepartment', {
-                                required: { value: true, message: 'Pole wymagane.' }
-                            })}
+                            dateFormat='dd.MM.yyyy'
+                            disabled={formControls.isDateEndDeclareByDepartmentDisabled}
+                            onChange={(date) => setValue('dateEndDeclareByDepartment', formatISO(date))}
+                            onBlur={() => setValue('dateEndDeclareByDepartment', watch('dateEndDeclareByDepartment'), { shouldValidate: true })}
                         />
+                        <br />
 
                         <label>Grupa/Linia</label><br />
                         <select
-                            tabIndex='14'
+                            tabIndex='12'
                             placeholder='Wybierz grupę'
-                            disabled={isReadMode}
+                            disabled={formControls.isGroupDisabled}
                             {...register('group')}
                         >
                             {mapGroup?.results?.map((x, y) => (
@@ -305,24 +404,20 @@ const EnrollmentsForm = (props) => {
                         <br /><br />
 
                         <label>Żądanie dodatkowych czynności</label><br />
-                        <input
-                            tabIndex='15'
-                            type='checkbox'
-                            checked={watch('actionRequest') === 1 ? true : false}
-                            disabled={isReadMode}
-                            {...register('actionRequest')}
+                        <Controller
+                            name='actionRequest'
+                            control={control}
+                            render={({ field: { onChange, value } }) => (
+                                <input
+                                    tabIndex='13'
+                                    type='checkbox'
+                                    checked={value === 1}
+                                    onChange={e => onChange(e.target.checked ? 1 : 0)}
+                                    disabled={formControls.isActionRequestDisabled}
+                                />
+                            )}
                         />
                         <br />
-
-                        <label>Wyk. dodatkowych czynności</label><br />
-                        <input
-                            tabIndex='16'
-                            type='checkbox'
-                            checked={watch('actionFinished') === 1 ? true : false}
-                            disabled={isReadMode}
-                            {...register('actionFinished')}
-                        />
-                        
                     </div>
                 </div>
                 <br />
@@ -358,7 +453,58 @@ const EnrollmentsForm = (props) => {
                     </table>
                 </div>
                 <div>
+                    {!isReadMode && (
+                        <>
+                        </>
+                    )}
+                    {watch('state') !== 'New' && (
+                        <>
+                            <label>Wyk. dodatkowych czynności</label><br />
+                            <input
+                                tabIndex='14'
+                                type='checkbox'
+                                checked={watch('actionFinished') === 1 ? true : false}
+                                disabled={true}
+                                {...register('actionFinished')}
+                            />
+                            <br />
+
+                            <label>Gotowe do zamkn.</label><br />
+                            <input
+                                tabIndex='15'
+                                type='checkbox'
+                                disabled={formControls.isReadyForCloseDisabled}
+                                {...register('readyForClose')}
+                            />
+                            <br />
+                        </>
+                    )}
+                    <label>Status</label><br />
+                    <select
+                        tabIndex='16'
+                        placeholder='Wybierz status'
+                        disabled={formControls.isStateDisabled}
+                        {...register('state')}
+                    >
+                        {Object.keys(mapState).map(key => (
+                            <option key={key} value={key}>
+                                {mapState[key]}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
                     <br />
+                    {(isMode === 'Edit' || isMode === 'Create') && (
+                        <>
+                            <button
+                                tabIndex='17'
+                                type='submit'>
+                                Zapisz
+                            </button>
+                            &nbsp;
+                        </>
+                    )}
                     <Link tabIndex='-1' to={'..'}>
                         <button>
                             Anuluj

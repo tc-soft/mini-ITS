@@ -4,8 +4,10 @@ const baseUrl = '/api/Enrollments';
 
 const index = (values) => fetchWrapper.get(`${baseUrl}/Index`, values);
 const edit = (id) => fetchWrapper.get(`${baseUrl}/Edit/${id}`);
+const update = (id, values) => fetchWrapper.put(`${baseUrl}/Edit/${id}`, values);
 
 export const enrollmentServices = {
     index,
-    edit
+    edit,
+    update
 };

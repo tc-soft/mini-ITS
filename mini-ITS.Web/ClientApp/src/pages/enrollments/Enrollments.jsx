@@ -39,6 +39,12 @@ const Enrollments = () => {
                 setGroupsPagedQuery={setGroupsPagedQuery}
             />}
             />
+            <Route path='/Edit/:enrollmentId' element={<EnrollmentsForm
+                isMode={'Edit'}
+                groupsPagedQuery={groupsPagedQuery}
+                setGroupsPagedQuery={setGroupsPagedQuery}
+            />}
+            />
         </Routes>
     );
 };

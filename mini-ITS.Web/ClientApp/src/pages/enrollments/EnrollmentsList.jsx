@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../components/AuthProvider';
 import { format } from 'date-fns';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 import iconAdd from '../../images/iconAdd.svg';
@@ -22,6 +23,8 @@ const EnrollmentsList = (props) => {
         activeDepartmentFilter,
         setActiveDepartmentFilter
     } = props;
+
+    const { currentUser } = useAuth();
 
     const [enrollments, setEnrollments] = useState({
         results: null,
@@ -284,6 +287,17 @@ const EnrollmentsList = (props) => {
                                         <Link to={`Detail/${enrollment.id}`}>
                                             <img src={iconDetail} alt='Szczegóły' title='Szczegóły' />
                                         </Link>
+                                    </span>
+                                    <span>
+                                        {(currentUser && (
+                                            currentUser.role === 'Administrator' ||
+                                            currentUser.role === 'Manager') ||
+                                            currentUser.department === enrollment.department ||
+                                            currentUser.id === enrollment.userAddEnrollment) &&
+                                            <Link to={`Edit/${enrollment.id}`}>
+                                                <img src={iconEdit} alt='Edycja' title='Edycja' />
+                                            </Link>
+                                        }
                                     </span>
                                 </td>
                             </tr>

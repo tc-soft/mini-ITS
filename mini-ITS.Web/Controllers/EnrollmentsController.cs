@@ -49,6 +49,15 @@ namespace mini_ITS.Web.Controllers
         {
             try
             {
+                if (enrollmentsDto.DateEndDeclareByUser.HasValue)
+                {
+                    enrollmentsDto.DateEndDeclareByUser = new DateTime(
+                        enrollmentsDto.DateEndDeclareByUser.Value.Year,
+                        enrollmentsDto.DateEndDeclareByUser.Value.Month,
+                        enrollmentsDto.DateEndDeclareByUser.Value.Day,
+                        23, 59, 59, 0);
+                }
+
                 var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, User.Identity.Name);
 
                 return Ok(id);
@@ -101,6 +110,20 @@ namespace mini_ITS.Web.Controllers
                 await _enrollmentsServices.DeleteAsync((Guid)id);
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+        [HttpGet()]
+        [CookieAuth()]
+        public async Task<IActionResult> GetMaxNumberAsync(int year)
+        {
+            try
+            {
+                int maxNumber = await _enrollmentsServices.GetMaxNumberAsync(year);
+                return Ok(new { MaxNumber = maxNumber });
             }
             catch (Exception ex)
             {

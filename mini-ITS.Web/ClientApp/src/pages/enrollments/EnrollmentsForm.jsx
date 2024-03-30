@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm, Controller } from 'react-hook-form';
-import { parseISO, formatISO, format } from 'date-fns';
+import { addDays, getYear, parseISO, formatISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { groupsServices } from '../../services/GroupsServices';
 import { enrollmentServices } from '../../services/EnrollmentServices';
@@ -26,17 +26,18 @@ const EnrollmentsForm = (props) => {
 
     const { handleSubmit, register, reset, watch, setFocus, setValue, control, formState: { errors } } = useForm();
     const [formControls, setFormControls] = useState({
+        isDateEndDeclareByUser: isMode === 'Create' ? false : true,
         isDateEndDeclareByDepartmentDisabled: true,
-        isDepartmentDisabled: true,
-        isDescriptionDisabled: true,
-        isGroupDisabled: true,
-        isPriorityDisabled: true,
+        isDepartmentDisabled: isMode === 'Create' ? false : true,
+        isDescriptionDisabled: isMode === 'Create' ? false : true,
+        isGroupDisabled: isMode === 'Create' ? false : true,
+        isPriorityDisabled: isMode === 'Create' ? false : true,
         isReadyForCloseDisabled: true,
         isStateDisabled: true,
-        isActionRequestDisabled: true
+        isActionRequestDisabled: isMode === 'Create' ? false : true
     });
 
-    const title = { Create: 'Dodaj zgłoszenie', Detail: 'Szczegóły zgłoszenia', Edit: 'Edycja' };
+    const title = { Create: 'Nowe zgłoszenie', Detail: 'Szczegóły zgłoszenia', Edit: 'Edycja zgłoszenia' };
 
     const mapPriority = {
         '0': 'Normalny',
@@ -59,6 +60,14 @@ const EnrollmentsForm = (props) => {
 
                 setFormControls(prevFlags => ({
                     ...prevFlags,
+
+                    isDateEndDeclareByUser: isReadMode ||
+                        (currentUser.role !== 'Administrator' &&
+                            (
+                                data.state === 'Closed' ||
+                                data.userAddEnrollment !== currentUser.id
+                            )
+                        ),
 
                     isDateEndDeclareByDepartmentDisabled: isReadMode || data.state === 'New' || data.state === 'Closed' || currentUser.role !== 'Administrator',
 
@@ -131,6 +140,11 @@ const EnrollmentsForm = (props) => {
                 handleErrorResponse(
                     await enrollmentServices.update(values.id, values),
                     'Aktualizacja nie powiodła się!');
+            }
+            else if (isMode === 'Create') {
+                handleErrorResponse(
+                    await enrollmentServices.create(values),
+                    'Zapis nie powiódł się!');
             };
 
             navigate('/Enrollments');
@@ -158,6 +172,25 @@ const EnrollmentsForm = (props) => {
 
                 if (isMode === 'Detail' || isMode === 'Edit') {
                     resetAsyncForm();
+                };
+                
+                if (isMode === 'Create') {
+                    const response = await enrollmentServices.getMaxNumber(getYear(new Date()));
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setEnrollment(prevState => ({
+                            ...prevState,
+                            nr: data.maxNumber + 1,
+                            year: getYear(new Date())
+                        }));
+                    };
+
+                    setValue('dateAddEnrollment', formatISO(new Date()));
+                    setValue('dateEndDeclareByUser', formatISO(addDays(new Date(), 7)));
+                    setValue('sMSToUserInfo', true);
+                    setValue('mailToUserInfo', true);
+                    setValue('state', 'New');
                 };
             }
             catch (error) {
@@ -199,7 +232,7 @@ const EnrollmentsForm = (props) => {
             };
         };
 
-        fetchData();
+        if (isMode !== 'Create') fetchData();
     }, [enrollmentId]);
 
     useEffect(() => {
@@ -217,7 +250,7 @@ const EnrollmentsForm = (props) => {
             };
         };
 
-        fetchData();
+        if (isMode !== 'Create') fetchData();
     }, [enrollmentId]);
 
     useEffect(() => {
@@ -231,7 +264,7 @@ const EnrollmentsForm = (props) => {
             </div>
 
             <div>
-                <h4>Dane zgłoszenia { enrollment.nr }/{ enrollment.year }</h4><br />
+                <h4>Zgłoszenie {enrollment.nr}/{enrollment.year}</h4><br />
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -242,37 +275,54 @@ const EnrollmentsForm = (props) => {
                 }}>
                     <div>
                         <label>Data zgłoszenia</label><br />
-                        <DatePicker
-                            tabIndex='1'
-                            selected={watch('dateAddEnrollment') ? parseISO(watch('dateAddEnrollment')) : null}
-                            dateFormat='dd.MM.yyyy HH:mm'
-                            showTimeInput
-                            timeInputLabel='Godzina:'
-                            placeholderText='Wybierz datę'
-                            disabled={true}
-                            onChange={(date) => setValue('dateAddEnrollment', formatISO(date))}
-                            onBlur={() => setValue('dateAddEnrollment', watch('dateAddEnrollment'), { shouldValidate: true })}
+                        <Controller
+                            control={control}
+                            name='dateAddEnrollment'
+                            rules={{
+                                required: { value: true, message: 'Pole wymagane.' },
+                            }}
+                            render={({ field }) => (
+                                <DatePicker
+                                    tabIndex='1'
+                                    selected={field.value ? new Date(field.value) : null}
+                                    dateFormat='dd.MM.yyyy HH:mm'
+                                    placeholderText='Wybierz datę'
+                                    disabled={true}
+                                    onChange={(date) => field.onChange(date.toISOString())}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
                         />
-                        <br />
+                        {errors.dateAddEnrollment ? <p style={{ color: 'red' }} >{errors.dateAddEnrollment?.message}</p> : <p>&nbsp;</p>}
 
-                        <label>Data ost. zmiany</label><br />
-                        <DatePicker
-                            tabIndex='2'
-                            selected={watch('dateModEnrollment') ? parseISO(watch('dateModEnrollment')) : null}
-                            dateFormat='dd.MM.yyyy HH:mm'
-                            showTimeInput
-                            timeInputLabel='Godzina:'
-                            placeholderText='Wybierz datę'
-                            disabled={true}
-                            onChange={(date) => setValue('dateModEnrollment', formatISO(date))}
-                            onBlur={() => setValue('dateModEnrollment', watch('dateModEnrollment'), { shouldValidate: true })}
-                        />
-                        <br />
+                        {isMode !== 'Create' &&
+                            <>
+                                <label>Data ost. zmiany</label><br />
+                                <Controller
+                                    control={control}
+                                    name='dateModEnrollment'
+                                    rules={{
+                                        required: { value: true, message: 'Pole wymagane.' },
+                                    }}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                            tabIndex='2'
+                                            selected={field.value ? new Date(field.value) : null}
+                                            dateFormat='dd.MM.yyyy HH:mm'
+                                            placeholderText='Wybierz datę'
+                                            disabled={true}
+                                            onChange={(date) => field.onChange(date.toISOString())}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
+                                />
+                                {errors.dateModEnrollment ? <p style={{ color: 'red' }} >{errors.dateModEnrollment?.message}</p> : <p>&nbsp;</p>}
+                            </>
+                        }
 
-                        <label>Dział</label><br />
+                        <label>Dział docelowy</label><br />
                         <select
                             tabIndex='3'
-                            placeholder='Wybierz dział'
                             disabled={formControls.isDepartmentDisabled}
                             style={isReadMode ? { pointerEvents: 'none' } : null}
                             {...register('department', {
@@ -282,6 +332,7 @@ const EnrollmentsForm = (props) => {
                                 maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
                             })}
                         >
+                            <option value=''>-- Wybierz dział --</option>
                             {mapDepartment.map(option => (
                                 <option key={option.value} value={option.value}>{option.name}</option>
                             ))}
@@ -307,7 +358,6 @@ const EnrollmentsForm = (props) => {
                         <label>Priorytet</label><br />
                         <select
                             tabIndex='5'
-                            placeholder='Wybierz priorytet'
                             disabled={formControls.isPriorityDisabled}
                             {...register('priority', {
                                 setValueAs: value => parseInt(value, 10)
@@ -321,12 +371,53 @@ const EnrollmentsForm = (props) => {
                         </select>
                         <br />
 
+                        {isMode === 'Create' &&
+                            <>
+                                <br />
+                                <label>Czy wysłać SMS do kier. działu</label><br />
+                                <input
+                                    tabIndex='6'
+                                    type='checkbox'
+                                    disabled={false}
+                                    {...register('sMSToUserInfo')}
+                                />
+                                <br />
+
+                                <label>Czy wysłać SMS do kier. wszystkich działów</label><br />
+                                <input
+                                    tabIndex='7'
+                                    type='checkbox'
+                                    disabled={false}
+                                    {...register('sMSToAllInfo')}
+                                />
+                                <br />
+
+                                <label>Czy wysłac Email do kier. działu</label><br />
+                                <input
+                                    tabIndex='8'
+                                    type='checkbox'
+                                    disabled={false}
+                                    {...register('mailToUserInfo')}
+                                />
+                                <br />
+
+                                <label>Czy wysłac Email do kier. wszystkich działów</label><br />
+                                <input
+                                    tabIndex='9'
+                                    type='checkbox'
+                                    disabled={false}
+                                    {...register('mailToAllInfo')}
+                                />
+                            </>
+                        }
+
                         {isReadMode && (
                             <>
                                 <label>Dodał/a</label><br />
                                 <input
-                                    tabIndex='6'
+                                    tabIndex='10'
                                     type='text'
+                                    placeholder='brak'
                                     disabled={isReadMode}
                                     {...register('userAddEnrollmentFullName')}
                                 />
@@ -334,30 +425,37 @@ const EnrollmentsForm = (props) => {
 
                                 <label>Zakończył/a</label><br />
                                 <input
-                                    tabIndex='7'
+                                    tabIndex='11'
                                     type='text'
+                                    placeholder='brak'
                                     disabled={isReadMode}
                                     {...register('userEndEnrollmentFullName')}
                                 />
                                 <br />
 
                                 <label>Data zakończenia</label><br />
-                                <DatePicker
-                                    tabIndex='8'
-                                    selected={watch('dateEndEnrollment') ? parseISO(watch('dateEndEnrollment')) : null}
-                                    dateFormat='dd.MM.yyyy HH:mm'
-                                    placeholderText='Wybierz datę'
-                                    disabled={isReadMode}
-                                    onChange={(date) => setValue('dateEndEnrollment', formatISO(date))}
-                                    onBlur={() => setValue('dateEndEnrollment', watch('dateEndEnrollment'), { shouldValidate: true })}
+                                <Controller
+                                    control={control}
+                                    name='dateEndEnrollment'
+                                    render={({ field }) => (
+                                        <DatePicker
+                                            tabIndex='12'
+                                            selected={field.value ? new Date(field.value) : null}
+                                            dateFormat='dd.MM.yyyy HH:mm'
+                                            placeholderText='brak'
+                                            disabled={isReadMode}
+                                            onChange={(date) => field.onChange(date.toISOString())}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
                                 <br />
 
                                 <label>Otworzył/a ponownie</label><br />
                                 <input
-                                    tabIndex='9'
+                                    tabIndex='13'
                                     type='text'
-                                    value={watch('userReeEnrollmentFullName') || 'brak'}
+                                    placeholder='brak'
                                     disabled={isReadMode}
                                     {...register('userEndEnrollmentFullName')}
                                 />
@@ -366,42 +464,79 @@ const EnrollmentsForm = (props) => {
                     </div>
                     <div>
                         <label>Data zak. w/g zgł.</label><br />
-                        <DatePicker
-                            tabIndex='10'
-                            selected={watch('dateEndDeclareByUser') ? parseISO(watch('dateEndDeclareByUser')) : null}
-                            dateFormat='dd.MM.yyyy'
-                            placeholderText='Wybierz datę'
-                            disabled={true}
-                            onChange={(date) => setValue('dateEndDeclareByUser', formatISO(date))}
-                            onBlur={() => setValue('dateEndDeclareByUser', watch('dateEndDeclareByUser'), { shouldValidate: true })}
+                        <Controller
+                            control={control}
+                            name='dateEndDeclareByUser'
+                            rules={{
+                                validate: value => {
+                                    const selectedDate = new Date(value);
+                                    const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                    return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                }
+                            }}
+                            render={({ field }) => (
+                                <DatePicker
+                                    tabIndex='14'
+                                    selected={field.value ? new Date(field.value) : null}
+                                    dateFormat='dd.MM.yyyy'
+                                    placeholderText='Wybierz datę'
+                                    disabled={formControls.isDateEndDeclareByUser}
+                                    onChange={(date) => field.onChange(date.toISOString())}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
                         />
-                        <br />
+                        {errors.dateEndDeclareByUser ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByUser?.message}</p> : <p>&nbsp;</p>}
 
                         <label>Data zak. w/g działu</label><br />
-                        <DatePicker
-                            tabIndex='11'
-                            selected={watch('dateEndDeclareByDepartment') ? parseISO(watch('dateEndDeclareByDepartment')) : null}
-                            dateFormat='dd.MM.yyyy'
-                            disabled={formControls.isDateEndDeclareByDepartmentDisabled}
-                            onChange={(date) => setValue('dateEndDeclareByDepartment', formatISO(date))}
-                            onBlur={() => setValue('dateEndDeclareByDepartment', watch('dateEndDeclareByDepartment'), { shouldValidate: true })}
+                        <Controller
+                            control={control}
+                            name='dateEndDeclareByDepartment'
+                            rules={{
+                                validate: value => {
+                                    if (!value) {
+                                        return true;
+                                    }
+
+                                    const selectedDate = new Date(value);
+                                    const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                    return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                }
+                            }}
+                            render={({ field }) => (
+                                <DatePicker
+                                    tabIndex='15'
+                                    selected={field.value ? new Date(field.value) : null}
+                                    dateFormat='dd.MM.yyyy'
+                                    placeholderText='brak'
+                                    disabled={formControls.isDateEndDeclareByDepartmentDisabled}
+                                    onChange={(date) => field.onChange(date.toISOString())}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
                         />
-                        <br />
+                        {errors.dateEndDeclareByDepartment ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByDepartment?.message}</p> : <p>&nbsp;</p>}
 
                         <label>Grupa/Linia</label><br />
                         <select
-                            tabIndex='12'
-                            placeholder='Wybierz grupę'
+                            tabIndex='16'
                             disabled={formControls.isGroupDisabled}
-                            {...register('group')}
+                            {...register('group', {
+                                required: { value: true, message: 'Pole wymagane.' },
+                                pattern: {
+                                    value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.'
+                                },
+                                maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                            })}
                         >
+                            <option value=''>-- Wybierz grupę --</option>
                             {mapGroup?.results?.map((x, y) => (
                                 <option key={y} value={x.groupName}>
                                     {x.groupName}
                                 </option>
                             ))}
                         </select>
-                        <br /><br />
+                        {errors.group ? <p style={{ color: 'red' }} >{errors.group?.message}</p> : <p>&nbsp;</p>}
 
                         <label>Żądanie dodatkowych czynności</label><br />
                         <Controller
@@ -409,7 +544,7 @@ const EnrollmentsForm = (props) => {
                             control={control}
                             render={({ field: { onChange, value } }) => (
                                 <input
-                                    tabIndex='13'
+                                    tabIndex='17'
                                     type='checkbox'
                                     checked={value === 1}
                                     onChange={e => onChange(e.target.checked ? 1 : 0)}
@@ -433,35 +568,34 @@ const EnrollmentsForm = (props) => {
                     ))}
                 </div>
                 <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data wpr.</th>
-                                <th>Adnotacja</th>
-                                <th>Dodał</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {mapEnrollmentsDescription.map((enrollmentsDescription, index) => (
-                                <tr key={index}>
-                                    <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
-                                    <td>{enrollmentsDescription.description}</td>
-                                    <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                    {isMode !== 'Create' &&
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data wpr.</th>
+                                    <th>Adnotacja</th>
+                                    <th>Dodał</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {mapEnrollmentsDescription.map((enrollmentsDescription, index) => (
+                                    <tr key={index}>
+                                        <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
+                                        <td>{enrollmentsDescription.description}</td>
+                                        <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    }
                 </div>
                 <div>
-                    {!isReadMode && (
+                    {isMode !== 'Create' && (
                         <>
-                        </>
-                    )}
-                    {watch('state') !== 'New' && (
-                        <>
+                            <br />
                             <label>Wyk. dodatkowych czynności</label><br />
                             <input
-                                tabIndex='14'
+                                tabIndex='18'
                                 type='checkbox'
                                 checked={watch('actionFinished') === 1 ? true : false}
                                 disabled={true}
@@ -471,34 +605,35 @@ const EnrollmentsForm = (props) => {
 
                             <label>Gotowe do zamkn.</label><br />
                             <input
-                                tabIndex='15'
+                                tabIndex='19'
                                 type='checkbox'
                                 disabled={formControls.isReadyForCloseDisabled}
                                 {...register('readyForClose')}
                             />
                             <br />
+
+                            <label>Status</label><br />
+                            <select
+                                tabIndex='20'
+                                placeholder='Wybierz status'
+                                disabled={formControls.isStateDisabled}
+                                {...register('state')}
+                            >
+                                {Object.keys(mapState).map(key => (
+                                    <option key={key} value={key}>
+                                        {mapState[key]}
+                                    </option>
+                                ))}
+                            </select>
                         </>
                     )}
-                    <label>Status</label><br />
-                    <select
-                        tabIndex='16'
-                        placeholder='Wybierz status'
-                        disabled={formControls.isStateDisabled}
-                        {...register('state')}
-                    >
-                        {Object.keys(mapState).map(key => (
-                            <option key={key} value={key}>
-                                {mapState[key]}
-                            </option>
-                        ))}
-                    </select>
                 </div>
                 <div>
                     <br />
                     {(isMode === 'Edit' || isMode === 'Create') && (
                         <>
                             <button
-                                tabIndex='17'
+                                tabIndex='21'
                                 type='submit'>
                                 Zapisz
                             </button>

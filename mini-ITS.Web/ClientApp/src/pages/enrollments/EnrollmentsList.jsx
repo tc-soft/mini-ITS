@@ -43,7 +43,6 @@ const EnrollmentsList = (props) => {
     };
 
     const mapState = {
-        '': 'Wszystkie',
         'New': 'Nowy',
         'Assigned': 'W trakcie',
         'Closed': 'Zamknięte',
@@ -205,7 +204,7 @@ const EnrollmentsList = (props) => {
             <div className='enrollmentsList-panel'>
                 <div className='enrollmentsList-panel-tittle'>
                     <p>Lista zgłoszeń</p>
-                    <Link>
+                    <Link to='Create'>
                         <button title='Dodaj nowe'>
                             <img src={iconAdd} alt='iconAdd' />
                             <span>Dodaj</span>
@@ -216,6 +215,7 @@ const EnrollmentsList = (props) => {
                     <div>
                         Status : &nbsp;
                         <select value={activeStateFilter} onChange={handleStateFilter}>
+                            <option value=''>-- Wszystkie --</option>
                             {Object.entries(mapState).map(([value, name], index) => (
                                 <option key={index} value={value}>
                                     {name}
@@ -226,6 +226,7 @@ const EnrollmentsList = (props) => {
                     <div>
                         Dział docelowy : &nbsp;
                         <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                            <option value=''>-- Wszystkie --</option>
                             {mapDepartment.map((department, index) => (
                                 <option key={index} value={department.value}>
                                     {department.name}

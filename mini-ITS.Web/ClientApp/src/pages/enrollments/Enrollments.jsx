@@ -45,6 +45,12 @@ const Enrollments = () => {
                 setGroupsPagedQuery={setGroupsPagedQuery}
             />}
             />
+            <Route path='/Create' element={<EnrollmentsForm
+                isMode={'Create'}
+                groupsPagedQuery={groupsPagedQuery}
+                setGroupsPagedQuery={setGroupsPagedQuery}
+            />}
+            />
         </Routes>
     );
 };

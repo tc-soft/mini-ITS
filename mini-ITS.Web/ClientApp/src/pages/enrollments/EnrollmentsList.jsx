@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { format } from 'date-fns';
 import { enrollmentServices } from '../../services/EnrollmentServices';
+import ModalDialog from '../../components/Modal';
 import iconAdd from '../../images/iconAdd.svg';
 import iconDetail from '../../images/iconDetail.svg';
 import iconEdit from '../../images/iconEdit.svg';
@@ -47,6 +48,39 @@ const EnrollmentsList = (props) => {
         'Assigned': 'W trakcie',
         'Closed': 'Zamknięte',
         'ReOpened': 'Otwarte ponownie'
+    };
+
+    const [modalDialogOpen, setModalDialogOpen] = useState(false);
+    const [modalDialogType, setModalDialogType] = useState('');
+    const [modalDialogTitle, setModalDialogTitle] = useState('');
+    const [modalDialogMessage, setModalDialogMessage] = useState('');
+    const [modalDialogEnrollmentId, setModalDialogEnrollmentId] = useState('');
+    const [modalDialogEnrollmentNr, setModalDialogEnrollmentNr] = useState('');
+
+    const handleModalClose = () => {
+        setModalDialogType('');
+        setModalDialogTitle('');
+        setModalDialogMessage('')
+        setModalDialogEnrollmentId('');
+        setModalDialogEnrollmentNr('');
+        setModalDialogOpen(false);
+    };
+
+    const handleModalConfirm = async () => {
+        switch (modalDialogType) {
+            case 'Dialog':
+                setModalDialogOpen(false);
+                await handleDeleteStage2(modalDialogEnrollmentId, modalDialogEnrollmentNr);
+                break;
+            case 'Information':
+                handleModalClose();
+                break;
+            case 'Error':
+                handleModalClose();
+                break;
+            default:
+                break;
+        };
     };
 
     const handleStateFilter = (event) => {
@@ -175,6 +209,44 @@ const EnrollmentsList = (props) => {
         };
     };
 
+    const handleDeleteStage1 = (enrollmentId, enrollmentNr) => {
+        if (currentUser.role === 'Administrator' || currentUser.role === 'Manager') {
+            setModalDialogType('Dialog');
+            setModalDialogTitle('Usuwanie zgłoszenia');
+            setModalDialogMessage(`Czy na pewno chcesz usunąć zgłoszenie ${enrollmentNr}?`);
+            setModalDialogEnrollmentId(enrollmentId);
+            setModalDialogEnrollmentNr(enrollmentNr);
+            setModalDialogOpen(true);
+        };
+    };
+
+    const handleDeleteStage2 = async (enrollmentId, enrollmentNr) => {
+        try {
+            const deleteResponse = await enrollmentServices.delete(enrollmentId);
+            if (!deleteResponse.ok) {
+                throw new Error('Usunięcie grupy nie powiodło się!');
+            };
+
+            const indexResponse = await enrollmentServices.index(pagedQuery);
+            if (!indexResponse.ok) {
+                throw new Error('Błąd podczas pobierania zaktualizowanej listy zgłoszeń.');
+            };
+
+            setTimeout(() => {
+                setModalDialogType('Information');
+                setModalDialogTitle('Usuwanie zgłoszenia');
+                setModalDialogMessage(`Pomyślnie usunięto zgłoszenie ${enrollmentNr}.`);
+                setModalDialogOpen(true);
+            }, 400);
+
+            const data = await indexResponse.json();
+            setEnrollments(data);
+        }
+        catch (error) {
+            alert(error.message);
+        };
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -201,6 +273,15 @@ const EnrollmentsList = (props) => {
 
     return (
         <div className='enrollmentsList'>
+            <ModalDialog
+                modalDialogOpen={modalDialogOpen}
+                modalDialogType={modalDialogType}
+                modalDialogTitle={modalDialogTitle}
+                modalDialogMessage={modalDialogMessage}
+
+                handleModalConfirm={handleModalConfirm}
+                handleModalClose={handleModalClose}
+            />
             <div className='enrollmentsList-panel'>
                 <div className='enrollmentsList-panel-tittle'>
                     <p>Lista zgłoszeń</p>
@@ -299,6 +380,13 @@ const EnrollmentsList = (props) => {
                                                 <img src={iconEdit} alt='Edycja' title='Edycja' />
                                             </Link>
                                         }
+                                    </span>
+                                    <span
+                                        title='Usuń'
+                                        onClick={() => handleDeleteStage1(enrollment.id, `${enrollment.nr}/${enrollment.year}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <img src={iconDelete} alt='Usuń' title='Usuń' />
                                     </span>
                                 </td>
                             </tr>

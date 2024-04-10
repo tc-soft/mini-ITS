@@ -24,7 +24,7 @@ const EnrollmentsForm = (props) => {
     const [mapEnrollmentsPicture, setMapEnrollmentsPicture] = useState([]);
     const [mapEnrollmentsDescription, setMapEnrollmentsDescription] = useState([]);
 
-    const { handleSubmit, register, reset, watch, setFocus, setValue, control, formState: { errors } } = useForm();
+    const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors } } = useForm();
     const [formControls, setFormControls] = useState({
         isDateEndDeclareByUser: isMode === 'Create' ? false : true,
         isDateEndDeclareByDepartmentDisabled: true,
@@ -569,24 +569,36 @@ const EnrollmentsForm = (props) => {
                 </div>
                 <div>
                     {isMode !== 'Create' &&
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Data wpr.</th>
-                                    <th>Adnotacja</th>
-                                    <th>Dodał</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {mapEnrollmentsDescription.map((enrollmentsDescription, index) => (
-                                    <tr key={index}>
-                                        <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
-                                        <td>{enrollmentsDescription.description}</td>
-                                        <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                        <>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Data wpr.</th>
+                                        <th>Adnotacja</th>
+                                        <th>Dodał</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {mapEnrollmentsDescription.map((enrollmentsDescription, index) => (
+                                        <tr key={index}>
+                                            <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
+                                            <td>{enrollmentsDescription.description}</td>
+                                            <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </>
+                    }
+
+                    {enrollment.state === 'New' &&
+                        <>
+                            <Link to={`AddDescriptionSetEndDate`}>
+                                <button title='Ustalenie daty zakończenmia zgłoszenia'>
+                                    <span>Ustalenie daty zakończenia</span>
+                                </button>
+                            </Link>
+                        </>
                     }
                 </div>
                 <div>

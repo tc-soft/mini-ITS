@@ -600,6 +600,16 @@ const EnrollmentsForm = (props) => {
                             </Link>
                         </>
                     }
+
+                    {enrollment.state !== 'New' &&
+                        <>
+                            <Link to={`AddDescription`}>
+                                <button title='Dodaj adnotację do zgłoszenia'>
+                                    <span>Dodaj adnotację</span>
+                                </button>
+                            </Link>
+                        </>
+                    }
                 </div>
                 <div>
                     {isMode !== 'Create' && (

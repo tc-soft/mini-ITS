@@ -1,9 +1,10 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm, Controller } from 'react-hook-form';
 import { addDays, getYear, parseISO, formatISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
+import { v4 as uuidv4 } from 'uuid';
 import { groupsServices } from '../../services/GroupsServices';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 import { enrollmentPictureServices } from '../../services/EnrollmentPictureServices';
@@ -36,7 +37,8 @@ const EnrollmentsForm = (props) => {
         isStateDisabled: true,
         isActionRequestDisabled: isMode === 'Create' ? false : true
     });
-
+    const fileInputRef = useRef(null);
+        
     const title = { Create: 'Nowe zgłoszenie', Detail: 'Szczegóły zgłoszenia', Edit: 'Edycja zgłoszenia' };
 
     const mapPriority = {
@@ -130,21 +132,98 @@ const EnrollmentsForm = (props) => {
         };
     }, [reset]);
 
+    const addPicture = (event) => {
+        const files = [...event.target.files];
+        const maxFileSize = 2 * 1024 * 1024;
+        const maxFileCount = 10;
+        const currentFileCount = mapEnrollmentsPicture.length;
+
+        if (currentFileCount + files.length > maxFileCount) {
+            alert(`Nie można dodać więcej niż ${maxFileCount} plików. Usuń kilka plików lub dodaj mniejszą ilość.`);
+            event.target.value = null;
+            return;
+        };
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > maxFileSize) {
+                alert('Wybrany plik jest za duży. Maksymalny rozmiar pliku to 2MB.');
+                event.target.value = null;
+                return;
+            };
+        };
+
+        files.forEach(file => {
+            const newPicture = {
+                id: uuidv4(),
+                file,
+                pictureBytes: null,
+                picturePath: file.name
+            };
+            setMapEnrollmentsPicture(prevPictures => [...prevPictures, newPicture]);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result.split(',')[1];
+                setMapEnrollmentsPicture(prevPictures => {
+                    return prevPictures.map(picture => {
+                        if (picture.file === file) {
+                            return { ...picture, pictureBytes: base64 };
+                        };
+
+                        return picture;
+                    });
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const deletePicture = (id) => {
+        setMapEnrollmentsPicture(currentPictures => currentPictures.filter(picture => picture.id !== id));
+    };
+
     const handleErrorResponse = (response, errorMessage) => {
         if (!response.ok) throw errorMessage;
     };
 
     const onSubmit = async (values) => {
         try {
+            let enrollmentId;
+
             if (isMode === 'Edit') {
-                handleErrorResponse(
-                    await enrollmentServices.update(values.id, values),
-                    'Aktualizacja nie powiodła się!');
+                const response = await enrollmentServices.update(values.id, values);
+                handleErrorResponse(response, 'Aktualizacja nie powiodła się!');
+                enrollmentId = values.id;
             }
             else if (isMode === 'Create') {
-                handleErrorResponse(
-                    await enrollmentServices.create(values),
-                    'Zapis nie powiódł się!');
+                const response = await enrollmentServices.create(values);
+                handleErrorResponse(response, 'Zapis nie powiódł się!');
+                enrollmentId = await response.json();
+            };
+
+            const picturesFromApiResponse = await enrollmentPictureServices.index({ id: enrollmentId });
+            const picturesFromApi = picturesFromApiResponse.ok ? await picturesFromApiResponse.json() : [];
+            const deletedPictures = picturesFromApi.filter(pictureFromApi =>
+                !mapEnrollmentsPicture.some(mapEnrollmentPicture => mapEnrollmentPicture.id === pictureFromApi.id)
+            );
+
+            for (const picture of deletedPictures) {
+                await enrollmentPictureServices.delete(picture.id);
+            };
+
+            const newPictures = mapEnrollmentsPicture.filter(picture => picture.file);
+
+            if (newPictures.length > 0) {
+                const formData = new FormData();
+                formData.append('enrollmentId', enrollmentId);
+                newPictures.forEach(picture => {
+                    formData.append('files', picture.file, picture.picturePath);
+                });
+
+                const uploadResponse = await enrollmentPictureServices.create(formData);
+                if (!uploadResponse.ok) {
+                    throw new Error('Nie udało się zapisać grafik.');
+                };
             };
 
             navigate('/Enrollments');
@@ -203,6 +282,8 @@ const EnrollmentsForm = (props) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (isMode === 'Create') return;
+
             try {
                 const enrollmentsPictureResponse = await enrollmentPictureServices.index({ id: enrollmentId });
                 if (enrollmentsPictureResponse.ok) {
@@ -212,14 +293,18 @@ const EnrollmentsForm = (props) => {
                             const enrollmentPictureResponse = await enrollmentPictureServices.edit(enrollmentPicture.id);
                             if (enrollmentPictureResponse.ok) {
                                 const enrollmentPictureData = await enrollmentPictureResponse.json();
-                                return enrollmentPictureData;
+                                return {
+                                    id: enrollmentPictureData.id,
+                                    file: null,
+                                    pictureBytes: enrollmentPictureData.pictureBytes,
+                                    picturePath: enrollmentPictureData.picturePath
+                                };
                             } else {
                                 console.error(`Failed to load image data for picture ${enrollmentPicture.id}`);
-                                return enrollmentPicture;
                             };
-                        } catch (imageError) {
-                            console.error(`Failed to load image data for picture ${enrollmentPicture.id}:`, imageError);
-                            return enrollmentPicture;
+                        }
+                        catch (error) {
+                            console.error(`Error loading image for picture ${enrollmentPicture.id}:`, error);
                         };
                     }));
 
@@ -232,7 +317,7 @@ const EnrollmentsForm = (props) => {
             };
         };
 
-        if (isMode !== 'Create') fetchData();
+        fetchData();
     }, [enrollmentId]);
 
     useEffect(() => {
@@ -242,10 +327,12 @@ const EnrollmentsForm = (props) => {
                 if (response.ok) {
                     const enrollmentDescription = await response.json();
                     setMapEnrollmentsDescription(enrollmentDescription);
-                } else {
+                }
+                else {
                     throw new Error('Network response was not ok for enrollment descriptions');
                 };
-            } catch (error) {
+            }
+            catch (error) {
                 console.error('Error fetching enrollment descriptions:', error);
             };
         };
@@ -557,15 +644,63 @@ const EnrollmentsForm = (props) => {
                 </div>
                 <br />
                 <div>
-                    {mapEnrollmentsPicture.map((enrollmentsPicture) => (
-                        <div key={enrollmentsPicture.id}
-                            style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                            <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
-                                alt={enrollmentsPicture.picturePath}
-                                style={{ width: '400px', height: 'auto', marginRight: '10px' }}
+                    <div>
+                        {mapEnrollmentsPicture.map((enrollmentsPicture) => (
+                            enrollmentsPicture && enrollmentsPicture.pictureBytes ? (
+                                <div key={enrollmentsPicture.id}
+                                    style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
+                                        alt={enrollmentsPicture.picturePath}
+                                        style={{ width: '400px', height: 'auto', marginRight: '10px' }}
+                                    />
+                                    {
+                                        !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
+                                            (
+                                                watch('userAddEnrollment') !== undefined &&
+                                                watch('userAddEnrollment') === currentUser.id)
+                                            ) &&
+                                            (
+                                                <button
+                                                    onClick={() => deletePicture(enrollmentsPicture.id)}
+                                                    type='button'
+                                                >
+                                                    Usuń obraz
+                                                </button>
+                                            )
+                                    }
+                                </div>
+                            ) : null
+                        ))}
+                    </div>
+
+                    {isMode !== 'Detail' &&
+                        <>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".jpg, .png"
+                                multiple
+                                onChange={addPicture}
+                                style={{ display: 'none' }}
                             />
-                        </div>
-                    ))}
+                            <button
+                                onClick={() => fileInputRef.current.click()}
+                                type="button"
+                                disabled={
+                                    isReadMode ||
+                                    (currentUser.role !== 'Administrator' &&
+                                        (
+                                            watch('userAddEnrollment') !== undefined &&
+                                            watch('userAddEnrollment') !== currentUser.id
+                                        )
+                                    )
+                                }
+                            >
+                                    Dodaj obraz
+                            </button>
+                            <br /><br />
+                        </>
+                    }
                 </div>
                 <div>
                     {isMode !== 'Create' &&

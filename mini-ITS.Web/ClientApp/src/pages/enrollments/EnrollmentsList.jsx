@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { format } from 'date-fns';
 import { enrollmentServices } from '../../services/EnrollmentServices';
+import { enrollmentPictureServices } from '../../services/EnrollmentPictureServices';
 import ModalDialog from '../../components/Modal';
 import iconAdd from '../../images/iconAdd.svg';
 import iconDetail from '../../images/iconDetail.svg';
@@ -222,14 +223,33 @@ const EnrollmentsList = (props) => {
 
     const handleDeleteStage2 = async (enrollmentId, enrollmentNr) => {
         try {
+            const enrollmentsPictureResponse = await enrollmentPictureServices.index({ id: enrollmentId });
+            if (enrollmentsPictureResponse.ok) {
+                const enrollmentsPicture = await enrollmentsPictureResponse.json();
+
+                for (const enrollmentPicture of enrollmentsPicture) {
+                    try {
+                        const deleteResponse = await enrollmentPictureServices.delete(enrollmentPicture.id);
+                        if (!deleteResponse.ok) {
+                            console.error(`Failed to delete image with ID ${enrollmentPicture.id}`);
+                        };
+                    }
+                    catch (error) {
+                        console.error(`Error deleting image with ID ${enrollmentPicture.id}:`, error);
+                    };
+                };
+            } else {
+                console.error('Network response was not ok for enrollment pictures');
+            };
+
             const deleteResponse = await enrollmentServices.delete(enrollmentId);
             if (!deleteResponse.ok) {
-                throw new Error('Usunięcie grupy nie powiodło się!');
+                throw new Error('Failed to delete the enrollment!');
             };
 
             const indexResponse = await enrollmentServices.index(pagedQuery);
             if (!indexResponse.ok) {
-                throw new Error('Błąd podczas pobierania zaktualizowanej listy zgłoszeń.');
+                throw new Error('Error fetching updated list of enrollments.');
             };
 
             setTimeout(() => {

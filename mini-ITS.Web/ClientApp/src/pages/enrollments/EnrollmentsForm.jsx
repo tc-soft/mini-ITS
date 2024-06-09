@@ -9,6 +9,8 @@ import { groupsServices } from '../../services/GroupsServices';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 import { enrollmentPictureServices } from '../../services/EnrollmentPictureServices';
 import { enrollmentDescriptionServices } from '../../services/EnrollmentDescriptionServices';
+import EnrollmentsDescriptionForm from './EnrollmentsDescriptionForm';
+import EnrollmentsDescriptionFormSetEndDate from './EnrollmentsDescriptionFormSetEndDate';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -18,13 +20,14 @@ const EnrollmentsForm = (props) => {
     const isReadMode = isMode === 'Detail' ? true : false;
     const navigate = useNavigate();
     const { enrollmentId } = useParams();
-
+    const [subForm, setSubForm] = useState({ isSubForm: null, data: {} });
+    
     const [enrollment, setEnrollment] = useState([]);
     const [mapDepartment, setMapDepartment] = useState([]);
     const [mapGroup, setMapGroup] = useState([]);
     const [mapEnrollmentsPicture, setMapEnrollmentsPicture] = useState([]);
     const [mapEnrollmentsDescription, setMapEnrollmentsDescription] = useState([]);
-
+    
     const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors } } = useForm();
     const [formControls, setFormControls] = useState({
         isDateEndDeclareByUser: isMode === 'Create' ? false : true,
@@ -105,7 +108,7 @@ const EnrollmentsForm = (props) => {
                             )
                         ),
 
-                    isReadyForCloseDisabled: isReadMode || data.state === 'New' || data.state === 'Closed',
+                    isReadyForCloseDisabled: isReadMode || data.state === 'New' || data.state === 'Closed' || currentUser.department !== data.department,
 
                     isStateDisabled: isReadMode || currentUser.role !== 'Administrator',
 
@@ -182,8 +185,122 @@ const EnrollmentsForm = (props) => {
         setMapEnrollmentsPicture(currentPictures => currentPictures.filter(picture => picture.id !== id));
     };
 
+    const deleteDescription = (id) => {
+        setMapEnrollmentsDescription((prevDescriptions) => {
+            const updatedDescriptions = prevDescriptions.map(description =>
+                description.id === id
+                    ? { ...description, status: 'deleted' }
+                    : description
+            );
+
+            setTimeout(() => {
+                if (updatedDescriptions.every(description => description.status === 'deleted')) {
+                    setValue('dateEndDeclareByDepartment', null);
+                    setValue('state', 'New');
+                }
+            }, 0);
+
+            return updatedDescriptions;
+        });
+    };
+
     const handleErrorResponse = (response, errorMessage) => {
         if (!response.ok) throw errorMessage;
+    };
+
+    const handleEnrollmentsDescriptionFormSetEndDateSubmit = async (data) => {
+        if (data) {
+            try {
+                data.enrollmentId = enrollment.id,
+                    data.description = data.acceptEndDateByDepartment
+                        ? `Zgłoszenie przyjęto do realizacji.`
+                        : `Ustalono datę zakończenia na ${format(new Date(data.dateEndDeclareByDepartment), 'dd.MM.yyyy')} r. Ustalono z ${data.userAcceptedEndDate}.`;
+
+                setMapEnrollmentsDescription((prevDescriptions) =>
+                    [...prevDescriptions,
+                    {
+                        ...data,
+                        id: uuidv4(),
+                        status: 'added',
+                        dateAddDescription: new Date().toISOString(),
+                        userAddDescription: currentUser.id,
+                        userAddDescriptionFullName: `${currentUser.firstName} ${currentUser.lastName}`
+                    }
+                    ]
+                );
+
+                setValue('dateEndDeclareByDepartment', formatISO(new Date(data.dateEndDeclareByDepartment)));
+                setValue('state', 'Assigned');
+            }
+            catch (error) {
+                console.error(error);
+            };
+        }
+
+        setSubForm({ isSubForm: null, data: {} });
+    }
+
+    const handleEnrollmentsDescriptionFormSubmit = (data) => {
+        if (data) {
+            try {
+                if (data.status === 'edited') {
+                    setMapEnrollmentsDescription((prevDescriptions) =>
+                        prevDescriptions.map(description =>
+                            description.id === data.id
+                                ? {
+                                    ...description,
+                                    description: data.description,
+                                    status: data.status
+                                }
+                                : description
+                        )
+                    );
+                }
+                else if (data.status === 'added') {
+                    setMapEnrollmentsDescription((prevDescriptions) =>
+                        [...prevDescriptions,
+                        {
+                            ...data,
+                            id: uuidv4(),
+                            dateAddDescription: new Date().toISOString(),
+                            userAddDescription: currentUser.id,
+                            userAddDescriptionFullName: `${currentUser.firstName} ${currentUser.lastName}`
+                        }
+                        ]
+                    )
+                };
+            }
+            catch (error) {
+                console.error(error);
+            };
+        };
+
+        setSubForm({ isSubForm: null, data: {} });
+    };
+
+    const renderSubForm = () => {
+        if (subForm.isSubForm === 'createDescription') {
+            return <EnrollmentsDescriptionForm
+                onSubmit={handleEnrollmentsDescriptionFormSubmit}
+                subForm={subForm}
+            />;
+        };
+
+        if (subForm.isSubForm === 'createDescriptionSetEndDate') {
+            return <EnrollmentsDescriptionFormSetEndDate
+                onSubmit={handleEnrollmentsDescriptionFormSetEndDateSubmit}
+                subForm={subForm}
+            />;
+        };
+
+        if (subForm.isSubForm === 'editDescription') {
+            return <EnrollmentsDescriptionForm
+                onSubmit={handleEnrollmentsDescriptionFormSubmit}
+                subForm={subForm}
+            />;
+        };
+
+        return null;
     };
 
     const onSubmit = async (values) => {
@@ -224,6 +341,27 @@ const EnrollmentsForm = (props) => {
                 if (!uploadResponse.ok) {
                     throw new Error('Nie udało się zapisać grafik.');
                 };
+            };
+
+            const addedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'added');
+            for (const description of addedDescriptions) {
+                const response = await enrollmentDescriptionServices.create({
+                    ...description,
+                    enrollmentId: enrollmentId
+                });
+                handleErrorResponse(response, `Dodanie wpisu nie powiodło się!`);
+            }
+
+            const editedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'edited');
+            for (const description of editedDescriptions) {
+                const response = await enrollmentDescriptionServices.update(description.id, description);
+                handleErrorResponse(response, `Aktualizacja wpisu ${description.id} nie powiodła się!`);
+            };
+
+            const deletedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'deleted');
+            for (const description of deletedDescriptions) {
+                const response = await enrollmentDescriptionServices.delete(description.id);
+                handleErrorResponse(response, `Usunięcie wpisu ${description.id} nie powiodła się!`);
             };
 
             navigate('/Enrollments');
@@ -270,6 +408,10 @@ const EnrollmentsForm = (props) => {
                     setValue('sMSToUserInfo', true);
                     setValue('mailToUserInfo', true);
                     setValue('state', 'New');
+
+                    setTimeout(() => {
+                        setFocus('department');
+                    }, 0);
                 };
             }
             catch (error) {
@@ -325,7 +467,12 @@ const EnrollmentsForm = (props) => {
             try {
                 const response = await enrollmentDescriptionServices.index({ id: enrollmentId });
                 if (response.ok) {
-                    const enrollmentDescription = await response.json();
+                    let enrollmentDescription = await response.json();
+                    enrollmentDescription = enrollmentDescription.map(item => ({
+                        ...item,
+                        status: null
+                    }));
+
                     setMapEnrollmentsDescription(enrollmentDescription);
                 }
                 else {
@@ -340,60 +487,37 @@ const EnrollmentsForm = (props) => {
         if (isMode !== 'Create') fetchData();
     }, [enrollmentId]);
 
-    useEffect(() => {
-        setFocus('department');
-    }, [setFocus]);
-    
     return (
         <>
-            <div>
-                <h2>{title[isMode]}</h2><br />
-            </div>
+            {subForm.isSubForm
+                ? renderSubForm()
+                : (
+                    <>
+                        <div>
+                            <h2>{title[isMode]}</h2><br />
+                        </div>
 
-            <div>
-                <h4>Zgłoszenie {enrollment.nr}/{enrollment.year}</h4><br />
-            </div>
+                        <div>
+                            <h4>Zgłoszenie {enrollment.nr}/{enrollment.year}</h4><br />
+                        </div>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap'
-                }}>
-                    <div>
-                        <label>Data zgłoszenia</label><br />
-                        <Controller
-                            control={control}
-                            name='dateAddEnrollment'
-                            rules={{
-                                required: { value: true, message: 'Pole wymagane.' },
-                            }}
-                            render={({ field }) => (
-                                <DatePicker
-                                    tabIndex='1'
-                                    selected={field.value ? new Date(field.value) : null}
-                                    dateFormat='dd.MM.yyyy HH:mm'
-                                    placeholderText='Wybierz datę'
-                                    disabled={true}
-                                    onChange={(date) => field.onChange(date.toISOString())}
-                                    onBlur={field.onBlur}
-                                />
-                            )}
-                        />
-                        {errors.dateAddEnrollment ? <p style={{ color: 'red' }} >{errors.dateAddEnrollment?.message}</p> : <p>&nbsp;</p>}
-
-                        {isMode !== 'Create' &&
-                            <>
-                                <label>Data ost. zmiany</label><br />
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap'
+                        }}>
+                            <div>
+                                <label>Data zgłoszenia</label><br />
                                 <Controller
                                     control={control}
-                                    name='dateModEnrollment'
+                                    name='dateAddEnrollment'
                                     rules={{
                                         required: { value: true, message: 'Pole wymagane.' },
                                     }}
                                     render={({ field }) => (
                                         <DatePicker
-                                            tabIndex='2'
+                                            tabIndex='1'
                                             selected={field.value ? new Date(field.value) : null}
                                             dateFormat='dd.MM.yyyy HH:mm'
                                             placeholderText='Wybierz datę'
@@ -403,407 +527,500 @@ const EnrollmentsForm = (props) => {
                                         />
                                     )}
                                 />
-                                {errors.dateModEnrollment ? <p style={{ color: 'red' }} >{errors.dateModEnrollment?.message}</p> : <p>&nbsp;</p>}
-                            </>
-                        }
+                                {errors.dateAddEnrollment ? <p style={{ color: 'red' }} >{errors.dateAddEnrollment?.message}</p> : <p>&nbsp;</p>}
 
-                        <label>Dział docelowy</label><br />
-                        <select
-                            tabIndex='3'
-                            disabled={formControls.isDepartmentDisabled}
-                            style={isReadMode ? { pointerEvents: 'none' } : null}
-                            {...register('department', {
-                                required: { value: true, message: 'Pole wymagane.' },
-                                pattern: {
-                                    value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.' },
-                                maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
-                            })}
-                        >
-                            <option value=''>-- Wybierz dział --</option>
-                            {mapDepartment.map(option => (
-                                <option key={option.value} value={option.value}>{option.name}</option>
-                            ))}
-                        </select>
-                        {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}
+                                {isMode !== 'Create' &&
+                                    <>
+                                        <label>Data ost. zmiany</label><br />
+                                        <Controller
+                                            control={control}
+                                            name='dateModEnrollment'
+                                            rules={{
+                                                required: { value: true, message: 'Pole wymagane.' },
+                                            }}
+                                            render={({ field }) => (
+                                                <DatePicker
+                                                    tabIndex='2'
+                                                    selected={field.value ? new Date(field.value) : null}
+                                                    dateFormat='dd.MM.yyyy HH:mm'
+                                                    placeholderText='Wybierz datę'
+                                                    disabled={true}
+                                                    onChange={(date) => field.onChange(date.toISOString())}
+                                                    onBlur={field.onBlur}
+                                                />
+                                            )}
+                                        />
+                                        {errors.dateModEnrollment ? <p style={{ color: 'red' }} >{errors.dateModEnrollment?.message}</p> : <p>&nbsp;</p>}
+                                    </>
+                                }
 
-                        <label>Opis</label><br />
-                        <textarea
-                            tabIndex='4'
-                            placeholder='Wpisz treść'
-                            rows={4}
-                            cols={50}
-                            disabled={formControls.isDescriptionDisabled}
-                            {...register('description', {
-                                required: { value: true, message: 'Pole wymagane.' },
-                                pattern: {
-                                    value: /^[^\s](.|[\r\n])+[^\s]$/g, message: 'Niedozwolony znak.' },
-                                maxLength: { value: 2048, message: 'Za duża ilośc znaków.' }
-                            })}
-                        />
-                        {errors.description ? <p style={{ color: 'red' }} >{errors.description?.message}</p> : <p>&nbsp;</p>}
+                                <label>Dział docelowy</label><br />
+                                <select
+                                    tabIndex='3'
+                                    disabled={formControls.isDepartmentDisabled}
+                                    style={isReadMode ? { pointerEvents: 'none' } : null}
+                                    {...register('department', {
+                                        required: { value: true, message: 'Pole wymagane.' },
+                                        pattern: {
+                                            value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.' },
+                                        maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                                    })}
+                                >
+                                    <option value=''>-- Wybierz dział --</option>
+                                    {mapDepartment.map(option => (
+                                        <option key={option.value} value={option.value}>{option.name}</option>
+                                    ))}
+                                </select>
+                                {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}
 
-                        <label>Priorytet</label><br />
-                        <select
-                            tabIndex='5'
-                            disabled={formControls.isPriorityDisabled}
-                            {...register('priority', {
-                                setValueAs: value => parseInt(value, 10)
-                            })}
-                        >
-                            {Object.keys(mapPriority).map(key => (
-                                <option key={key} value={key}>
-                                    {mapPriority[key]}
-                                </option>
-                            ))}
-                        </select>
-                        <br />
-
-                        {isMode === 'Create' &&
-                            <>
-                                <br />
-                                <label>Czy wysłać SMS do kier. działu</label><br />
-                                <input
-                                    tabIndex='6'
-                                    type='checkbox'
-                                    disabled={false}
-                                    {...register('sMSToUserInfo')}
+                                <label>Opis</label><br />
+                                <textarea
+                                    tabIndex='4'
+                                    placeholder='Wpisz treść'
+                                    rows={4}
+                                    cols={50}
+                                    disabled={formControls.isDescriptionDisabled}
+                                    {...register('description', {
+                                        required: { value: true, message: 'Pole wymagane.' },
+                                        pattern: {
+                                            value: /^[^\s](.|[\r\n])+[^\s]$/g, message: 'Niedozwolony znak.' },
+                                        maxLength: { value: 2048, message: 'Za duża ilośc znaków.' }
+                                    })}
                                 />
-                                <br />
+                                {errors.description ? <p style={{ color: 'red' }} >{errors.description?.message}</p> : <p>&nbsp;</p>}
 
-                                <label>Czy wysłać SMS do kier. wszystkich działów</label><br />
-                                <input
-                                    tabIndex='7'
-                                    type='checkbox'
-                                    disabled={false}
-                                    {...register('sMSToAllInfo')}
-                                />
-                                <br />
-
-                                <label>Czy wysłac Email do kier. działu</label><br />
-                                <input
-                                    tabIndex='8'
-                                    type='checkbox'
-                                    disabled={false}
-                                    {...register('mailToUserInfo')}
-                                />
+                                <label>Priorytet</label><br />
+                                <select
+                                    tabIndex='5'
+                                    disabled={formControls.isPriorityDisabled}
+                                    {...register('priority', {
+                                        setValueAs: value => parseInt(value, 10)
+                                    })}
+                                >
+                                    {Object.keys(mapPriority).map(key => (
+                                        <option key={key} value={key}>
+                                            {mapPriority[key]}
+                                        </option>
+                                    ))}
+                                </select>
                                 <br />
 
-                                <label>Czy wysłac Email do kier. wszystkich działów</label><br />
-                                <input
-                                    tabIndex='9'
-                                    type='checkbox'
-                                    disabled={false}
-                                    {...register('mailToAllInfo')}
-                                />
-                            </>
-                        }
+                                {isMode === 'Create' &&
+                                    <>
+                                        <br />
+                                        <label>Czy wysłać SMS do kier. działu</label><br />
+                                        <input
+                                            tabIndex='6'
+                                            type='checkbox'
+                                            disabled={false}
+                                            {...register('sMSToUserInfo')}
+                                        />
+                                        <br />
 
-                        {isReadMode && (
-                            <>
-                                <label>Dodał/a</label><br />
-                                <input
-                                    tabIndex='10'
-                                    type='text'
-                                    placeholder='brak'
-                                    disabled={isReadMode}
-                                    {...register('userAddEnrollmentFullName')}
-                                />
-                                <br />
+                                        <label>Czy wysłać SMS do kier. wszystkich działów</label><br />
+                                        <input
+                                            tabIndex='7'
+                                            type='checkbox'
+                                            disabled={false}
+                                            {...register('sMSToAllInfo')}
+                                        />
+                                        <br />
 
-                                <label>Zakończył/a</label><br />
-                                <input
-                                    tabIndex='11'
-                                    type='text'
-                                    placeholder='brak'
-                                    disabled={isReadMode}
-                                    {...register('userEndEnrollmentFullName')}
-                                />
-                                <br />
+                                        <label>Czy wysłac Email do kier. działu</label><br />
+                                        <input
+                                            tabIndex='8'
+                                            type='checkbox'
+                                            disabled={false}
+                                            {...register('mailToUserInfo')}
+                                        />
+                                        <br />
 
-                                <label>Data zakończenia</label><br />
+                                        <label>Czy wysłac Email do kier. wszystkich działów</label><br />
+                                        <input
+                                            tabIndex='9'
+                                            type='checkbox'
+                                            disabled={false}
+                                            {...register('mailToAllInfo')}
+                                        />
+                                    </>
+                                }
+
+                                {isReadMode && (
+                                    <>
+                                        <label>Dodał/a</label><br />
+                                        <input
+                                            tabIndex='10'
+                                            type='text'
+                                            placeholder='brak'
+                                            disabled={isReadMode}
+                                            {...register('userAddEnrollmentFullName')}
+                                        />
+                                        <br />
+
+                                        <label>Zakończył/a</label><br />
+                                        <input
+                                            tabIndex='11'
+                                            type='text'
+                                            placeholder='brak'
+                                            disabled={isReadMode}
+                                            {...register('userEndEnrollmentFullName')}
+                                        />
+                                        <br />
+
+                                        <label>Data zakończenia</label><br />
+                                        <Controller
+                                            control={control}
+                                            name='dateEndEnrollment'
+                                            render={({ field }) => (
+                                                <DatePicker
+                                                    tabIndex='12'
+                                                    selected={field.value ? new Date(field.value) : null}
+                                                    dateFormat='dd.MM.yyyy HH:mm'
+                                                    placeholderText='brak'
+                                                    disabled={isReadMode}
+                                                    onChange={(date) => field.onChange(date.toISOString())}
+                                                    onBlur={field.onBlur}
+                                                />
+                                            )}
+                                        />
+                                        <br />
+
+                                        <label>Otworzył/a ponownie</label><br />
+                                        <input
+                                            tabIndex='13'
+                                            type='text'
+                                            placeholder='brak'
+                                            disabled={isReadMode}
+                                            {...register('userEndEnrollmentFullName')}
+                                        />
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <label>Data zak. w/g zgł.</label><br />
                                 <Controller
                                     control={control}
-                                    name='dateEndEnrollment'
+                                    name='dateEndDeclareByUser'
+                                    rules={{
+                                        validate: value => {
+                                            const selectedDate = new Date(value);
+                                            const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                            return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                        }
+                                    }}
                                     render={({ field }) => (
                                         <DatePicker
-                                            tabIndex='12'
+                                            tabIndex='14'
                                             selected={field.value ? new Date(field.value) : null}
-                                            dateFormat='dd.MM.yyyy HH:mm'
-                                            placeholderText='brak'
-                                            disabled={isReadMode}
+                                            dateFormat='dd.MM.yyyy'
+                                            placeholderText='Wybierz datę'
+                                            disabled={formControls.isDateEndDeclareByUser}
                                             onChange={(date) => field.onChange(date.toISOString())}
                                             onBlur={field.onBlur}
                                         />
                                     )}
                                 />
-                                <br />
+                                {errors.dateEndDeclareByUser ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByUser?.message}</p> : <p>&nbsp;</p>}
 
-                                <label>Otworzył/a ponownie</label><br />
-                                <input
-                                    tabIndex='13'
-                                    type='text'
-                                    placeholder='brak'
-                                    disabled={isReadMode}
-                                    {...register('userEndEnrollmentFullName')}
+                                <label>Data zak. w/g działu</label><br />
+                                <Controller
+                                    control={control}
+                                    name='dateEndDeclareByDepartment'
+                                    rules={{
+                                        validate: value => {
+                                            if (!value) {
+                                                return true;
+                                            }
+
+                                            const selectedDate = new Date(value);
+                                            const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                            return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                        }
+                                    }}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                            tabIndex='15'
+                                            selected={field.value ? new Date(field.value) : null}
+                                            dateFormat='dd.MM.yyyy'
+                                            placeholderText='brak'
+                                            disabled={formControls.isDateEndDeclareByDepartmentDisabled}
+                                            onChange={(date) => field.onChange(date.toISOString())}
+                                            onBlur={field.onBlur}
+                                        />
+                                    )}
                                 />
-                            </>
-                        )}
-                    </div>
-                    <div>
-                        <label>Data zak. w/g zgł.</label><br />
-                        <Controller
-                            control={control}
-                            name='dateEndDeclareByUser'
-                            rules={{
-                                validate: value => {
-                                    const selectedDate = new Date(value);
-                                    const enrollmentDate = new Date(watch('dateAddEnrollment'));
-                                    return selectedDate > enrollmentDate || 'Niewłaściwa data.';
-                                }
-                            }}
-                            render={({ field }) => (
-                                <DatePicker
-                                    tabIndex='14'
-                                    selected={field.value ? new Date(field.value) : null}
-                                    dateFormat='dd.MM.yyyy'
-                                    placeholderText='Wybierz datę'
-                                    disabled={formControls.isDateEndDeclareByUser}
-                                    onChange={(date) => field.onChange(date.toISOString())}
-                                    onBlur={field.onBlur}
-                                />
-                            )}
-                        />
-                        {errors.dateEndDeclareByUser ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByUser?.message}</p> : <p>&nbsp;</p>}
+                                {errors.dateEndDeclareByDepartment ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByDepartment?.message}</p> : <p>&nbsp;</p>}
 
-                        <label>Data zak. w/g działu</label><br />
-                        <Controller
-                            control={control}
-                            name='dateEndDeclareByDepartment'
-                            rules={{
-                                validate: value => {
-                                    if (!value) {
-                                        return true;
-                                    }
-
-                                    const selectedDate = new Date(value);
-                                    const enrollmentDate = new Date(watch('dateAddEnrollment'));
-                                    return selectedDate > enrollmentDate || 'Niewłaściwa data.';
-                                }
-                            }}
-                            render={({ field }) => (
-                                <DatePicker
-                                    tabIndex='15'
-                                    selected={field.value ? new Date(field.value) : null}
-                                    dateFormat='dd.MM.yyyy'
-                                    placeholderText='brak'
-                                    disabled={formControls.isDateEndDeclareByDepartmentDisabled}
-                                    onChange={(date) => field.onChange(date.toISOString())}
-                                    onBlur={field.onBlur}
-                                />
-                            )}
-                        />
-                        {errors.dateEndDeclareByDepartment ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByDepartment?.message}</p> : <p>&nbsp;</p>}
-
-                        <label>Grupa/Linia</label><br />
-                        <select
-                            tabIndex='16'
-                            disabled={formControls.isGroupDisabled}
-                            {...register('group', {
-                                required: { value: true, message: 'Pole wymagane.' },
-                                pattern: {
-                                    value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.'
-                                },
-                                maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
-                            })}
-                        >
-                            <option value=''>-- Wybierz grupę --</option>
-                            {mapGroup?.results?.map((x, y) => (
-                                <option key={y} value={x.groupName}>
-                                    {x.groupName}
-                                </option>
-                            ))}
-                        </select>
-                        {errors.group ? <p style={{ color: 'red' }} >{errors.group?.message}</p> : <p>&nbsp;</p>}
-
-                        <label>Żądanie dodatkowych czynności</label><br />
-                        <Controller
-                            name='actionRequest'
-                            control={control}
-                            render={({ field: { onChange, value } }) => (
-                                <input
-                                    tabIndex='17'
-                                    type='checkbox'
-                                    checked={value === 1}
-                                    onChange={e => onChange(e.target.checked ? 1 : 0)}
-                                    disabled={formControls.isActionRequestDisabled}
-                                />
-                            )}
-                        />
-                        <br />
-                    </div>
-                </div>
-                <br />
-                <div>
-                    <div>
-                        {mapEnrollmentsPicture.map((enrollmentsPicture) => (
-                            enrollmentsPicture && enrollmentsPicture.pictureBytes ? (
-                                <div key={enrollmentsPicture.id}
-                                    style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                    <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
-                                        alt={enrollmentsPicture.picturePath}
-                                        style={{ width: '400px', height: 'auto', marginRight: '10px' }}
-                                    />
-                                    {
-                                        !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
-                                            (
-                                                watch('userAddEnrollment') !== undefined &&
-                                                watch('userAddEnrollment') === currentUser.id)
-                                            ) &&
-                                            (
-                                                <button
-                                                    onClick={() => deletePicture(enrollmentsPicture.id)}
-                                                    type='button'
-                                                >
-                                                    Usuń obraz
-                                                </button>
-                                            )
-                                    }
-                                </div>
-                            ) : null
-                        ))}
-                    </div>
-
-                    {isMode !== 'Detail' &&
-                        <>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept=".jpg, .png"
-                                multiple
-                                onChange={addPicture}
-                                style={{ display: 'none' }}
-                            />
-                            <button
-                                onClick={() => fileInputRef.current.click()}
-                                type="button"
-                                disabled={
-                                    isReadMode ||
-                                    (currentUser.role !== 'Administrator' &&
-                                        (
-                                            watch('userAddEnrollment') !== undefined &&
-                                            watch('userAddEnrollment') !== currentUser.id
-                                        )
-                                    )
-                                }
-                            >
-                                    Dodaj obraz
-                            </button>
-                            <br /><br />
-                        </>
-                    }
-                </div>
-                <div>
-                    {isMode !== 'Create' &&
-                        <>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Data wpr.</th>
-                                        <th>Adnotacja</th>
-                                        <th>Dodał</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {mapEnrollmentsDescription.map((enrollmentsDescription, index) => (
-                                        <tr key={index}>
-                                            <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
-                                            <td>{enrollmentsDescription.description}</td>
-                                            <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
-                                        </tr>
+                                <label>Grupa/Linia</label><br />
+                                <select
+                                    tabIndex='16'
+                                    disabled={formControls.isGroupDisabled}
+                                    {...register('group', {
+                                        required: { value: true, message: 'Pole wymagane.' },
+                                        pattern: {
+                                            value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.'
+                                        },
+                                        maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                                    })}
+                                >
+                                    <option value=''>-- Wybierz grupę --</option>
+                                    {mapGroup?.results?.map((x, y) => (
+                                        <option key={y} value={x.groupName}>
+                                            {x.groupName}
+                                        </option>
                                     ))}
-                                </tbody>
-                            </table>
-                        </>
-                    }
+                                </select>
+                                {errors.group ? <p style={{ color: 'red' }} >{errors.group?.message}</p> : <p>&nbsp;</p>}
 
-                    {enrollment.state === 'New' &&
-                        <>
-                            <Link to={`AddDescriptionSetEndDate`}>
-                                <button title='Ustalenie daty zakończenmia zgłoszenia'>
-                                    <span>Ustalenie daty zakończenia</span>
-                                </button>
-                            </Link>
-                        </>
-                    }
-
-                    {enrollment.state !== 'New' &&
-                        <>
-                            <Link to={`AddDescription`}>
-                                <button title='Dodaj adnotację do zgłoszenia'>
-                                    <span>Dodaj adnotację</span>
-                                </button>
-                            </Link>
-                        </>
-                    }
-                </div>
-                <div>
-                    {isMode !== 'Create' && (
-                        <>
-                            <br />
-                            <label>Wyk. dodatkowych czynności</label><br />
-                            <input
-                                tabIndex='18'
-                                type='checkbox'
-                                checked={watch('actionFinished') === 1 ? true : false}
-                                disabled={true}
-                                {...register('actionFinished')}
-                            />
-                            <br />
-
-                            <label>Gotowe do zamkn.</label><br />
-                            <input
-                                tabIndex='19'
-                                type='checkbox'
-                                disabled={formControls.isReadyForCloseDisabled}
-                                {...register('readyForClose')}
-                            />
-                            <br />
-
-                            <label>Status</label><br />
-                            <select
-                                tabIndex='20'
-                                placeholder='Wybierz status'
-                                disabled={formControls.isStateDisabled}
-                                {...register('state')}
-                            >
-                                {Object.keys(mapState).map(key => (
-                                    <option key={key} value={key}>
-                                        {mapState[key]}
-                                    </option>
+                                <label>Żądanie dodatkowych czynności</label><br />
+                                <Controller
+                                    name='actionRequest'
+                                    control={control}
+                                    render={({ field: { onChange, value } }) => (
+                                        <input
+                                            tabIndex='17'
+                                            type='checkbox'
+                                            checked={value === 1}
+                                            onChange={e => onChange(e.target.checked ? 1 : 0)}
+                                            disabled={formControls.isActionRequestDisabled}
+                                        />
+                                    )}
+                                />
+                                <br />
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <div>
+                                {mapEnrollmentsPicture.map((enrollmentsPicture) => (
+                                    enrollmentsPicture && enrollmentsPicture.pictureBytes ? (
+                                        <div key={enrollmentsPicture.id}
+                                            style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                            <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
+                                                alt={enrollmentsPicture.picturePath}
+                                                style={{ width: '400px', height: 'auto', marginRight: '10px' }}
+                                            />
+                                            {
+                                                !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
+                                                    (
+                                                        watch('userAddEnrollment') !== undefined &&
+                                                        watch('userAddEnrollment') === currentUser.id)
+                                                    ) &&
+                                                        (
+                                                        <button
+                                                            tabIndex='-1'
+                                                            type='button'
+                                                            onClick={() => deletePicture(enrollmentsPicture.id)}
+                                                        >
+                                                            Usuń obraz
+                                                        </button>
+                                                    )
+                                            }
+                                        </div>
+                                    ) : null
                                 ))}
-                            </select>
-                        </>
-                    )}
-                </div>
-                <div>
-                    <br />
-                    {(isMode === 'Edit' || isMode === 'Create') && (
-                        <>
-                            <button
-                                tabIndex='21'
-                                type='submit'>
-                                Zapisz
-                            </button>
-                            &nbsp;
-                        </>
-                    )}
-                    <Link tabIndex='-1' to={'..'}>
-                        <button>
-                            Anuluj
-                        </button>
-                    </Link>
-                </div>
-            </form>
+                            </div>
+
+                            {isMode !== 'Detail' &&
+                                <>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept=".jpg, .png"
+                                        multiple
+                                        onChange={addPicture}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <button
+                                        tabIndex='18'
+                                        type='button'
+                                        onClick={() => fileInputRef.current.click()}
+                                        disabled={
+                                            isReadMode ||
+                                            (currentUser.role !== 'Administrator' &&
+                                                (
+                                                    watch('userAddEnrollment') !== undefined &&
+                                                    watch('userAddEnrollment') !== currentUser.id
+                                                )
+                                            )
+                                        }
+                                    >
+                                            Dodaj obraz
+                                    </button>
+                                    <br /><br />
+                                </>
+                            }
+                        </div>
+                        <div>
+                            {isMode !== 'Create' &&
+                                <>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Data wpr.</th>
+                                                <th>Adnotacja</th>
+                                                <th>Dodał</th>
+                                                <th>Operacje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {mapEnrollmentsDescription
+                                                .filter(enrollmentsDescription => enrollmentsDescription.status !== 'deleted')
+                                                .map((enrollmentsDescription, index) => (
+                                                <tr key={index}>
+                                                    <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
+                                                    <td>{enrollmentsDescription.description}</td>
+                                                    <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                                                    <td>
+                                                        {
+                                                            !isReadMode &&
+                                                            (currentUser.role === 'Administrator' || enrollmentsDescription.userAddDescription === currentUser.id) &&
+                                                            <>
+                                                                <button
+                                                                    tabIndex='-1'
+                                                                    type='button'
+                                                                    onClick={() => {
+                                                                        setSubForm({
+                                                                            isSubForm: 'editDescription',
+                                                                            data: {
+                                                                                nr: enrollment.nr,
+                                                                                year: enrollment.year,
+                                                                                id: enrollmentsDescription.id,
+                                                                                description: enrollmentsDescription.description,
+                                                                                status: 'edited'
+                                                                            }
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    Edycja
+                                                                </button>
+                                                                &nbsp;
+                                                                <button
+                                                                    type='button'
+                                                                    onClick={() => deleteDescription(enrollmentsDescription.id)}
+                                                                >
+                                                                    Usuń
+                                                                </button>
+                                                            </>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </>
+                            }
+
+                            {isMode === 'Edit' &&
+                                    watch('state') === 'New' &&
+                                    watch('userAddEnrollment') !== currentUser.id &&
+                                    (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
+                                    (currentUser.role === 'Administrator' || currentUser.role === 'Manager') &&
+                                    currentUser.department === watch('department') &&
+                                <>
+                                    <button
+                                        tabIndex='19'
+                                        type='button'
+                                        title='Ustalenie daty zakończenmia zgłoszenia'
+                                        onClick={() => {
+                                            setSubForm({
+                                                isSubForm: 'createDescriptionSetEndDate',
+                                                data: {
+                                                    enrollment
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        Ustalenie daty zakończenia
+                                    </button>
+                                </>
+                            }
+
+                            {isMode === 'Edit' &&
+                                    watch('state') !== 'New' &&
+                                    watch('state') !== 'Closed' &&
+                                <>
+                                    <button
+                                        tabIndex='20'
+                                        type='button'
+                                        title='Dodanie adnotacji'
+                                        onClick={() => {
+                                            setSubForm({
+                                                isSubForm: 'createDescription',
+                                                data: {
+                                                    nr: enrollment.nr,
+                                                    year: enrollment.year,
+                                                    status: 'added'
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        Dodaj adnotację
+                                    </button>
+                                </>
+                            }
+                        </div>
+                        <div>
+                            {isMode !== 'Create' && (
+                                <>
+                                    <br />
+                                    <label>Wyk. dodatkowych czynności</label><br />
+                                    <input
+                                        tabIndex='21'
+                                        type='checkbox'
+                                        checked={watch('actionFinished') === 1 ? true : false}
+                                        disabled={true}
+                                        {...register('actionFinished')}
+                                    />
+                                    <br />
+
+                                    <label>Gotowe do zamkn.</label><br />
+                                    <input
+                                        tabIndex='22'
+                                        type='checkbox'
+                                        disabled={formControls.isReadyForCloseDisabled}
+                                        {...register('readyForClose')}
+                                    />
+                                    <br />
+
+                                    <label>Status</label><br />
+                                    <select
+                                        tabIndex='23'
+                                        placeholder='Wybierz status'
+                                        disabled={formControls.isStateDisabled}
+                                        {...register('state')}
+                                    >
+                                        {Object.keys(mapState).map(key => (
+                                            <option key={key} value={key}>
+                                                {mapState[key]}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </>
+                            )}
+                        </div>
+                        <div>
+                            <br />
+                            {(isMode === 'Edit' || isMode === 'Create') && (
+                                <>
+                                    <button
+                                        tabIndex='24'
+                                        type='submit'>
+                                        Zapisz
+                                    </button>
+                                    &nbsp;
+                                </>
+                            )}
+                            <Link tabIndex='-1' to={'..'}>
+                                <button>
+                                    Anuluj
+                                </button>
+                            </Link>
+                        </div>
+                    </form>
+                    </>
+                )
+            }
         </>
     );
 };

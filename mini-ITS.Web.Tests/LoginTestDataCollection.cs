@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using mini_ITS.Core.Tests;
@@ -158,7 +158,8 @@ namespace mini_ITS.Web.Tests
         //EnrollmentsDescription
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentDescriptionCases =>
             LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases);
+            .Concat(LoginAuthorizedMNGCases)
+            .Concat(LoginAuthorizedUSRCases);
         public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentDescriptionCases
         {
             get
@@ -168,14 +169,6 @@ namespace mini_ITS.Web.Tests
                     foreach (var enrollmentsDescriptionDto in EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCasesDto)
                     {
                         yield return new TestCaseData(loginUnauthorizedCases, null, enrollmentsDescriptionDto);
-                    }
-                }
-
-                foreach (var loginAuthorizedUSRCases in LoginAuthorizedUSRCases)
-                {
-                    foreach (var enrollmentsDescriptionDto in EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCasesDto)
-                    {
-                        yield return new TestCaseData(null, loginAuthorizedUSRCases, enrollmentsDescriptionDto);
                     }
                 }
             }
@@ -199,7 +192,7 @@ namespace mini_ITS.Web.Tests
                 }
             }
         }
-
+        
         //Groups
         public static IEnumerable<LoginData> LoginAuthorizedIndexGroupCases =>
             LoginAuthorizedCases;

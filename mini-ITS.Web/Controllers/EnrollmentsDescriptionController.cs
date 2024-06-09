@@ -93,7 +93,7 @@ namespace mini_ITS.Web.Controllers
             }
         }
         [HttpDelete("{id:guid}")]
-        [CookieAuth(roles: "Administrator, Manager")]
+        [CookieAuth]
         public async Task<IActionResult> DeleteAsync(Guid? id)
         {
             try

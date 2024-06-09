@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import EnrollmentsList from './EnrollmentsList';
 import EnrollmentsForm from './EnrollmentsForm';
-import EnrollmentsAddDescription from './EnrollmentsAddDescription';
-import EnrollmentsAddDescriptionSetEndDate from './EnrollmentsAddDescriptionSetEndDate';
+import EnrollmentsDescriptionForm from './EnrollmentsDescriptionForm';
+import EnrollmentsAddDescriptionSetEndDate from './EnrollmentsDescriptionFormSetEndDate';
 
 const Enrollments = () => {
     const [pagedQuery, setPagedQuery] = useState({
@@ -35,19 +35,13 @@ const Enrollments = () => {
                 setActiveDepartmentFilter={setActiveDepartmentFilter}
             />}
             />
-            <Route path='/Detail/:enrollmentId' element={<EnrollmentsForm
+            <Route path='/:enrollmentId' element={<EnrollmentsForm
                 isMode={'Detail'}
                 groupsPagedQuery={groupsPagedQuery}
                 setGroupsPagedQuery={setGroupsPagedQuery}
             />}
             />
-            <Route path='/Edit/:enrollmentId/AddDescription' element={<EnrollmentsAddDescription
-            />}
-            />
-            <Route path='/Edit/:enrollmentId/AddDescriptionSetEndDate' element={<EnrollmentsAddDescriptionSetEndDate
-            />}
-            />
-            <Route path='/Edit/:enrollmentId' element={<EnrollmentsForm
+            <Route path='/:enrollmentId/Edit' element={<EnrollmentsForm
                 isMode={'Edit'}
                 groupsPagedQuery={groupsPagedQuery}
                 setGroupsPagedQuery={setGroupsPagedQuery}

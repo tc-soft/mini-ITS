@@ -386,7 +386,7 @@ const EnrollmentsList = (props) => {
                                 </td>
                                 <td>
                                     <span>
-                                        <Link to={`Detail/${enrollment.id}`}>
+                                        <Link to={`${enrollment.id}`}>
                                             <img src={iconDetail} alt='Szczegóły' title='Szczegóły' />
                                         </Link>
                                     </span>
@@ -396,7 +396,7 @@ const EnrollmentsList = (props) => {
                                             currentUser.role === 'Manager') ||
                                             currentUser.department === enrollment.department ||
                                             currentUser.id === enrollment.userAddEnrollment) &&
-                                            <Link to={`Edit/${enrollment.id}`}>
+                                            <Link to={`${enrollment.id}/Edit`}>
                                                 <img src={iconEdit} alt='Edycja' title='Edycja' />
                                             </Link>
                                         }

@@ -27,7 +27,12 @@ const EnrollmentsForm = (props) => {
     const [mapGroup, setMapGroup] = useState([]);
     const [mapEnrollmentsPicture, setMapEnrollmentsPicture] = useState([]);
     const [mapEnrollmentsDescription, setMapEnrollmentsDescription] = useState([]);
-    
+
+    const [isEnrollmentLoading, setIsEnrollmentLoading] = useState(true);
+    const [isEnrollmentsPictureLoading, setIsEnrollmentsPictureLoading] = useState(true);
+    const [isEnrollmentsDescriptionLoading, setIsEnrollmentsDescriptionLoading] = useState(true);
+    const isLoading = isEnrollmentLoading || isEnrollmentsPictureLoading || isEnrollmentsDescriptionLoading;
+
     const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors } } = useForm();
     const [formControls, setFormControls] = useState({
         isDateEndDeclareByUser: isMode === 'Create' ? false : true,
@@ -416,6 +421,9 @@ const EnrollmentsForm = (props) => {
             }
             catch (error) {
                 console.error('Error fetching data:', error);
+            }
+            finally {
+                setIsEnrollmentLoading(false);
             };
         };
 
@@ -456,6 +464,9 @@ const EnrollmentsForm = (props) => {
                 };
             } catch (error) {
                 console.error('Error fetching data:', error);
+            }
+            finally {
+                setIsEnrollmentsPictureLoading(false);
             };
         };
 
@@ -481,6 +492,9 @@ const EnrollmentsForm = (props) => {
             }
             catch (error) {
                 console.error('Error fetching enrollment descriptions:', error);
+            }
+            finally {
+                setIsEnrollmentsDescriptionLoading(false);
             };
         };
 
@@ -911,17 +925,16 @@ const EnrollmentsForm = (props) => {
                                 </>
                             }
 
-                            {isMode === 'Edit' &&
-                                    watch('state') === 'New' &&
-                                    watch('userAddEnrollment') !== currentUser.id &&
-                                    (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
-                                    (currentUser.role === 'Administrator' || currentUser.role === 'Manager') &&
-                                    currentUser.department === watch('department') &&
-                                <>
+                            {!isLoading && isMode === 'Edit' &&
+                                watch('state') === 'New' &&
+                                watch('userAddEnrollment') !== currentUser.id &&
+                                (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
+                                (currentUser.role === 'Administrator' || currentUser.role === 'Manager') &&
+                                currentUser.department === watch('department') && (
                                     <button
                                         tabIndex='19'
                                         type='button'
-                                        title='Ustalenie daty zakończenmia zgłoszenia'
+                                        title='Ustalenie daty zakończenia zgłoszenia'
                                         onClick={() => {
                                             setSubForm({
                                                 isSubForm: 'createDescriptionSetEndDate',
@@ -933,13 +946,13 @@ const EnrollmentsForm = (props) => {
                                     >
                                         Ustalenie daty zakończenia
                                     </button>
-                                </>
+                                )
                             }
 
-                            {isMode === 'Edit' &&
-                                    watch('state') !== 'New' &&
-                                    watch('state') !== 'Closed' &&
-                                <>
+                            {!isLoading && isMode === 'Edit' &&
+                                watch('state') &&
+                                watch('state') !== 'New' &&
+                                watch('state') !== 'Closed' && (
                                     <button
                                         tabIndex='20'
                                         type='button'
@@ -957,7 +970,7 @@ const EnrollmentsForm = (props) => {
                                     >
                                         Dodaj adnotację
                                     </button>
-                                </>
+                                )
                             }
                         </div>
                         <div>
@@ -1005,7 +1018,8 @@ const EnrollmentsForm = (props) => {
                                 <>
                                     <button
                                         tabIndex='24'
-                                        type='submit'>
+                                        type='submit'
+                                        disabled={isMode === 'Edit' && isLoading}>
                                         Zapisz
                                     </button>
                                     &nbsp;

@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
     const enrollment = subForm.data.enrollment;
     const [mapUsers, setMapUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const { handleSubmit, register, reset, setValue, setFocus, control, watch, clearErrors, trigger, formState: { errors } } = useForm();
     const [isDisabled, setIsDisabled] = useState(false);
@@ -31,12 +32,7 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
                 const usersResponse = await fetch('/Users.json');
                 const usersData = await usersResponse.json();
                 setMapUsers(usersData);
-            }
-            catch (error) {
-                console.error('Error fetching data:', error);
-            };
 
-            try {
                 if (!enrollment) {
                     throw new Error('Enrollment is null');
                 };
@@ -46,13 +42,16 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
                 };
 
                 reset(enrollment);
-
+                
                 setTimeout(() => {
-                    setFocus('acceptEndDateByDepartment');
+                    setFocus('acceptEndDateByDepartment');    
                 }, 0);
             }
             catch (error) {
-                console.error('Error handling enrollment:', error);
+                console.error('Error fetching data:', error);
+            }
+            finally {
+                setIsLoading(false);
             };
         })();
     }, []);
@@ -124,7 +123,8 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
                     <br />    
                     <button
                         tabIndex='4'
-                        type='submit'>
+                        type='submit'
+                        disabled={isLoading}>
                         Zapisz
                     </button>
                     &nbsp;

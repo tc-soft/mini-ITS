@@ -11,6 +11,7 @@ import { enrollmentPictureServices } from '../../services/EnrollmentPictureServi
 import { enrollmentDescriptionServices } from '../../services/EnrollmentDescriptionServices';
 import EnrollmentsDescriptionForm from './EnrollmentsDescriptionForm';
 import EnrollmentsDescriptionFormSetEndDate from './EnrollmentsDescriptionFormSetEndDate';
+import ModalDialog from '../../components/Modal';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -61,6 +62,13 @@ const EnrollmentsForm = (props) => {
         'Closed': 'Zamknięte',
         'ReOpened': 'Otwarte ponownie'
     };
+
+    const [modalDialogOpen, setModalDialogOpen] = useState(false);
+    const [modalDialogType, setModalDialogType] = useState('');
+    const [modalDialogTitle, setModalDialogTitle] = useState('');
+    const [modalDialogMessage, setModalDialogMessage] = useState('');
+    const [modalDialogPictureId, setModalDialogPictureId] = useState('');
+    const [modalDialogDescriptionId, setModalDialogDescriptionId] = useState('');
 
     const resetAsyncForm = useCallback(async () => {
         try {
@@ -140,73 +148,61 @@ const EnrollmentsForm = (props) => {
         };
     }, [reset]);
 
-    const addPicture = (event) => {
-        const files = [...event.target.files];
-        const maxFileSize = 2 * 1024 * 1024;
-        const maxFileCount = 10;
-        const currentFileCount = mapEnrollmentsPicture.length;
-
-        if (currentFileCount + files.length > maxFileCount) {
-            alert(`Nie można dodać więcej niż ${maxFileCount} plików. Usuń kilka plików lub dodaj mniejszą ilość.`);
-            event.target.value = null;
-            return;
-        };
-
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].size > maxFileSize) {
-                alert('Wybrany plik jest za duży. Maksymalny rozmiar pliku to 2MB.');
-                event.target.value = null;
-                return;
-            };
-        };
-
-        files.forEach(file => {
-            const newPicture = {
-                id: uuidv4(),
-                file,
-                pictureBytes: null,
-                picturePath: file.name
-            };
-            setMapEnrollmentsPicture(prevPictures => [...prevPictures, newPicture]);
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const base64 = e.target.result.split(',')[1];
-                setMapEnrollmentsPicture(prevPictures => {
-                    return prevPictures.map(picture => {
-                        if (picture.file === file) {
-                            return { ...picture, pictureBytes: base64 };
-                        };
-
-                        return picture;
-                    });
-                });
-            };
-            reader.readAsDataURL(file);
-        });
+    const handleModalClose = () => {
+        setModalDialogType('');
+        setModalDialogTitle('');
+        setModalDialogMessage('')
+        setModalDialogPictureId('');
+        setModalDialogDescriptionId('');
+        setModalDialogOpen(false);
     };
 
-    const deletePicture = (id) => {
-        setMapEnrollmentsPicture(currentPictures => currentPictures.filter(picture => picture.id !== id));
+    const handleModalConfirm = async () => {
+        switch (modalDialogType) {
+            case 'Dialog':
+                setModalDialogOpen(false);
+                modalDialogPictureId !== '' && deletePicture(modalDialogPictureId);
+                modalDialogDescriptionId !== '' && deleteDescription(modalDialogDescriptionId);
+                break;
+            case 'Information':
+                handleModalClose();
+                break;
+            case 'Error':
+                handleModalClose();
+                break;
+            default:
+                break;
+        };
     };
 
-    const deleteDescription = (id) => {
-        setMapEnrollmentsDescription((prevDescriptions) => {
-            const updatedDescriptions = prevDescriptions.map(description =>
-                description.id === id
-                    ? { ...description, status: 'deleted' }
-                    : description
-            );
+    const handleDeletePictureStage1 = (pictureId) => {
+        setModalDialogType('Dialog');
+        setModalDialogTitle('Usuwanie zdjęcia');
+        setModalDialogMessage(`Czy na pewno chcesz usunąć zdjęcie ?`);
+        setModalDialogPictureId(pictureId);
+        setModalDialogOpen(true);
+    };
 
-            setTimeout(() => {
-                if (updatedDescriptions.every(description => description.status === 'deleted')) {
-                    setValue('dateEndDeclareByDepartment', null);
-                    setValue('state', 'New');
-                }
-            }, 0);
+    const handleDeleteDescriptionStage1 = (descriptionId) => {
+        setModalDialogType('Dialog');
+        setModalDialogTitle('Usuwanie wpisu');
+        setModalDialogMessage(`Czy na pewno chcesz usunąć wpis ?`);
+        setModalDialogDescriptionId(descriptionId);
+        setModalDialogOpen(true);
+    };
 
-            return updatedDescriptions;
-        });
+    const handleFileCountErrorStage1 = (errorMessage) => {
+        setModalDialogType('Error');
+        setModalDialogTitle('Ilość plików');
+        setModalDialogMessage(errorMessage);
+        setModalDialogOpen(true);
+    };
+
+    const handleFileSizeErrorStage1 = (errorMessage) => {
+        setModalDialogType('Error');
+        setModalDialogTitle('Rozmiar pliku');
+        setModalDialogMessage(errorMessage);
+        setModalDialogOpen(true);
     };
 
     const handleErrorResponse = (response, errorMessage) => {
@@ -281,6 +277,87 @@ const EnrollmentsForm = (props) => {
         };
 
         setSubForm({ isSubForm: null, data: {} });
+    };
+
+    const addPicture = (event) => {
+        const files = [...event.target.files];
+        const maxFileSize = 2 * 1024 * 1024;
+        const maxFileCount = 10;
+        const currentFileCount = mapEnrollmentsPicture.length;
+        const formatFileSize = (size) => {
+            if (size >= 1024 * 1024 * 1024) {
+                return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+            } else if (size >= 1024 * 1024) {
+                return (size / (1024 * 1024)).toFixed(2) + ' MB';
+            } else if (size >= 1024) {
+                return (size / 1024).toFixed(2) + ' kB';
+            } else {
+                return size + ' B';
+            }
+        };
+
+        if (currentFileCount + files.length > maxFileCount) {
+            handleFileCountErrorStage1(`Nie można dodać więcej niż ${maxFileCount} plików do zgłoszenia.`);
+            event.target.value = null;
+            return;
+        };
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > maxFileSize) {
+                files.length == 1 && handleFileSizeErrorStage1(`Wybrany plik jest za duży. Maksymalny rozmiar pliku to ${formatFileSize(maxFileSize)}.`);
+                files.length > 1 && handleFileSizeErrorStage1(`Jeden z wybranych plików jest za duży. Maksymalny rozmiar pliku to ${formatFileSize(maxFileSize)}.`);
+                event.target.value = null;
+                return;
+            };
+        };
+
+        files.forEach(file => {
+            const newPicture = {
+                id: uuidv4(),
+                file,
+                pictureBytes: null,
+                picturePath: file.name
+            };
+            setMapEnrollmentsPicture(prevPictures => [...prevPictures, newPicture]);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result.split(',')[1];
+                setMapEnrollmentsPicture(prevPictures => {
+                    return prevPictures.map(picture => {
+                        if (picture.file === file) {
+                            return { ...picture, pictureBytes: base64 };
+                        };
+
+                        return picture;
+                    });
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const deletePicture = (id) => {
+        setMapEnrollmentsPicture(currentPictures => currentPictures.filter(picture => picture.id !== id));
+    };
+
+    const deleteDescription = (id) => {
+        setMapEnrollmentsDescription((prevDescriptions) => {
+            const updatedDescriptions = prevDescriptions.map(description =>
+                description.id === id
+                    ? { ...description, status: 'deleted' }
+                    : description
+            );
+
+            setTimeout(() => {
+                if (updatedDescriptions.every(description => description.status === 'deleted')) {
+                    setValue('dateEndDeclareByDepartment', null);
+                    setValue('state', 'New');
+                }
+            }, 0);
+
+            return updatedDescriptions;
+        });
     };
 
     const renderSubForm = () => {
@@ -503,6 +580,15 @@ const EnrollmentsForm = (props) => {
 
     return (
         <>
+            <ModalDialog
+                modalDialogOpen={modalDialogOpen}
+                modalDialogType={modalDialogType}
+                modalDialogTitle={modalDialogTitle}
+                modalDialogMessage={modalDialogMessage}
+
+                handleModalConfirm={handleModalConfirm}
+                handleModalClose={handleModalClose}
+            />
             {subForm.isSubForm
                 ? renderSubForm()
                 : (
@@ -824,7 +910,7 @@ const EnrollmentsForm = (props) => {
                                                         <button
                                                             tabIndex='-1'
                                                             type='button'
-                                                            onClick={() => deletePicture(enrollmentsPicture.id)}
+                                                            onClick={() => handleDeletePictureStage1(enrollmentsPicture.id)}
                                                         >
                                                             Usuń obraz
                                                         </button>
@@ -859,7 +945,7 @@ const EnrollmentsForm = (props) => {
                                             )
                                         }
                                     >
-                                            Dodaj obraz
+                                            Dodaj zdjęcie
                                     </button>
                                     <br /><br />
                                 </>
@@ -911,7 +997,7 @@ const EnrollmentsForm = (props) => {
                                                                 &nbsp;
                                                                 <button
                                                                     type='button'
-                                                                    onClick={() => deleteDescription(enrollmentsDescription.id)}
+                                                                    onClick={() => handleDeleteDescriptionStage1(enrollmentsDescription.id)}
                                                                 >
                                                                     Usuń
                                                                 </button>

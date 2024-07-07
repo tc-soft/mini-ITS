@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm, Controller } from 'react-hook-form';
-import { addDays, getYear, parseISO, formatISO, format } from 'date-fns';
+import { addDays, getYear, parseISO, format, isValid } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { v4 as uuidv4 } from 'uuid';
 import { groupsServices } from '../../services/GroupsServices';
@@ -70,11 +70,39 @@ const EnrollmentsForm = (props) => {
     const [modalDialogPictureId, setModalDialogPictureId] = useState('');
     const [modalDialogDescriptionId, setModalDialogDescriptionId] = useState('');
 
+    const convertDatesToUTC = (obj) => {
+        const ensureUTC = (dateString) => {
+            if (!dateString.endsWith('Z')) {
+                return dateString + 'Z';
+            }
+            return dateString;
+        };
+
+        for (let key in obj) {
+            if (typeof obj[key] === 'string' && isValid(parseISO(obj[key]))) {
+                obj[key] = ensureUTC(obj[key]);
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                convertDatesToUTC(obj[key]);
+            }
+        }
+        return obj;
+    };
+
+    const setEndOfDay = (date) => {
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
+        date.setMilliseconds(0);
+        return date.toISOString();
+    };
+
     const resetAsyncForm = useCallback(async () => {
         try {
             const response = await enrollmentServices.edit(enrollmentId);
             if (response.ok) {
                 const data = await response.json();
+
+                convertDatesToUTC(data);
 
                 setFormControls(prevFlags => ({
                     ...prevFlags,
@@ -230,7 +258,7 @@ const EnrollmentsForm = (props) => {
                     ]
                 );
 
-                setValue('dateEndDeclareByDepartment', formatISO(new Date(data.dateEndDeclareByDepartment)));
+                setValue('dateEndDeclareByDepartment', data.dateEndDeclareByDepartment);
                 setValue('state', 'Assigned');
             }
             catch (error) {
@@ -485,8 +513,15 @@ const EnrollmentsForm = (props) => {
                         }));
                     };
 
-                    setValue('dateAddEnrollment', formatISO(new Date()));
-                    setValue('dateEndDeclareByUser', formatISO(addDays(new Date(), 7)));
+                    setValue('dateAddEnrollment', new Date().toISOString());
+                    setValue('dateEndDeclareByUser', (() => {
+                        const date = new Date();
+                        date.setHours(23);
+                        date.setMinutes(59);
+                        date.setSeconds(59);
+                        date.setMilliseconds(0);
+                        return addDays(date, 7).toISOString();
+                    })());
                     setValue('sMSToUserInfo', true);
                     setValue('mailToUserInfo', true);
                     setValue('state', 'New');
@@ -562,6 +597,7 @@ const EnrollmentsForm = (props) => {
                     }));
 
                     setMapEnrollmentsDescription(enrollmentDescription);
+                    convertDatesToUTC(enrollmentDescription);
                 }
                 else {
                     throw new Error('Network response was not ok for enrollment descriptions');
@@ -815,7 +851,7 @@ const EnrollmentsForm = (props) => {
                                             dateFormat='dd.MM.yyyy'
                                             placeholderText='Wybierz datę'
                                             disabled={formControls.isDateEndDeclareByUser}
-                                            onChange={(date) => field.onChange(date.toISOString())}
+                                            onChange={(date) => field.onChange(setEndOfDay(date))}
                                             onBlur={field.onBlur}
                                         />
                                     )}
@@ -968,7 +1004,7 @@ const EnrollmentsForm = (props) => {
                                                 .filter(enrollmentsDescription => enrollmentsDescription.status !== 'deleted')
                                                 .map((enrollmentsDescription, index) => (
                                                 <tr key={index}>
-                                                    <td>{format(parseISO(enrollmentsDescription.dateAddDescription), 'dd.MM.yyyy HH:mm')}</td>
+                                                    <td>{format(enrollmentsDescription.dateAddDescription, 'dd.MM.yyyy HH:mm')}</td>
                                                     <td>{enrollmentsDescription.description}</td>
                                                     <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
                                                     <td>

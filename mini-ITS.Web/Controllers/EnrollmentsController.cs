@@ -51,11 +51,15 @@ namespace mini_ITS.Web.Controllers
             {
                 if (enrollmentsDto.DateEndDeclareByUser.HasValue)
                 {
-                    enrollmentsDto.DateEndDeclareByUser = new DateTime(
-                        enrollmentsDto.DateEndDeclareByUser.Value.Year,
-                        enrollmentsDto.DateEndDeclareByUser.Value.Month,
-                        enrollmentsDto.DateEndDeclareByUser.Value.Day,
-                        23, 59, 59, 0);
+                    var localDateEndDeclareByUser = enrollmentsDto.DateEndDeclareByUser.Value.ToLocalTime();
+
+                    var localEndOfDay = new DateTime(
+                        localDateEndDeclareByUser.Year,
+                        localDateEndDeclareByUser.Month,
+                        localDateEndDeclareByUser.Day,
+                        23, 59, 59, 0, DateTimeKind.Local);
+
+                    enrollmentsDto.DateEndDeclareByUser = localEndOfDay.ToUniversalTime();
                 }
 
                 var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, User.Identity.Name);

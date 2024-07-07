@@ -65,7 +65,14 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(username)
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
 
-            var enrollmentPicture = _mapper.Map<EnrollmentsPicture>(enrollmentsPictureDto);
+            var enrollmentPicture = await _enrollmentsPictureRepository.GetAsync(enrollmentsPictureDto.Id);
+            if (enrollmentPicture == null)
+            {
+                throw new Exception("EnrollmentPicture not found");
+            }
+
+            _mapper.Map(enrollmentsPictureDto, enrollmentPicture);
+
             enrollmentPicture.DateModPicture = DateTime.UtcNow;
             enrollmentPicture.UserModPicture = user.Id;
             enrollmentPicture.UserModPictureFullName = $"{user.FirstName} {user.LastName}";

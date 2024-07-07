@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { formatISO } from 'date-fns';
 import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -13,12 +12,20 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
     const { handleSubmit, register, reset, setValue, setFocus, control, watch, clearErrors, trigger, formState: { errors } } = useForm();
     const [isDisabled, setIsDisabled] = useState(false);
 
+    const setEndOfDay = (date) => {
+        date.setHours(23);
+        date.setMinutes(59);
+        date.setSeconds(59);
+        date.setMilliseconds(0);
+        return date.toISOString();
+    };
+
     const handleEndDateAcceptedChange = async (e) => {
         const isChecked = e.target.checked;
         setIsDisabled(isChecked);
 
         if (isChecked && enrollment?.dateEndDeclareByUser) {
-            setValue('dateEndDeclareByDepartment', formatISO(enrollment.dateEndDeclareByUser));
+            setValue('dateEndDeclareByDepartment', enrollment.dateEndDeclareByUser);
             setValue('userAcceptedEndDate', '');
         };
 
@@ -85,7 +92,7 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
                             dateFormat='dd.MM.yyyy'
                             placeholderText='Wybierz datę'
                             disabled={isDisabled}
-                            onChange={(date) => field.onChange(date)}
+                            onChange={(date) => field.onChange(setEndOfDay(date))}
                             onBlur={field.onBlur}
                         />
                     )}

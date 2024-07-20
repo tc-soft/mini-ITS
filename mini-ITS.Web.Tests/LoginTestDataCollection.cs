@@ -125,8 +125,7 @@ namespace mini_ITS.Web.Tests
         public static IEnumerable<LoginData> LoginAuthorizedEditEnrollmentCases =>
             LoginAuthorizedCases;
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<LoginData> LoginUnauthorizedIndexEnrollmentCases =>
             LoginUnauthorizedCases;
         public static IEnumerable<LoginData> LoginUnauthorizedCreateEnrollmentCases =>
@@ -157,9 +156,7 @@ namespace mini_ITS.Web.Tests
 
         //EnrollmentsDescription
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentDescriptionCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases)
-            .Concat(LoginAuthorizedUSRCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentDescriptionCases
         {
             get
@@ -176,9 +173,7 @@ namespace mini_ITS.Web.Tests
 
         //EnrollmentsPicture
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentPictureCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases)
-            .Concat(LoginAuthorizedUSRCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentPictureCases
         {
             get

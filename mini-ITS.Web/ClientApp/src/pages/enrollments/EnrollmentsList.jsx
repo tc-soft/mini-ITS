@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { format } from 'date-fns';
 import { enrollmentServices } from '../../services/EnrollmentServices';
-import { enrollmentPictureServices } from '../../services/EnrollmentPictureServices';
 import ModalDialog from '../../components/Modal';
 import iconAdd from '../../images/iconAdd.svg';
 import iconDetail from '../../images/iconDetail.svg';
@@ -51,12 +50,15 @@ const EnrollmentsList = (props) => {
         'ReOpened': 'Otwarte ponownie'
     };
 
+    const [maxNumber, setMaxNumber] = useState('');
+
     const [modalDialogOpen, setModalDialogOpen] = useState(false);
     const [modalDialogType, setModalDialogType] = useState('');
     const [modalDialogTitle, setModalDialogTitle] = useState('');
     const [modalDialogMessage, setModalDialogMessage] = useState('');
     const [modalDialogEnrollmentId, setModalDialogEnrollmentId] = useState('');
     const [modalDialogEnrollmentNr, setModalDialogEnrollmentNr] = useState('');
+    const [modalDialogEnrollmentYear, setModalDialogEnrollmentYear] = useState('');
 
     const handleModalClose = () => {
         setModalDialogType('');
@@ -64,6 +66,7 @@ const EnrollmentsList = (props) => {
         setModalDialogMessage('')
         setModalDialogEnrollmentId('');
         setModalDialogEnrollmentNr('');
+        setModalDialogEnrollmentYear('');
         setModalDialogOpen(false);
     };
 
@@ -71,7 +74,7 @@ const EnrollmentsList = (props) => {
         switch (modalDialogType) {
             case 'Dialog':
                 setModalDialogOpen(false);
-                await handleDeleteStage2(modalDialogEnrollmentId, modalDialogEnrollmentNr);
+                await handleDeleteStage2(modalDialogEnrollmentId, modalDialogEnrollmentNr, modalDialogEnrollmentYear);
                 break;
             case 'Information':
                 handleModalClose();
@@ -210,38 +213,23 @@ const EnrollmentsList = (props) => {
         };
     };
 
-    const handleDeleteStage1 = (enrollmentId, enrollmentNr) => {
-        if (currentUser.role === 'Administrator' || currentUser.role === 'Manager') {
+    const handleDeleteStage1 = (enrollmentId, enrollmentNr, enrollmentYear) => {
+        try {
             setModalDialogType('Dialog');
             setModalDialogTitle('Usuwanie zgłoszenia');
-            setModalDialogMessage(`Czy na pewno chcesz usunąć zgłoszenie ${enrollmentNr}?`);
+            setModalDialogMessage(`Czy na pewno chcesz usunąć zgłoszenie ${enrollmentNr}/${enrollmentYear}?`);
             setModalDialogEnrollmentId(enrollmentId);
             setModalDialogEnrollmentNr(enrollmentNr);
+            setModalDialogEnrollmentYear(enrollmentYear);
             setModalDialogOpen(true);
+        }
+        catch (error) {
+            console.error(error);
         };
     };
 
-    const handleDeleteStage2 = async (enrollmentId, enrollmentNr) => {
+    const handleDeleteStage2 = async (enrollmentId, enrollmentNr, enrollmentYear) => {
         try {
-            const enrollmentsPictureResponse = await enrollmentPictureServices.index({ id: enrollmentId });
-            if (enrollmentsPictureResponse.ok) {
-                const enrollmentsPicture = await enrollmentsPictureResponse.json();
-
-                for (const enrollmentPicture of enrollmentsPicture) {
-                    try {
-                        const deleteResponse = await enrollmentPictureServices.delete(enrollmentPicture.id);
-                        if (!deleteResponse.ok) {
-                            console.error(`Failed to delete image with ID ${enrollmentPicture.id}`);
-                        };
-                    }
-                    catch (error) {
-                        console.error(`Error deleting image with ID ${enrollmentPicture.id}:`, error);
-                    };
-                };
-            } else {
-                console.error('Network response was not ok for enrollment pictures');
-            };
-
             const deleteResponse = await enrollmentServices.delete(enrollmentId);
             if (!deleteResponse.ok) {
                 throw new Error('Failed to delete the enrollment!');
@@ -249,18 +237,25 @@ const EnrollmentsList = (props) => {
 
             const indexResponse = await enrollmentServices.index(pagedQuery);
             if (!indexResponse.ok) {
-                throw new Error('Error fetching updated list of enrollments.');
+                throw new Error('Failed fetching updated list of enrollments.');
             };
 
             setTimeout(() => {
                 setModalDialogType('Information');
                 setModalDialogTitle('Usuwanie zgłoszenia');
-                setModalDialogMessage(`Pomyślnie usunięto zgłoszenie ${enrollmentNr}.`);
+                setModalDialogMessage(`Pomyślnie usunięto zgłoszenie ${enrollmentNr}/${enrollmentYear}.`);
                 setModalDialogOpen(true);
-            }, 400);
+            }, 50);
 
             const data = await indexResponse.json();
             setEnrollments(data);
+
+            const maxNumberResponse = await enrollmentServices.getMaxNumber(new Date().getFullYear());
+            if (!maxNumberResponse.ok) {
+                throw new Error('Failed to fetch getMaxNumber value');
+            };
+            const { maxNumber } = await maxNumberResponse.json();
+            setMaxNumber(maxNumber);
         }
         catch (error) {
             alert(error.message);
@@ -270,21 +265,31 @@ const EnrollmentsList = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const currentYear = new Date().getFullYear();
+
                 const departmentResponse = await fetch('/Department.json');
+                if (!departmentResponse.ok) {
+                    throw new Error('Failed to fetch department data');
+                };
                 const departmentData = await departmentResponse.json();
                 setMapDepartment(departmentData.map((item) => item.value === '' ? { ...item, name: 'Wszyscy' } : item));
 
-                const response = await enrollmentServices.index(pagedQuery);
-                if (response.ok) {
-                    const data = await response.json();
-                    setEnrollments(data);
-                }
-                else {
-                    throw new Error('Network response was not ok');
+                const maxNumberResponse = await enrollmentServices.getMaxNumber(currentYear);
+                if (!maxNumberResponse.ok) {
+                    throw new Error('Failed to fetch getMaxNumber value');
                 };
+                const { maxNumber } = await maxNumberResponse.json();
+                setMaxNumber(maxNumber);
+
+                const enrollmentResponse = await enrollmentServices.index(pagedQuery);
+                if (!enrollmentResponse.ok) {
+                    throw new Error('Failed to fetch enrollments data');
+                };
+                const enrollmentsData = await enrollmentResponse.json();
+                setEnrollments(enrollmentsData);
             }
             catch (error) {
-                console.error('Error loading data:', error);
+                console.error('Error fetching data:', error);
             };
         };
 
@@ -391,22 +396,46 @@ const EnrollmentsList = (props) => {
                                         </Link>
                                     </span>
                                     <span>
-                                        {(currentUser && (
-                                            currentUser.role === 'Administrator' ||
-                                            currentUser.role === 'Manager') ||
-                                            currentUser.department === enrollment.department ||
-                                            currentUser.id === enrollment.userAddEnrollment) &&
+                                        {
+                                            (currentUser && (
+                                                currentUser.role === 'Administrator' ||
+                                                (
+                                                    enrollment.state !== 'Closed' &&
+                                                    (
+                                                        currentUser.role === 'Manager' ||
+                                                        currentUser.department === enrollment.department ||
+                                                        currentUser.id === enrollment.userAddEnrollment
+                                                    ) &&
+                                                    !(
+                                                        currentUser.role === 'User' &&
+                                                        enrollment.state === 'New' &&
+                                                        currentUser.department === enrollment.department
+                                                    )
+                                                )
+                                            )) &&
                                             <Link to={`${enrollment.id}/Edit`}>
                                                 <img src={iconEdit} alt='Edycja' title='Edycja' />
                                             </Link>
                                         }
                                     </span>
-                                    <span
-                                        title='Usuń'
-                                        onClick={() => handleDeleteStage1(enrollment.id, `${enrollment.nr}/${enrollment.year}`)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <img src={iconDelete} alt='Usuń' title='Usuń' />
+                                    <span>
+                                        {
+                                            (currentUser && (
+                                                currentUser.role === 'Administrator' ||
+                                                (
+                                                    (enrollment.state === 'New' && (currentUser.id === enrollment.userAddEnrollment)) &&
+                                                    (enrollment.nr === maxNumber && enrollment.year === new Date().getFullYear())
+                                                )
+                                            )) &&
+                                            (
+                                                <span
+                                                    title='Usuń'
+                                                    onClick={() => handleDeleteStage1(enrollment.id, enrollment.nr, enrollment.year)}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <img src={iconDelete} alt='Usuń' title='Usuń' />
+                                                </span>
+                                            )}
                                     </span>
                                 </td>
                             </tr>

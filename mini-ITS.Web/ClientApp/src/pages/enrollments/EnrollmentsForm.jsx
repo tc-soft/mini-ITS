@@ -371,8 +371,10 @@ const EnrollmentsForm = (props) => {
 
     const deleteDescription = (id) => {
         setMapEnrollmentsDescription((prevDescriptions) => {
-            const updatedDescriptions = prevDescriptions.map(description =>
-                description.id === id
+            const updatedDescriptions = prevDescriptions.filter(description =>
+                description.id !== id || description.status !== 'added'
+            ).map(description =>
+                description.id === id && description.status !== 'added'
                     ? { ...description, status: 'deleted' }
                     : description
             );
@@ -1048,11 +1050,15 @@ const EnrollmentsForm = (props) => {
                             }
 
                             {!isLoading && isMode === 'Edit' &&
-                                watch('state') === 'New' &&
-                                watch('userAddEnrollment') !== currentUser.id &&
-                                (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
-                                (currentUser.role === 'Administrator' || currentUser.role === 'Manager') &&
-                                currentUser.department === watch('department') && (
+                                watch('state') === 'New' && (
+                                    currentUser.role === 'Administrator' ||
+                                    (
+                                        watch('userAddEnrollment') !== currentUser.id &&
+                                        (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
+                                        (currentUser.role === 'Manager') &&
+                                        currentUser.department === watch('department')
+                                    )
+                                ) && (
                                     <button
                                         tabIndex='19'
                                         type='button'

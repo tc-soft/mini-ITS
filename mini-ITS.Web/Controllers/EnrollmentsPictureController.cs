@@ -19,13 +19,20 @@ namespace mini_ITS.Web.Controllers
     public class EnrollmentsPictureController : ControllerBase
     {
         private readonly IEnrollmentsPictureServices _enrollmentsPictureServices;
+        private readonly IUsersServices _usersServices;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EnrollmentsPictureController(IEnrollmentsPictureServices enrollmentsPictureServices, IMapper mapper, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
+        public EnrollmentsPictureController(
+            IEnrollmentsPictureServices enrollmentsPictureServices,
+            IUsersServices usersServices,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            IWebHostEnvironment webHostEnvironment)
         {
             _enrollmentsPictureServices = enrollmentsPictureServices;
+            _usersServices = usersServices;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _webHostEnvironment = webHostEnvironment;
@@ -207,9 +214,19 @@ namespace mini_ITS.Web.Controllers
             try
             {
                 if (id == Guid.Empty) return BadRequest("Error: id is null");
+                
+                var userIdentity = await _usersServices.GetAsync(User.Identity.Name);
+                if (userIdentity == null) return Unauthorized("Error: user not found");
 
                 var enrollmentsPictureDto = await _enrollmentsPictureServices.GetAsync((Guid)id);
                 if (enrollmentsPictureDto == null) return NotFound("Error: enrollmentsPictureDto is empty");
+
+                var userAddDescription = await _usersServices.GetAsync(enrollmentsPictureDto.UserAddPicture);
+
+                if (userIdentity.Role != "Administrator" && enrollmentsPictureDto.UserAddPicture != userIdentity.Id)
+                {
+                    return Forbid("Error: user not authorized to delete this enrollmentPicture");
+                }
 
                 var projectPath = Path.GetFullPath(_webHostEnvironment.ContentRootPath);
                 var projectPathFiles = Path.Combine(projectPath, "Files");

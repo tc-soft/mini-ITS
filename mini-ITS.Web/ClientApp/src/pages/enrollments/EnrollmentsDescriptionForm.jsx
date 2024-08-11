@@ -2,16 +2,39 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const EnrollmentsDescriptionForm = ({ onSubmit, subForm }) => {
-    const { handleSubmit, register, reset, setFocus, formState: { errors } } = useForm();
+    const { handleSubmit, register, reset, setValue, setFocus, formState: { errors } } = useForm();
 
     useEffect(() => {
+        const fetchDescription = async () => {
+            try {
+                if (subForm.data.actionDescription === 1) {
+                    const descriptionResponse = await fetch('/Description.json');
+                    if (!descriptionResponse.ok) {
+                        throw new Error('Network response was not ok');
+                    };
+                    const descriptionData = await descriptionResponse.json();
+                    const descriptionObject = descriptionData.find(item => item.name === "Description1");
+
+                    if (descriptionObject) {
+                        setValue('description', descriptionObject.value);
+                        setValue('actionExecuted', 1);
+                    };
+                };
+
+                setTimeout(() => {
+                    setFocus('description');
+                }, 0);
+            }
+            catch (error) {
+                console.error('Fetch error:', error);
+            };
+        };
+
         if (subForm.data) {
             reset(subForm.data);
         };
 
-        setTimeout(() => {
-            setFocus('description');
-        }, 0);
+        fetchDescription();
     }, []);
 
     return (

@@ -29,10 +29,14 @@ const EnrollmentsForm = (props) => {
     const [mapEnrollmentsPicture, setMapEnrollmentsPicture] = useState([]);
     const [mapEnrollmentsDescription, setMapEnrollmentsDescription] = useState([]);
 
-    const [isEnrollmentLoading, setIsEnrollmentLoading] = useState(true);
-    const [isEnrollmentsPictureLoading, setIsEnrollmentsPictureLoading] = useState(true);
-    const [isEnrollmentsDescriptionLoading, setIsEnrollmentsDescriptionLoading] = useState(true);
-    const isLoading = isEnrollmentLoading || isEnrollmentsPictureLoading || isEnrollmentsDescriptionLoading;
+    const isEnrollmentRefLoaded = useRef(false);
+    const isEnrollmentPicturesRefLoaded = useRef(false);
+    const isEnrollmentDescriptionsRefLoaded = useRef(false);
+    const [isEnrollmentLoaded, setIsEnrollmentLoaded] = useState(true);
+    const [isEnrollmentPicturesLoaded, setIsEnrollmentPicturesLoaded] = useState(true);
+    const [isEnrollmentDescriptionsLoaded, setIsEnrollmentDescriptionsLoaded] = useState(true);
+    const isLoaded = isEnrollmentLoaded || isEnrollmentPicturesLoaded || isEnrollmentDescriptionsLoaded;
+    const [isReady, setIsReady] = useState(false);
 
     const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors } } = useForm();
     const [formControls, setFormControls] = useState({
@@ -233,6 +237,13 @@ const EnrollmentsForm = (props) => {
         setModalDialogOpen(true);
     };
 
+    const handleCloseErrorStage1 = (errorMessage) => {
+        setModalDialogType('Error');
+        setModalDialogTitle('Wymagana czynność');
+        setModalDialogMessage(errorMessage);
+        setModalDialogOpen(true);
+    };
+
     const handleErrorResponse = (response, errorMessage) => {
         if (!response.ok) throw errorMessage;
     };
@@ -279,7 +290,7 @@ const EnrollmentsForm = (props) => {
                                 ? {
                                     ...description,
                                     description: data.description,
-                                    status: data.status
+                                    status: description.status === 'added' ? description.status : data.status
                                 }
                                 : description
                         )
@@ -305,6 +316,36 @@ const EnrollmentsForm = (props) => {
         };
 
         setSubForm({ isSubForm: null, data: {} });
+    };
+
+    const state = watch('state');
+
+    const handleStateChange = (event) => {
+        const selectedState = event.target.value;
+        const isReadyForClose = watch('readyForClose');
+        const hasActionRequest = watch('actionRequest');
+        const hasActionExecuted = mapEnrollmentsDescription.some(
+            description => description.actionExecuted === 1 && description.status !== 'deleted'
+        );
+
+        const handleError = (message) => {
+            handleCloseErrorStage1(message);
+            setValue('state', state);
+        };
+
+        if (selectedState === 'Closed') {
+            if (!isReadyForClose) {
+                handleError('Zgłoszenie nie jest gotowe do zamknięcia przez osoby z dz. docelowego');
+            }
+            else if (hasActionRequest && !hasActionExecuted) {
+                handleError('Nie wykonano dodatkowych czynności. Zgłoszenie nie może być zamknięte.');
+            }
+            else {
+                setValue('state', selectedState);
+            };
+        } else {
+            setValue('state', selectedState);
+        };
     };
 
     const addPicture = (event) => {
@@ -417,63 +458,74 @@ const EnrollmentsForm = (props) => {
 
     const onSubmit = async (values) => {
         try {
+            const updateEnrollmentPictures = async (enrollmentId) => {
+                const picturesFromApiResponse = await enrollmentPictureServices.index({ id: enrollmentId });
+                const picturesFromApi = picturesFromApiResponse.ok ? await picturesFromApiResponse.json() : [];
+                const deletedPictures = picturesFromApi.filter(pictureFromApi =>
+                    !mapEnrollmentsPicture.some(mapEnrollmentPicture => mapEnrollmentPicture.id === pictureFromApi.id)
+                );
+
+                for (const picture of deletedPictures) {
+                    await enrollmentPictureServices.delete(picture.id);
+                };
+
+                const newPictures = mapEnrollmentsPicture.filter(picture => picture.file);
+
+                if (newPictures.length > 0) {
+                    const formData = new FormData();
+                    formData.append('enrollmentId', enrollmentId);
+                    newPictures.forEach(picture => {
+                        formData.append('files', picture.file, picture.picturePath);
+                    });
+
+                    const uploadResponse = await enrollmentPictureServices.create(formData);
+                    if (!uploadResponse.ok) {
+                        throw new Error('Nie udało się zapisać grafik.');
+                    };
+                };
+            };
+
+            const updateEnrollmentDescriptions = async (enrollmentId) => {
+                const addedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'added');
+                for (const description of addedDescriptions) {
+                    const response = await enrollmentDescriptionServices.create({
+                        ...description,
+                        enrollmentId: enrollmentId
+                    });
+                    handleErrorResponse(response, `Dodanie wpisu nie powiodło się!`);
+                };
+
+                const editedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'edited');
+                for (const description of editedDescriptions) {
+                    const response = await enrollmentDescriptionServices.update(description.id, description);
+                    handleErrorResponse(response, `Aktualizacja wpisu ${description.id} nie powiodła się!`);
+                };
+
+                const deletedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'deleted');
+                for (const description of deletedDescriptions) {
+                    const response = await enrollmentDescriptionServices.delete(description.id);
+                    handleErrorResponse(response, `Usunięcie wpisu ${description.id} nie powiodła się!`);
+                };
+            };
+
             let enrollmentId;
 
             if (isMode === 'Edit') {
                 const response = await enrollmentServices.update(values.id, values);
                 handleErrorResponse(response, 'Aktualizacja nie powiodła się!');
                 enrollmentId = values.id;
+
+                await updateEnrollmentPictures(enrollmentId);
+                await updateEnrollmentDescriptions(enrollmentId);
+
             }
             else if (isMode === 'Create') {
                 const response = await enrollmentServices.create(values);
                 handleErrorResponse(response, 'Zapis nie powiódł się!');
                 enrollmentId = await response.json();
-            };
 
-            const picturesFromApiResponse = await enrollmentPictureServices.index({ id: enrollmentId });
-            const picturesFromApi = picturesFromApiResponse.ok ? await picturesFromApiResponse.json() : [];
-            const deletedPictures = picturesFromApi.filter(pictureFromApi =>
-                !mapEnrollmentsPicture.some(mapEnrollmentPicture => mapEnrollmentPicture.id === pictureFromApi.id)
-            );
-
-            for (const picture of deletedPictures) {
-                await enrollmentPictureServices.delete(picture.id);
-            };
-
-            const newPictures = mapEnrollmentsPicture.filter(picture => picture.file);
-
-            if (newPictures.length > 0) {
-                const formData = new FormData();
-                formData.append('enrollmentId', enrollmentId);
-                newPictures.forEach(picture => {
-                    formData.append('files', picture.file, picture.picturePath);
-                });
-
-                const uploadResponse = await enrollmentPictureServices.create(formData);
-                if (!uploadResponse.ok) {
-                    throw new Error('Nie udało się zapisać grafik.');
-                };
-            };
-
-            const addedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'added');
-            for (const description of addedDescriptions) {
-                const response = await enrollmentDescriptionServices.create({
-                    ...description,
-                    enrollmentId: enrollmentId
-                });
-                handleErrorResponse(response, `Dodanie wpisu nie powiodło się!`);
-            }
-
-            const editedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'edited');
-            for (const description of editedDescriptions) {
-                const response = await enrollmentDescriptionServices.update(description.id, description);
-                handleErrorResponse(response, `Aktualizacja wpisu ${description.id} nie powiodła się!`);
-            };
-
-            const deletedDescriptions = mapEnrollmentsDescription.filter(description => description.status === 'deleted');
-            for (const description of deletedDescriptions) {
-                const response = await enrollmentDescriptionServices.delete(description.id);
-                handleErrorResponse(response, `Usunięcie wpisu ${description.id} nie powiodła się!`);
+                await updateEnrollmentPictures(enrollmentId);
+                await updateEnrollmentDescriptions(enrollmentId);
             };
 
             navigate('/Enrollments');
@@ -484,6 +536,9 @@ const EnrollmentsForm = (props) => {
     };
 
     useEffect(() => {
+        if (!isEnrollmentLoaded || isEnrollmentRefLoaded.current) return;
+        isEnrollmentRefLoaded.current = true;
+
         const fetchData = async () => {
             try {
                 const departmentResponse = await fetch('/Department.json');
@@ -500,9 +555,9 @@ const EnrollmentsForm = (props) => {
                 };
 
                 if (isMode === 'Detail' || isMode === 'Edit') {
-                    resetAsyncForm();
+                    await resetAsyncForm();
                 };
-                
+
                 if (isMode === 'Create') {
                     const response = await enrollmentServices.getMaxNumber(getYear(new Date()));
 
@@ -537,14 +592,17 @@ const EnrollmentsForm = (props) => {
                 console.error('Error fetching data:', error);
             }
             finally {
-                setIsEnrollmentLoading(false);
+                setIsEnrollmentLoaded(false);
             };
         };
 
         fetchData();
-    }, [resetAsyncForm]);
+    }, []);
 
     useEffect(() => {
+        if (!isEnrollmentPicturesLoaded || isEnrollmentPicturesRefLoaded.current) return;
+        isEnrollmentPicturesRefLoaded.current = true;
+
         const fetchData = async () => {
             if (isMode === 'Create') return;
 
@@ -580,14 +638,17 @@ const EnrollmentsForm = (props) => {
                 console.error('Error fetching data:', error);
             }
             finally {
-                setIsEnrollmentsPictureLoading(false);
+                setIsEnrollmentPicturesLoaded(false);
             };
         };
 
         fetchData();
-    }, [enrollmentId]);
+    }, []);
 
     useEffect(() => {
+        if (!isEnrollmentDescriptionsLoaded || isEnrollmentDescriptionsRefLoaded.current) return;
+        isEnrollmentDescriptionsRefLoaded.current = true;
+
         const fetchData = async () => {
             try {
                 const response = await enrollmentDescriptionServices.index({ id: enrollmentId });
@@ -609,12 +670,26 @@ const EnrollmentsForm = (props) => {
                 console.error('Error fetching enrollment descriptions:', error);
             }
             finally {
-                setIsEnrollmentsDescriptionLoading(false);
+                setIsEnrollmentDescriptionsLoaded(false);
             };
         };
 
         if (isMode !== 'Create') fetchData();
-    }, [enrollmentId]);
+    }, []);
+
+    useEffect(() => {
+        if (!isLoaded) {
+            setIsReady(true);
+        };
+    }, [isLoaded]);
+
+    useEffect(() => {
+        if (isReady) {
+            const actionExecutedValue = mapEnrollmentsDescription.some(description => description.actionExecuted === 1 && description.status !== 'deleted') ? 1 : 0;
+            setValue('actionExecuted', actionExecutedValue);
+            setValue('actionFinished', actionExecutedValue === 1);
+        };
+    }, [isReady, mapEnrollmentsDescription]);
 
     return (
         <>
@@ -1011,7 +1086,7 @@ const EnrollmentsForm = (props) => {
                                                     <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
                                                     <td>
                                                         {
-                                                            !isReadMode &&
+                                                            !isReadMode && watch('state') !== 'Closed' &&
                                                             (currentUser.role === 'Administrator' || enrollmentsDescription.userAddDescription === currentUser.id) &&
                                                             <>
                                                                 <button
@@ -1049,7 +1124,7 @@ const EnrollmentsForm = (props) => {
                                 </>
                             }
 
-                            {!isLoading && isMode === 'Edit' &&
+                            {!isLoaded && isMode === 'Edit' &&
                                 watch('state') === 'New' && (
                                     currentUser.role === 'Administrator' ||
                                     (
@@ -1077,7 +1152,7 @@ const EnrollmentsForm = (props) => {
                                 )
                             }
 
-                            {!isLoading && isMode === 'Edit' &&
+                            {!isLoaded && isMode === 'Edit' &&
                                 watch('state') &&
                                 watch('state') !== 'New' &&
                                 watch('state') !== 'Closed' && (
@@ -1100,6 +1175,35 @@ const EnrollmentsForm = (props) => {
                                     </button>
                                 )
                             }
+                            &nbsp;
+                            {!isLoaded &&
+                                isMode === 'Edit' &&
+                                watch('state') &&
+                                watch('state') !== 'New' &&
+                                watch('state') !== 'Closed' &&
+                                watch('actionRequest') === 1 &&
+                                currentUser.role === 'Administrator' && (
+                                    <button
+                                        tabIndex='21'
+                                        type='button'
+                                        title='Potwierdzenie dopuszczenia do użytku'
+                                        disabled={watch('actionFinished')}
+                                        onClick={() => {
+                                            setSubForm({
+                                                isSubForm: 'createDescription',
+                                                data: {
+                                                    nr: enrollment.nr,
+                                                    year: enrollment.year,
+                                                    status: 'added',
+                                                    actionDescription: 1
+                                                }
+                                            });
+                                        }}
+                                    >
+                                        Potwierdzenie dopuszczenia do użytku
+                                    </button>
+                                )
+                            }
                         </div>
                         <div>
                             {isMode !== 'Create' && (
@@ -1107,9 +1211,8 @@ const EnrollmentsForm = (props) => {
                                     <br />
                                     <label>Wyk. dodatkowych czynności</label><br />
                                     <input
-                                        tabIndex='21'
+                                        tabIndex='22'
                                         type='checkbox'
-                                        checked={watch('actionFinished') === 1 ? true : false}
                                         disabled={true}
                                         {...register('actionFinished')}
                                     />
@@ -1117,7 +1220,7 @@ const EnrollmentsForm = (props) => {
 
                                     <label>Gotowe do zamkn.</label><br />
                                     <input
-                                        tabIndex='22'
+                                        tabIndex='23'
                                         type='checkbox'
                                         disabled={formControls.isReadyForCloseDisabled}
                                         {...register('readyForClose')}
@@ -1125,11 +1228,11 @@ const EnrollmentsForm = (props) => {
                                     <br />
 
                                     <label>Status</label><br />
-                                    <select
-                                        tabIndex='23'
-                                        placeholder='Wybierz status'
-                                        disabled={formControls.isStateDisabled}
-                                        {...register('state')}
+                                        <select
+                                            tabIndex='24'
+                                            placeholder='Wybierz status'
+                                            disabled={formControls.isStateDisabled}
+                                            {...register('state', { onChange: handleStateChange })}
                                     >
                                         {Object.keys(mapState).map(key => (
                                             <option key={key} value={key}>
@@ -1145,9 +1248,9 @@ const EnrollmentsForm = (props) => {
                             {(isMode === 'Edit' || isMode === 'Create') && (
                                 <>
                                     <button
-                                        tabIndex='24'
+                                        tabIndex='25'
                                         type='submit'
-                                        disabled={isMode === 'Edit' && isLoading}>
+                                        disabled={isMode === 'Edit' && isLoaded}>
                                         Zapisz
                                     </button>
                                     &nbsp;

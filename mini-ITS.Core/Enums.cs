@@ -8,7 +8,7 @@ namespace mini_ITS.Core.Models
         Normal,
         [Description("Wysoki")]
         High,
-        [Description("Krytyczy")]
+        [Description("Krytyczny")]
         Critical
     };
 }

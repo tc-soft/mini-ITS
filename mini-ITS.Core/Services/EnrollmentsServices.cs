@@ -74,7 +74,14 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(username)
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
 
-            var enrollment = _mapper.Map<Enrollments>(enrollmentsDto);
+            var enrollment = await _enrollmentsRepository.GetAsync(enrollmentsDto.Id);
+            if (enrollment == null)
+            {
+                throw new Exception("Enrollment not found");
+            }
+
+            _mapper.Map(enrollmentsDto, enrollment);
+
             enrollment.DateModEnrollment = DateTime.UtcNow;
             enrollment.UserModEnrollment = user.Id;
             enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";

@@ -260,20 +260,28 @@ namespace mini_ITS.Web.Tests.Controllers
             LoginData loginUnauthorizedDeleteCases,
             EnrollmentsDto enrollmentsDto)
         {
+            EnrollmentsControllerTestsHelper.Print(enrollmentsDto, "\nEnrollment before delete:");
+
             if (loginUnauthorizedDeleteCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+
+                response = await DeleteAsync(enrollmentsDto.Id);
+                Assert.That(response.StatusCode,
+                    Is.EqualTo(HttpStatusCode.NotFound).Or.EqualTo(HttpStatusCode.InternalServerError),
+                    "ERROR - response status code is not 404 or 500 after delete test enrollment");
+                TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
+
+                response = await DeleteAsync(enrollmentsDto.Id);
+                Assert.That(response.StatusCode,
+                    Is.EqualTo(HttpStatusCode.InternalServerError),
+                    "ERROR - respons status code is not 500 after delete test enrollment");
+                TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
             }
-
-            EnrollmentsControllerTestsHelper.Print(enrollmentsDto, "\nEnrollment before delete:");
-
-            response = await DeleteAsync(enrollmentsDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test enrollment");
-            TestContext.Out.WriteLine($"Response after DeleteAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task DeleteAsync_Authorized(

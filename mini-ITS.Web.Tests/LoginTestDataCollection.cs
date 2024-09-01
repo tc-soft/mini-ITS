@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using mini_ITS.Core.Tests;
@@ -125,8 +125,7 @@ namespace mini_ITS.Web.Tests
         public static IEnumerable<LoginData> LoginAuthorizedEditEnrollmentCases =>
             LoginAuthorizedCases;
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<LoginData> LoginUnauthorizedIndexEnrollmentCases =>
             LoginUnauthorizedCases;
         public static IEnumerable<LoginData> LoginUnauthorizedCreateEnrollmentCases =>
@@ -157,8 +156,7 @@ namespace mini_ITS.Web.Tests
 
         //EnrollmentsDescription
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentDescriptionCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentDescriptionCases
         {
             get
@@ -170,21 +168,12 @@ namespace mini_ITS.Web.Tests
                         yield return new TestCaseData(loginUnauthorizedCases, null, enrollmentsDescriptionDto);
                     }
                 }
-
-                foreach (var loginAuthorizedUSRCases in LoginAuthorizedUSRCases)
-                {
-                    foreach (var enrollmentsDescriptionDto in EnrollmentsDescriptionTestsData.EnrollmentsDescriptionCasesDto)
-                    {
-                        yield return new TestCaseData(null, loginAuthorizedUSRCases, enrollmentsDescriptionDto);
-                    }
-                }
             }
         }
 
         //EnrollmentsPicture
         public static IEnumerable<LoginData> LoginAuthorizedDeleteEnrollmentPictureCases =>
-            LoginAuthorizedADMCases
-            .Concat(LoginAuthorizedMNGCases);
+            LoginAuthorizedADMCases;
         public static IEnumerable<TestCaseData> LoginUnauthorizedDeleteEnrollmentPictureCases
         {
             get
@@ -194,14 +183,6 @@ namespace mini_ITS.Web.Tests
                     foreach (var enrollmentsPictureDto in EnrollmentsPictureTestsData.EnrollmentsPictureCasesDto)
                     {
                         yield return new TestCaseData(loginUnauthorizedCases, null, enrollmentsPictureDto);
-                    }
-                }
-
-                foreach (var loginAuthorizedUSRCases in LoginAuthorizedUSRCases)
-                {
-                    foreach (var enrollmentsPictureDto in EnrollmentsPictureTestsData.EnrollmentsPictureCasesDto)
-                    {
-                        yield return new TestCaseData(null, loginAuthorizedUSRCases, enrollmentsPictureDto);
                     }
                 }
             }

@@ -51,12 +51,16 @@ const get = async (url, params) => {
     return await fetch(`${url}${params ? encodeQueryString(params) : ''}`, requestOptions);
 };
 
-const post = async (url, body) => {
+const post = async (url, body, isFormData = false) => {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+        body: isFormData ? body : JSON.stringify(body),
         signal: new AbortController().signal
+    };
+
+    if (isFormData) {
+        delete requestOptions.headers['Content-Type'];
     };
 
     return await fetch(url, requestOptions);

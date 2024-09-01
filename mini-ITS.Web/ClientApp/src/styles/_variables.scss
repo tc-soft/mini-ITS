@@ -41,6 +41,12 @@ $forms-input-hover-color: #3B89FF;
 $forms-input-focus-color: #3B89FF;
 $forms-input-border-color: #9EAED0;
 $forms-input-icon-border-color: #EEEEEE;
+$forms-buttonSetEndDate-background-color: #83D351;
+$forms-buttonSetEndDate-background-hover-color: #87E050;
+$forms-buttonAddNote-background-color: #83D351;
+$forms-buttonAddNote-background-hover-color: #87E050;
+$forms-buttonAddConfirmation-background-color: #E9AF57;
+$forms-buttonAddConfirmation-background-hover-color: #EDBC56;
 $forms-submit-border-bottom-color: #CCD5E9;
 $forms-submit-buttonSave-background-color: #83D351;
 $forms-submit-buttonSave-background-hover-color: #87E050;
@@ -48,3 +54,6 @@ $forms-submit-buttonCancel-color: #7185AF;
 $forms-submit-buttonCancel-background-color: #FFFFFF;
 $forms-submit-buttonCancel-background-hover-color: #EEEEEE;
 $forms-submit-buttonCancel-border-color: #CCD5E9;
+
+//DatePicker
+$datepicker-header: #F3F8FF;

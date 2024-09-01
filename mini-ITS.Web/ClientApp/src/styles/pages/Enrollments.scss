@@ -205,3 +205,418 @@
         }
     }
 }
+
+.enrollmentsForm {
+    margin-bottom: 8px;
+    padding: 0 1rem 0 1rem;
+
+    &-title {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 0rem;
+        border-bottom: 1px solid $forms-title-bottom-color;
+
+        img {
+            margin-right: 0.5rem;
+        }
+
+        p {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: $forms-title-text-color;
+        }
+    }
+
+    &-enrollmentsInfo {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        align-content: center;
+        padding: 1rem 2rem 1rem 2rem;
+
+        img {
+            margin-right: 0.65rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: $forms-title-text-color;
+
+            span {
+                margin-left: 0.2rem;
+                font-weight: 600;
+            }
+        }
+    }
+
+    &-detail {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        padding: 0 2rem;
+
+        &-block {
+            padding-right: 2rem;
+        }
+
+        &-section {
+            width: 15rem;
+            margin-right: 2rem;
+            padding-top: 0.2rem;
+
+            &__label {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                align-content: center;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: $forms-label-color;
+            }
+
+            &__datePicker {
+                width: 100%;
+                margin-top: 0.4rem;
+                padding: 0.5rem;
+                box-sizing: border-box;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &:hover {
+                    border-color: $forms-input-hover-color;
+                }
+
+                &:focus {
+                    border-color: $forms-input-focus-color;
+                }
+
+                &--highlightedSunday {
+                    color: red !important;
+                }
+            }
+
+            &__input {
+                margin-top: 0.4rem;
+                padding: 0.5rem;
+                box-sizing: border-box;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                border: 1px solid $forms-input-border-color;
+                border-radius: 5px;
+                outline: none;
+
+                &:hover {
+                    border-color: $forms-input-hover-color;
+                }
+
+                &:focus {
+                    border-color: $forms-input-focus-color;
+                }
+
+                &[type="textarea"] {
+                    width: auto;
+                    margin-left: 0;
+                    margin-right: 20px;
+                    padding-right: 20px;
+                }
+
+
+                &[type="checkbox"] {
+                    width: auto;
+                    margin-left: 0;
+                    margin-right: auto;
+                }
+            }
+
+            &__errorMessage {
+                font-size: 0.8rem;
+                color: red;
+            }
+        }
+    }
+
+    &-detailPictures {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 15px;
+        padding: 2rem 2rem 0 2rem;
+        max-width: calc(250px * 4 + 15px * 3);
+
+        &__viewPicture, &__addPicture {
+            flex: 0 0 250px;
+            height: 150px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        &__viewPicture {
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                height: 20px;
+                padding: 8px 10px;
+                color: white;
+                background-color: rgba(255, 255, 255, 1);
+                border: none;
+                border-radius: 4px;
+                opacity: 0;
+                transition: background-color 0.3s, opacity 0.3s;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 1);
+                }
+            }
+
+            &:hover span {
+                opacity: 1;
+            }
+        }
+
+        &__addPicture {
+            border: 1px dashed $forms-input-border-color;
+
+            &:hover {
+                border-color: $forms-input-hover-color;
+
+                img {
+                    filter: brightness(0.95);
+                }
+            }
+
+            span {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                font-size: 0.9rem;
+                color: $forms-input-color;
+                background: none;
+                border: none;
+                cursor: pointer;
+
+                img {
+                    height: 35px;
+                    margin-bottom: 12px;
+                }
+            }
+        }
+    }
+
+    &-detailDescriptions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        padding: 1rem 2rem;
+        max-width: calc(250px * 4 + 15px * 3);
+
+        table {
+            width: 100%;
+            margin-top: 8px;
+            border-collapse: collapse;
+
+            thead {
+                color: $lists-table-thead-text-color;
+
+                tr {
+                    text-align: left;
+
+                    th {
+                        height: 2rem;
+                        padding: 8px 8px 8px 20px;
+                        border: 1px solid $lists-table-border-color;
+                        border-bottom: 2px solid $lists-table-border-color;
+                    }
+                }
+            }
+
+            tbody {
+                color: $lists-table-data-text-color;
+
+                tr {
+                    display: table-row;
+                    vertical-align: middle;
+                    text-align: start;
+
+                    td {
+                        vertical-align: middle;
+                        padding: 5px 20px 5px 20px;
+                        border: 1px solid $lists-table-border-color;
+
+                        span {
+                            display: inline-block;
+                            vertical-align: middle;
+                            margin-right: 1rem;
+                        }
+
+                        span:nth-child(1) {
+                            padding: 5px 5px;
+                        }
+
+                        span:nth-child(2) {
+                            padding: 5px 7px;
+                            cursor: pointer;
+                        }
+
+                        span:hover {
+                            background-color: $lists-table-icon-hover-color;
+                        }
+
+                        img {
+                            vertical-align: middle;
+                        }
+                    }
+                }
+
+                tr:hover {
+                    background-color: white;
+                }
+            }
+        }
+
+        button {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            margin-top: 1rem;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.8rem;
+            color: white;
+            border: 0;
+            border-radius: 3px;
+            cursor: pointer;
+
+            &:not(:last-child) {
+                margin-right: 15px;
+            }
+
+            img {
+                margin-right: 5px;
+            }
+        }
+
+        &-buttonSetEndDate {
+            background-color: $forms-buttonSetEndDate-background-color;
+
+            &:hover {
+                background-color: $forms-buttonSetEndDate-background-hover-color;
+            }
+        }
+
+        &-buttonAddNote {
+            background-color: $forms-buttonAddNote-background-color;
+
+            &:hover {
+                background-color: $forms-buttonAddNote-background-hover-color;
+            }
+        }
+
+        &-buttonAddConfirmation {
+            background-color: $forms-buttonAddConfirmation-background-color;
+
+            &:hover {
+                background-color: $forms-buttonAddConfirmation-background-hover-color;
+            }
+        }
+    }
+
+    &-submit {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+        padding: 1rem 2rem 3rem 2rem;
+        border-bottom: 1px solid $forms-submit-border-bottom-color;
+        
+        a {
+            text-decoration: none;
+        }
+
+        &__button {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            width: 80px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            border: 0;
+            border-radius: 4px;
+            transition: 200ms;
+
+
+            &:not(:last-child) {
+                margin-right: 15px;
+            }
+
+            img {
+                margin-right: 7px;
+            }
+
+            &--saveButton {
+                color: white;
+                background-color: $forms-submit-buttonSave-background-color;
+                border: 1px solid $forms-submit-buttonSave-background-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonSave-background-hover-color;
+                    border: 1px solid $forms-submit-buttonSave-background-hover-color;
+                }
+            }
+
+            &--cancelButton {
+                color: $forms-submit-buttonCancel-color;
+                background-color: $forms-submit-buttonCancel-background-color;
+                border: 1px solid $forms-submit-buttonCancel-border-color;
+
+                &:hover {
+                    background-color: $forms-submit-buttonCancel-background-hover-color;
+                    border: 1px solid $forms-submit-buttonCancel-border-color;
+                }
+            }
+        }
+    }
+}
+
+.react-datepicker__header {
+    background-color: $datepicker-header !important;
+}

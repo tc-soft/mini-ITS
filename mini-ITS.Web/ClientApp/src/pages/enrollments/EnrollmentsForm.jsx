@@ -12,8 +12,19 @@ import { enrollmentDescriptionServices } from '../../services/EnrollmentDescript
 import EnrollmentsDescriptionForm from './EnrollmentsDescriptionForm';
 import EnrollmentsDescriptionFormSetEndDate from './EnrollmentsDescriptionFormSetEndDate';
 import ModalDialog from '../../components/Modal';
+import pl from "date-fns/locale/pl";
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import iconAdd from '../../images/iconAdd.svg';
+import iconAddPicture from '../../images/iconAddPicture.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconDelete from '../../images/iconDelete.svg';
+import iconEnrollment from '../../images/iconEnrollment.svg';
+import iconSave from '../../images/iconSave.svg';
+import iconCancel from '../../images/iconCancel.svg';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import 'react-photo-view/dist/react-photo-view.css';
+import '../../styles/pages/Enrollments.scss';
 
 const EnrollmentsForm = (props) => {
     const { isMode, groupsPagedQuery } = props;
@@ -692,7 +703,7 @@ const EnrollmentsForm = (props) => {
     }, [isReady, mapEnrollmentsDescription]);
 
     return (
-        <>
+        <div className='enrollmentsForm'>
             <ModalDialog
                 modalDialogOpen={modalDialogOpen}
                 modalDialogType={modalDialogType}
@@ -706,567 +717,619 @@ const EnrollmentsForm = (props) => {
                 ? renderSubForm()
                 : (
                     <>
-                        <div>
-                            <h2>{title[isMode]}</h2><br />
+                        <div className='enrollmentsForm-title'>
+                            <img src={iconEdit} height='17px' alt='iconEdit' />
+                            <p>{title[isMode]}</p>
                         </div>
 
-                        <div>
-                            <h4>Zgłoszenie {enrollment.nr}/{enrollment.year}</h4><br />
+                        <div className='enrollmentsForm-enrollmentsInfo'>
+                            <img src={iconEnrollment} alt='iconEnrollment' />
+                            <p>Zgłoszenie:<span>{enrollment.nr}/{enrollment.year}</span></p>
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)}>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            flexWrap: 'wrap'
-                        }}>
-                            <div>
-                                <label>Data zgłoszenia</label><br />
-                                <Controller
-                                    control={control}
-                                    name='dateAddEnrollment'
-                                    rules={{
-                                        required: { value: true, message: 'Pole wymagane.' },
-                                    }}
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            tabIndex='1'
-                                            selected={field.value ? new Date(field.value) : null}
-                                            dateFormat='dd.MM.yyyy HH:mm'
-                                            placeholderText='Wybierz datę'
-                                            disabled={true}
-                                            onChange={(date) => field.onChange(date.toISOString())}
-                                            onBlur={field.onBlur}
-                                        />
-                                    )}
-                                />
-                                {errors.dateAddEnrollment ? <p style={{ color: 'red' }} >{errors.dateAddEnrollment?.message}</p> : <p>&nbsp;</p>}
-
-                                {isMode !== 'Create' &&
-                                    <>
-                                        <label>Data ost. zmiany</label><br />
-                                        <Controller
-                                            control={control}
-                                            name='dateModEnrollment'
-                                            rules={{
-                                                required: { value: true, message: 'Pole wymagane.' },
-                                            }}
-                                            render={({ field }) => (
-                                                <DatePicker
-                                                    tabIndex='2'
-                                                    selected={field.value ? new Date(field.value) : null}
-                                                    dateFormat='dd.MM.yyyy HH:mm'
-                                                    placeholderText='Wybierz datę'
-                                                    disabled={true}
-                                                    onChange={(date) => field.onChange(date.toISOString())}
-                                                    onBlur={field.onBlur}
-                                                />
-                                            )}
-                                        />
-                                        {errors.dateModEnrollment ? <p style={{ color: 'red' }} >{errors.dateModEnrollment?.message}</p> : <p>&nbsp;</p>}
-                                    </>
-                                }
-
-                                <label>Dział docelowy</label><br />
-                                <select
-                                    tabIndex='3'
-                                    disabled={formControls.isDepartmentDisabled}
-                                    style={isReadMode ? { pointerEvents: 'none' } : null}
-                                    {...register('department', {
-                                        required: { value: true, message: 'Pole wymagane.' },
-                                        pattern: {
-                                            value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.' },
-                                        maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
-                                    })}
-                                >
-                                    <option value=''>-- Wybierz dział --</option>
-                                    {mapDepartment.map(option => (
-                                        <option key={option.value} value={option.value}>{option.name}</option>
-                                    ))}
-                                </select>
-                                {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}
-
-                                <label>Opis</label><br />
-                                <textarea
-                                    tabIndex='4'
-                                    placeholder='Wpisz treść'
-                                    rows={4}
-                                    cols={50}
-                                    disabled={formControls.isDescriptionDisabled}
-                                    {...register('description', {
-                                        required: { value: true, message: 'Pole wymagane.' },
-                                        pattern: {
-                                            value: /^[^\s](.|[\r\n])+[^\s]$/g, message: 'Niedozwolony znak.' },
-                                        maxLength: { value: 2048, message: 'Za duża ilośc znaków.' }
-                                    })}
-                                />
-                                {errors.description ? <p style={{ color: 'red' }} >{errors.description?.message}</p> : <p>&nbsp;</p>}
-
-                                <label>Priorytet</label><br />
-                                <select
-                                    tabIndex='5'
-                                    disabled={formControls.isPriorityDisabled}
-                                    {...register('priority', {
-                                        setValueAs: value => parseInt(value, 10)
-                                    })}
-                                >
-                                    {Object.keys(mapPriority).map(key => (
-                                        <option key={key} value={key}>
-                                            {mapPriority[key]}
-                                        </option>
-                                    ))}
-                                </select>
-                                <br />
-
-                                {isMode === 'Create' &&
-                                    <>
-                                        <br />
-                                        <label>Czy wysłać SMS do kier. działu</label><br />
-                                        <input
-                                            tabIndex='6'
-                                            type='checkbox'
-                                            disabled={false}
-                                            {...register('sMSToUserInfo')}
-                                        />
-                                        <br />
-
-                                        <label>Czy wysłać SMS do kier. wszystkich działów</label><br />
-                                        <input
-                                            tabIndex='7'
-                                            type='checkbox'
-                                            disabled={false}
-                                            {...register('sMSToAllInfo')}
-                                        />
-                                        <br />
-
-                                        <label>Czy wysłac Email do kier. działu</label><br />
-                                        <input
-                                            tabIndex='8'
-                                            type='checkbox'
-                                            disabled={false}
-                                            {...register('mailToUserInfo')}
-                                        />
-                                        <br />
-
-                                        <label>Czy wysłac Email do kier. wszystkich działów</label><br />
-                                        <input
-                                            tabIndex='9'
-                                            type='checkbox'
-                                            disabled={false}
-                                            {...register('mailToAllInfo')}
-                                        />
-                                    </>
-                                }
-
-                                {isReadMode && (
-                                    <>
-                                        <label>Dodał/a</label><br />
-                                        <input
-                                            tabIndex='10'
-                                            type='text'
-                                            placeholder='brak'
-                                            disabled={isReadMode}
-                                            {...register('userAddEnrollmentFullName')}
-                                        />
-                                        <br />
-
-                                        <label>Zakończył/a</label><br />
-                                        <input
-                                            tabIndex='11'
-                                            type='text'
-                                            placeholder='brak'
-                                            disabled={isReadMode}
-                                            {...register('userEndEnrollmentFullName')}
-                                        />
-                                        <br />
-
-                                        <label>Data zakończenia</label><br />
-                                        <Controller
-                                            control={control}
-                                            name='dateEndEnrollment'
-                                            render={({ field }) => (
-                                                <DatePicker
-                                                    tabIndex='12'
-                                                    selected={field.value ? new Date(field.value) : null}
-                                                    dateFormat='dd.MM.yyyy HH:mm'
-                                                    placeholderText='brak'
-                                                    disabled={isReadMode}
-                                                    onChange={(date) => field.onChange(date.toISOString())}
-                                                    onBlur={field.onBlur}
-                                                />
-                                            )}
-                                        />
-                                        <br />
-
-                                        <label>Otworzył/a ponownie</label><br />
-                                        <input
-                                            tabIndex='13'
-                                            type='text'
-                                            placeholder='brak'
-                                            disabled={isReadMode}
-                                            {...register('userEndEnrollmentFullName')}
-                                        />
-                                    </>
-                                )}
-                            </div>
-                            <div>
-                                <label>Data zak. w/g zgł.</label><br />
-                                <Controller
-                                    control={control}
-                                    name='dateEndDeclareByUser'
-                                    rules={{
-                                        validate: value => {
-                                            const selectedDate = new Date(value);
-                                            const enrollmentDate = new Date(watch('dateAddEnrollment'));
-                                            return selectedDate > enrollmentDate || 'Niewłaściwa data.';
-                                        }
-                                    }}
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            tabIndex='14'
-                                            selected={field.value ? new Date(field.value) : null}
-                                            dateFormat='dd.MM.yyyy'
-                                            placeholderText='Wybierz datę'
-                                            disabled={formControls.isDateEndDeclareByUser}
-                                            onChange={(date) => field.onChange(setEndOfDay(date))}
-                                            onBlur={field.onBlur}
-                                        />
-                                    )}
-                                />
-                                {errors.dateEndDeclareByUser ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByUser?.message}</p> : <p>&nbsp;</p>}
-
-                                <label>Data zak. w/g działu</label><br />
-                                <Controller
-                                    control={control}
-                                    name='dateEndDeclareByDepartment'
-                                    rules={{
-                                        validate: value => {
-                                            if (!value) {
-                                                return true;
-                                            }
-
-                                            const selectedDate = new Date(value);
-                                            const enrollmentDate = new Date(watch('dateAddEnrollment'));
-                                            return selectedDate > enrollmentDate || 'Niewłaściwa data.';
-                                        }
-                                    }}
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            tabIndex='15'
-                                            selected={field.value ? new Date(field.value) : null}
-                                            dateFormat='dd.MM.yyyy'
-                                            placeholderText='brak'
-                                            disabled={formControls.isDateEndDeclareByDepartmentDisabled}
-                                            onChange={(date) => field.onChange(date.toISOString())}
-                                            onBlur={field.onBlur}
-                                        />
-                                    )}
-                                />
-                                {errors.dateEndDeclareByDepartment ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByDepartment?.message}</p> : <p>&nbsp;</p>}
-
-                                <label>Grupa/Linia</label><br />
-                                <select
-                                    tabIndex='16'
-                                    disabled={formControls.isGroupDisabled}
-                                    {...register('group', {
-                                        required: { value: true, message: 'Pole wymagane.' },
-                                        pattern: {
-                                            value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.'
-                                        },
-                                        maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
-                                    })}
-                                >
-                                    <option value=''>-- Wybierz grupę --</option>
-                                    {mapGroup?.results?.map((x, y) => (
-                                        <option key={y} value={x.groupName}>
-                                            {x.groupName}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.group ? <p style={{ color: 'red' }} >{errors.group?.message}</p> : <p>&nbsp;</p>}
-
-                                <label>Żądanie dodatkowych czynności</label><br />
-                                <Controller
-                                    name='actionRequest'
-                                    control={control}
-                                    render={({ field: { onChange, value } }) => (
-                                        <input
-                                            tabIndex='17'
-                                            type='checkbox'
-                                            checked={value === 1}
-                                            onChange={e => onChange(e.target.checked ? 1 : 0)}
-                                            disabled={formControls.isActionRequestDisabled}
-                                        />
-                                    )}
-                                />
-                                <br />
-                            </div>
-                        </div>
-                        <br />
-                        <div>
-                            <div>
-                                {mapEnrollmentsPicture.map((enrollmentsPicture) => (
-                                    enrollmentsPicture && enrollmentsPicture.pictureBytes ? (
-                                        <div key={enrollmentsPicture.id}
-                                            style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                            <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
-                                                alt={enrollmentsPicture.picturePath}
-                                                style={{ width: '400px', height: 'auto', marginRight: '10px' }}
+                            <div className='enrollmentsForm-detail'>
+                                <div className='enrollmentsForm-detail-block'>
+                                    <label className='enrollmentsForm-detail-section__label'>Data zgłoszenia</label>
+                                    <Controller
+                                        control={control}
+                                        name='dateAddEnrollment'
+                                        rules={{
+                                            required: { value: true, message: 'Pole wymagane.' },
+                                        }}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                tabIndex='1'
+                                                selected={field.value ? new Date(field.value) : null}
+                                                dateFormat='dd.MM.yyyy HH:mm'
+                                                placeholderText='Wybierz datę'
+                                                disabled={true}
+                                                onChange={(date) => field.onChange(date.toISOString())}
+                                                onBlur={field.onBlur}
+                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
+                                                className='enrollmentsForm-detail-section__datePicker'
+                                                dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
+                                                locale={pl}
                                             />
-                                            {
-                                                !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
-                                                    (
-                                                        watch('userAddEnrollment') !== undefined &&
-                                                        watch('userAddEnrollment') === currentUser.id)
-                                                    ) &&
-                                                        (
-                                                        <button
-                                                            tabIndex='-1'
-                                                            type='button'
-                                                            onClick={() => handleDeletePictureStage1(enrollmentsPicture.id)}
-                                                        >
-                                                            Usuń obraz
-                                                        </button>
-                                                    )
-                                            }
-                                        </div>
-                                    ) : null
-                                ))}
-                            </div>
-
-                            {isMode !== 'Detail' &&
-                                <>
-                                    <input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        accept=".jpg, .png"
-                                        multiple
-                                        onChange={addPicture}
-                                        style={{ display: 'none' }}
+                                        )}
                                     />
-                                    <button
-                                        tabIndex='18'
-                                        type='button'
-                                        onClick={() => fileInputRef.current.click()}
-                                        disabled={
-                                            isReadMode ||
-                                            (currentUser.role !== 'Administrator' &&
-                                                (
-                                                    watch('userAddEnrollment') !== undefined &&
-                                                    watch('userAddEnrollment') !== currentUser.id
-                                                )
-                                            )
-                                        }
-                                    >
-                                            Dodaj zdjęcie
-                                    </button>
-                                    <br /><br />
-                                </>
-                            }
-                        </div>
-                        <div>
-                            {isMode !== 'Create' &&
-                                <>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Data wpr.</th>
-                                                <th>Adnotacja</th>
-                                                <th>Dodał</th>
-                                                <th>Operacje</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {mapEnrollmentsDescription
-                                                .filter(enrollmentsDescription => enrollmentsDescription.status !== 'deleted')
-                                                .map((enrollmentsDescription, index) => (
-                                                <tr key={index}>
-                                                    <td>{format(enrollmentsDescription.dateAddDescription, 'dd.MM.yyyy HH:mm')}</td>
-                                                    <td>{enrollmentsDescription.description}</td>
-                                                    <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
-                                                    <td>
-                                                        {
-                                                            !isReadMode && watch('state') !== 'Closed' &&
-                                                            (currentUser.role === 'Administrator' || enrollmentsDescription.userAddDescription === currentUser.id) &&
-                                                            <>
-                                                                <button
-                                                                    tabIndex='-1'
-                                                                    type='button'
-                                                                    onClick={() => {
-                                                                        setSubForm({
-                                                                            isSubForm: 'editDescription',
-                                                                            data: {
-                                                                                nr: enrollment.nr,
-                                                                                year: enrollment.year,
-                                                                                id: enrollmentsDescription.id,
-                                                                                description: enrollmentsDescription.description,
-                                                                                status: 'edited'
-                                                                            }
-                                                                        });
-                                                                    }}
-                                                                >
-                                                                    Edycja
-                                                                </button>
-                                                                &nbsp;
-                                                                <button
-                                                                    type='button'
-                                                                    onClick={() => handleDeleteDescriptionStage1(enrollmentsDescription.id)}
-                                                                >
-                                                                    Usuń
-                                                                </button>
-                                                            </>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </>
-                            }
+                                    {errors.dateAddEnrollment ? <p style={{ color: 'red' }} >{errors.dateAddEnrollment?.message}</p> : <p>&nbsp;</p>}
 
-                            {!isLoaded && isMode === 'Edit' &&
-                                watch('state') === 'New' && (
-                                    currentUser.role === 'Administrator' ||
-                                    (
-                                        watch('userAddEnrollment') !== currentUser.id &&
-                                        (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
-                                        (currentUser.role === 'Manager') &&
-                                        currentUser.department === watch('department')
-                                    )
-                                ) && (
-                                    <button
-                                        tabIndex='19'
-                                        type='button'
-                                        title='Ustalenie daty zakończenia zgłoszenia'
-                                        onClick={() => {
-                                            setSubForm({
-                                                isSubForm: 'createDescriptionSetEndDate',
-                                                data: {
-                                                    enrollment
-                                                }
-                                            });
-                                        }}
-                                    >
-                                        Ustalenie daty zakończenia
-                                    </button>
-                                )
-                            }
+                                    {isMode !== 'Create' &&
+                                        <>
+                                            <label className='enrollmentsForm-detail-section__label'>Data ost. zmiany</label>
+                                            <Controller
+                                                control={control}
+                                                name='dateModEnrollment'
+                                                rules={{
+                                                    required: { value: true, message: 'Pole wymagane.' },
+                                                }}
+                                                render={({ field }) => (
+                                                    <DatePicker
+                                                        tabIndex='2'
+                                                        selected={field.value ? new Date(field.value) : null}
+                                                        dateFormat='dd.MM.yyyy HH:mm'
+                                                        placeholderText='Wybierz datę'
+                                                        disabled={true}
+                                                        onChange={(date) => field.onChange(date.toISOString())}
+                                                        onBlur={field.onBlur}
+                                                        filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
+                                                        className='enrollmentsForm-detail-section__datePicker'
+                                                        dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
+                                                        locale={pl}
+                                                    />
+                                                )}
+                                            />
+                                            {errors.dateModEnrollment ? <p style={{ color: 'red' }} >{errors.dateModEnrollment?.message}</p> : <p>&nbsp;</p>}
+                                        </>
+                                    }
 
-                            {!isLoaded && isMode === 'Edit' &&
-                                watch('state') &&
-                                watch('state') !== 'New' &&
-                                watch('state') !== 'Closed' && (
-                                    <button
-                                        tabIndex='20'
-                                        type='button'
-                                        title='Dodanie adnotacji'
-                                        onClick={() => {
-                                            setSubForm({
-                                                isSubForm: 'createDescription',
-                                                data: {
-                                                    nr: enrollment.nr,
-                                                    year: enrollment.year,
-                                                    status: 'added'
-                                                }
-                                            });
-                                        }}
+                                    <label className='enrollmentsForm-detail-section__label'>Dział docelowy</label>
+                                    <select className='enrollmentsForm-detail-section__input'
+                                        tabIndex='3'
+                                        disabled={formControls.isDepartmentDisabled}
+                                        style={isReadMode ? { pointerEvents: 'none' } : null}
+                                        {...register('department', {
+                                            required: { value: true, message: 'Pole wymagane.' },
+                                            pattern: {
+                                                value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.' },
+                                            maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                                        })}
                                     >
-                                        Dodaj adnotację
-                                    </button>
-                                )
-                            }
-                            &nbsp;
-                            {!isLoaded &&
-                                isMode === 'Edit' &&
-                                watch('state') &&
-                                watch('state') !== 'New' &&
-                                watch('state') !== 'Closed' &&
-                                watch('actionRequest') === 1 &&
-                                currentUser.role === 'Administrator' && (
-                                    <button
-                                        tabIndex='21'
-                                        type='button'
-                                        title='Potwierdzenie dopuszczenia do użytku'
-                                        disabled={watch('actionFinished')}
-                                        onClick={() => {
-                                            setSubForm({
-                                                isSubForm: 'createDescription',
-                                                data: {
-                                                    nr: enrollment.nr,
-                                                    year: enrollment.year,
-                                                    status: 'added',
-                                                    actionDescription: 1
-                                                }
-                                            });
-                                        }}
-                                    >
-                                        Potwierdzenie dopuszczenia do użytku
-                                    </button>
-                                )
-                            }
-                        </div>
-                        <div>
-                            {isMode !== 'Create' && (
-                                <>
-                                    <br />
-                                    <label>Wyk. dodatkowych czynności</label><br />
-                                    <input
-                                        tabIndex='22'
-                                        type='checkbox'
-                                        disabled={true}
-                                        {...register('actionFinished')}
+                                        <option value=''>-- Wybierz dział --</option>
+                                        {mapDepartment.map(option => (
+                                            <option key={option.value} value={option.value}>{option.name}</option>
+                                        ))}
+                                    </select>
+                                    {errors.department ? <p style={{ color: 'red' }} >{errors.department?.message}</p> : <p>&nbsp;</p>}
+
+                                    <label className='enrollmentsForm-detail-section__label'>Opis</label>
+                                    <textarea className='enrollmentsForm-detail-section__input'
+                                        tabIndex='4'
+                                        placeholder='Wpisz treść'
+                                        rows={6}
+                                        cols={50}
+                                        disabled={formControls.isDescriptionDisabled}
+                                        {...register('description', {
+                                            required: { value: true, message: 'Pole wymagane.' },
+                                            pattern: {
+                                                value: /^[^\s](.|[\r\n])+[^\s]$/g, message: 'Niedozwolony znak.' },
+                                            maxLength: { value: 2048, message: 'Za duża ilośc znaków.' }
+                                        })}
                                     />
-                                    <br />
+                                    {errors.description ? <p style={{ color: 'red' }} >{errors.description?.message}</p> : <p>&nbsp;</p>}
 
-                                    <label>Gotowe do zamkn.</label><br />
-                                    <input
-                                        tabIndex='23'
-                                        type='checkbox'
-                                        disabled={formControls.isReadyForCloseDisabled}
-                                        {...register('readyForClose')}
-                                    />
-                                    <br />
-
-                                    <label>Status</label><br />
-                                        <select
-                                            tabIndex='24'
-                                            placeholder='Wybierz status'
-                                            disabled={formControls.isStateDisabled}
-                                            {...register('state', { onChange: handleStateChange })}
+                                    <label className='enrollmentsForm-detail-section__label'>Priorytet</label>
+                                    <select className='enrollmentsForm-detail-section__input'
+                                        tabIndex='5'
+                                        disabled={formControls.isPriorityDisabled}
+                                        {...register('priority', {
+                                            setValueAs: value => parseInt(value, 10)
+                                        })}
                                     >
-                                        {Object.keys(mapState).map(key => (
+                                        {Object.keys(mapPriority).map(key => (
                                             <option key={key} value={key}>
-                                                {mapState[key]}
+                                                {mapPriority[key]}
                                             </option>
                                         ))}
                                     </select>
-                                </>
-                            )}
-                        </div>
-                        <div>
-                            <br />
-                            {(isMode === 'Edit' || isMode === 'Create') && (
-                                <>
+
+                                    {isMode === 'Create' &&
+                                        <>
+                                            <p>&nbsp;</p>
+                                            <label className='enrollmentsForm-detail-section__label'>Czy wysłać SMS do kier. działu</label>
+                                            <input
+                                                tabIndex='6'
+                                                type='checkbox'
+                                                disabled={false}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('sMSToUserInfo')}
+                                            />
+
+                                            <label className='enrollmentsForm-detail-section__label'>Czy wysłać SMS do kier. wszystkich działów</label>
+                                            <input
+                                                tabIndex='7'
+                                                type='checkbox'
+                                                disabled={false}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('sMSToAllInfo')}
+                                            />
+
+                                            <label className='enrollmentsForm-detail-section__label'>Czy wysłac Email do kier. działu</label>
+                                            <input
+                                                tabIndex='8'
+                                                type='checkbox'
+                                                disabled={false}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('mailToUserInfo')}
+                                            />
+
+                                            <label className='enrollmentsForm-detail-section__label'>Czy wysłac Email do kier. wszystkich działów</label>
+                                            <input
+                                                tabIndex='9'
+                                                type='checkbox'
+                                                disabled={false}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('mailToAllInfo')}
+                                            />
+                                        </>
+                                    }
+
+                                    {isReadMode && (
+                                        <>
+                                            <p>&nbsp;</p>
+                                            <label className='enrollmentsForm-detail-section__label'>Dodał/a</label>
+                                            <input
+                                                tabIndex='10'
+                                                type='text'
+                                                placeholder='brak'
+                                                disabled={isReadMode}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('userAddEnrollmentFullName')}
+                                            />
+                                            <p>&nbsp;</p>
+
+                                            <label className='enrollmentsForm-detail-section__label'>Zakończył/a</label>
+                                                <input
+                                                tabIndex='11'
+                                                type='text'
+                                                placeholder='brak'
+                                                disabled={isReadMode}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('userEndEnrollmentFullName')}
+                                            />
+                                            <p>&nbsp;</p>
+
+                                            <label className='enrollmentsForm-detail-section__label'>Data zakończenia</label>
+                                            <Controller
+                                                control={control}
+                                                name='dateEndEnrollment'
+                                                render={({ field }) => (
+                                                    <DatePicker
+                                                        tabIndex='12'
+                                                        selected={field.value ? new Date(field.value) : null}
+                                                        dateFormat='dd.MM.yyyy HH:mm'
+                                                        placeholderText='brak'
+                                                        disabled={isReadMode}
+                                                        onChange={(date) => field.onChange(date.toISOString())}
+                                                        onBlur={field.onBlur}
+                                                        filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
+                                                        className='enrollmentsForm-detail-section__datePicker'
+                                                        dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
+                                                        locale={pl}
+                                                    />
+                                                )}
+                                            />
+                                            <p>&nbsp;</p>
+
+                                            <label className='enrollmentsForm-detail-section__label'>Otworzył/a ponownie</label>
+                                            <input
+                                                tabIndex='13'
+                                                type='text'
+                                                placeholder='brak'
+                                                disabled={isReadMode}
+                                                className='enrollmentsForm-detail-section__input'
+                                                {...register('userReeEnrollmentFullName')}
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                                <div>
+                                    <label className='enrollmentsForm-detail-section__label'>Data zak. w/g zgł.</label>
+                                    <Controller
+                                        control={control}
+                                        name='dateEndDeclareByUser'
+                                        rules={{
+                                            validate: value => {
+                                                const selectedDate = new Date(value);
+                                                const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                                return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                            }
+                                        }}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                tabIndex='14'
+                                                selected={field.value ? new Date(field.value) : null}
+                                                dateFormat='dd.MM.yyyy'
+                                                placeholderText='Wybierz datę'
+                                                disabled={formControls.isDateEndDeclareByUser}
+                                                onChange={(date) => field.onChange(setEndOfDay(date))}
+                                                onBlur={field.onBlur}
+                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
+                                                className='enrollmentsForm-detail-section__datePicker'
+                                                dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
+                                                locale={pl}
+                                            />
+                                        )}
+                                    />
+                                    {errors.dateEndDeclareByUser ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByUser?.message}</p> : <p>&nbsp;</p>}
+
+                                    <label className='enrollmentsForm-detail-section__label'>Data zak. w/g działu</label>
+                                    <Controller
+                                        control={control}
+                                        name='dateEndDeclareByDepartment'
+                                        rules={{
+                                            validate: value => {
+                                                if (!value) {
+                                                    return true;
+                                                }
+
+                                                const selectedDate = new Date(value);
+                                                const enrollmentDate = new Date(watch('dateAddEnrollment'));
+                                                return selectedDate > enrollmentDate || 'Niewłaściwa data.';
+                                            }
+                                        }}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                tabIndex='15'
+                                                selected={field.value ? new Date(field.value) : null}
+                                                dateFormat='dd.MM.yyyy'
+                                                placeholderText='brak'
+                                                disabled={formControls.isDateEndDeclareByDepartmentDisabled}
+                                                onChange={(date) => field.onChange(date.toISOString())}
+                                                onBlur={field.onBlur}
+                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
+                                                className='enrollmentsForm-detail-section__datePicker'
+                                                dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
+                                                locale={pl}
+                                            />
+                                        )}
+                                    />
+                                    {errors.dateEndDeclareByDepartment ? <p style={{ color: 'red' }} >{errors.dateEndDeclareByDepartment?.message}</p> : <p>&nbsp;</p>}
+
+                                    <label className='enrollmentsForm-detail-section__label'>Grupa/Linia</label>
+                                    <select className='enrollmentsForm-detail-section__input'
+                                        tabIndex='16'
+                                        disabled={formControls.isGroupDisabled}
+                                        {...register('group', {
+                                            required: { value: true, message: 'Pole wymagane.' },
+                                            pattern: {
+                                                value: /^(?!\s)(?=.*\S).*$/, message: 'Niedozwolony znak.'
+                                            },
+                                            maxLength: { value: 50, message: 'Za duża ilośc znaków.' }
+                                        })}
+                                    >
+                                        <option value=''>-- Wybierz grupę --</option>
+                                        {mapGroup?.results?.map((x, y) => (
+                                            <option key={y} value={x.groupName}>
+                                                {x.groupName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.group ? <p style={{ color: 'red' }} >{errors.group?.message}</p> : <p>&nbsp;</p>}
+
+                                    <label className='enrollmentsForm-detail-section__label'>Żądanie dodatkowych czynności</label>
+                                    <Controller
+                                        name='actionRequest'
+                                        control={control}
+                                        render={({ field: { onChange, value } }) => (
+                                            <input
+                                                tabIndex='17'
+                                                type='checkbox'
+                                                checked={value === 1}
+                                                onChange={e => onChange(e.target.checked ? 1 : 0)}
+                                                disabled={formControls.isActionRequestDisabled}
+                                                className='enrollmentsForm-detail-section__input'
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
+                            <div className='enrollmentsForm-detailPictures'>
+                                <PhotoProvider
+                                    speed={(type) => type === 1 ? 300 : 300}
+                                >
+                                    {mapEnrollmentsPicture.map((enrollmentsPicture) => (
+                                        enrollmentsPicture && enrollmentsPicture.pictureBytes ? (
+                                            <div
+                                                key={enrollmentsPicture.id}
+                                                className='enrollmentsForm-detailPictures__viewPicture'
+                                            >
+                                                <PhotoView src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}>
+                                                    <img src={`data:image/jpeg;base64,${enrollmentsPicture.pictureBytes}`}
+                                                        alt={enrollmentsPicture.picturePath}
+                                                        style={{ cursor: 'pointer' }}
+                                                    />
+                                                </PhotoView>
+
+                                                {
+                                                    !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
+                                                        (
+                                                            watch('userAddEnrollment') !== undefined &&
+                                                            watch('userAddEnrollment') === currentUser.id)
+                                                    ) &&
+                                                    (
+                                                        <span
+                                                            title='Usuń'
+                                                            onClick={() => handleDeletePictureStage1(enrollmentsPicture.id)}
+                                                         >
+                                                            <img src={iconDelete} alt='Usuń' title='Usuń' />
+                                                        </span>
+                                                    )
+                                                }
+                                            </div>
+                                        ) : null
+                                    ))}
+                                    {(isMode === 'Create' || isMode === 'Edit') &&
+                                        <div className='enrollmentsForm-detailPictures__addPicture'>
+                                            <span
+                                                tabIndex='18'
+                                                title='Dodaj zdjęcie'
+                                                onClick={() => fileInputRef.current.click()}
+                                                disabled={
+                                                    isReadMode ||
+                                                    (currentUser.role !== 'Administrator' &&
+                                                        (
+                                                            watch('userAddEnrollment') !== undefined &&
+                                                            watch('userAddEnrollment') !== currentUser.id
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <img src={iconAddPicture} alt='Dodaj zdjęcie' title='Dodaj zdjęcie' />
+                                                Dodaj zdjęcie
+                                            </span>
+                                        </div>
+                                    }
+                                </PhotoProvider>
+                                {isMode !== 'Detail' &&
+                                    <>
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept=".jpg, .png"
+                                            multiple
+                                            onChange={addPicture}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </>
+                                }
+                            </div>
+                            <div className='enrollmentsForm-detailDescriptions'>
+                                {isMode !== 'Create' &&
+                                    <>
+                                        <table>
+                                            <colgroup>
+                                                <col style={{ width: '165px' }} />
+                                                <col style={{ width: 'auto' }} />
+                                                <col style={{ width: '150px' }} />
+                                                <col style={{ width: '150px' }} />
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>Data wpr.</th>
+                                                    <th>Adnotacja</th>
+                                                    <th>Dodał</th>
+                                                    <th>Operacje</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {mapEnrollmentsDescription
+                                                    .filter(enrollmentsDescription => enrollmentsDescription.status !== 'deleted')
+                                                    .map((enrollmentsDescription, index) => (
+                                                    <tr key={index}>
+                                                        <td>{format(enrollmentsDescription.dateAddDescription, 'dd.MM.yyyy HH:mm')}</td>
+                                                        <td>{enrollmentsDescription.description}</td>
+                                                        <td>{enrollmentsDescription.userAddDescriptionFullName}</td>
+                                                        <td>
+                                                            {
+                                                                !isReadMode && watch('state') !== 'Closed' &&
+                                                                (currentUser.role === 'Administrator' || enrollmentsDescription.userAddDescription === currentUser.id) &&
+                                                                <>
+                                                                    <span>
+                                                                        <img
+                                                                            src={iconEdit}
+                                                                            alt='Edycja'
+                                                                            title='Edycja'
+                                                                            onClick={() => {
+                                                                                setSubForm({
+                                                                                    isSubForm: 'editDescription',
+                                                                                    data: {
+                                                                                        nr: enrollment.nr,
+                                                                                        year: enrollment.year,
+                                                                                        id: enrollmentsDescription.id,
+                                                                                        description: enrollmentsDescription.description,
+                                                                                        status: 'edited'
+                                                                                    }
+                                                                                });
+                                                                            }}
+                                                                            style={{ cursor: 'pointer' }}
+                                                                        />
+                                                                    </span>
+
+                                                                    <span>
+                                                                        <img
+                                                                            src={iconDelete}
+                                                                            alt='Usuń'
+                                                                            title='Usuń'
+                                                                            onClick={() => handleDeleteDescriptionStage1(enrollmentsDescription.id)}
+                                                                            style={{ cursor: 'pointer' }}
+                                                                        />
+                                                                    </span>
+                                                                </>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </>
+                                }
+
+                                {!isLoaded && isMode === 'Edit' &&
+                                    watch('state') === 'New' && (
+                                        currentUser.role === 'Administrator' ||
+                                        (
+                                            watch('userAddEnrollment') !== currentUser.id &&
+                                            (!watch('dateEndDeclareByDepartment') || watch('dateEndDeclareByDepartment') === '') &&
+                                            (currentUser.role === 'Manager') &&
+                                            currentUser.department === watch('department')
+                                        )
+                                    ) && (
+                                        <button
+                                            tabIndex='19'
+                                            type='button'
+                                            title='Ustalenie daty zakończenia zgłoszenia'
+                                            onClick={() => {
+                                                setSubForm({
+                                                    isSubForm: 'createDescriptionSetEndDate',
+                                                    data: {
+                                                        enrollment
+                                                    }
+                                                });
+                                            }}
+                                            className='enrollmentsForm-detailDescriptions-buttonSetEndDate'
+                                        >
+                                            <img src={iconAdd} alt='iconAdd' />
+                                            <span>Ustalenie daty zakończenia</span>
+                                        </button>
+                                    )
+                                }
+
+                                {!isLoaded && isMode === 'Edit' &&
+                                    watch('state') &&
+                                    watch('state') !== 'New' &&
+                                    watch('state') !== 'Closed' && (
+                                        <button
+                                            tabIndex='20'
+                                            type='button'
+                                            title='Dodanie adnotacji'
+                                            onClick={() => {
+                                                setSubForm({
+                                                    isSubForm: 'createDescription',
+                                                    data: {
+                                                        nr: enrollment.nr,
+                                                        year: enrollment.year,
+                                                        status: 'added'
+                                                    }
+                                                });
+                                            }}
+                                            className='enrollmentsForm-detailDescriptions-buttonAddNote'
+                                        >
+                                            <img src={iconAdd} alt='iconAdd' />
+                                            <span>Dodaj adnotację</span>
+                                        </button>
+                                    )
+                                }
+
+                                {!isLoaded &&
+                                    isMode === 'Edit' &&
+                                    watch('state') &&
+                                    watch('state') !== 'New' &&
+                                    watch('state') !== 'Closed' &&
+                                    watch('actionRequest') === 1 &&
+                                    watch('readyForClose') &&
+                                    !watch('actionFinished') &&
+                                    currentUser.role === 'Administrator' && (
+                                        <button
+                                            tabIndex='21'
+                                            type='button'
+                                            title='Potwierdzenie dopuszczenia do użytku'
+                                            onClick={() => {
+                                                setSubForm({
+                                                    isSubForm: 'createDescription',
+                                                    data: {
+                                                        nr: enrollment.nr,
+                                                        year: enrollment.year,
+                                                        status: 'added',
+                                                        actionDescription: 1
+                                                    }
+                                                });
+                                            }}
+                                            className='enrollmentsForm-detailDescriptions-buttonAddConfirmation'
+                                        >
+                                            <img src={iconAdd} alt='iconAdd' />
+                                            <span>Potwierdzenie dopuszczenia do użytku</span>
+                                        </button>
+                                    )
+                                }
+                            </div>
+                            <div className='enrollmentsForm-detail'>
+                                <div className='enrollmentsForm-detail-section'>
+                                    {isMode !== 'Create' && (
+                                        <>
+                                            <label className='enrollmentsForm-detail-section__label'>Wyk. dodatkowych czynności</label>
+                                            <input
+                                                tabIndex='22'
+                                                type='checkbox'
+                                                disabled={true}
+                                                {...register('actionFinished')}
+                                            />
+
+                                            <label className='enrollmentsForm-detail-section__label'>Gotowe do zamkn.</label>
+                                            <input
+                                                tabIndex='23'
+                                                type='checkbox'
+                                                disabled={formControls.isReadyForCloseDisabled}
+                                                {...register('readyForClose')}
+                                            />
+                                            <p>&nbsp;</p>
+
+                                            <label className='enrollmentsForm-detail-section__label'>Status</label>
+                                            <select className='enrollmentsForm-detail-section__input'
+                                                    tabIndex='24'
+                                                    placeholder='Wybierz status'
+                                                    disabled={formControls.isStateDisabled}
+                                                    {...register('state', { onChange: handleStateChange })}
+                                            >
+                                                {Object.keys(mapState).map(key => (
+                                                    <option key={key} value={key}>
+                                                        {mapState[key]}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <p>&nbsp;</p>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <div className='enrollmentsForm-submit'>
+                                {(isMode === 'Edit' || isMode === 'Create') && (
+                                    <>
+                                        <button
+                                            tabIndex='25'
+                                            type='submit'
+                                            disabled={isMode === 'Edit' && isLoaded}
+                                            className='enrollmentsForm-submit__button enrollmentsForm-submit__button--saveButton'>
+                                            <img src={iconSave} alt='iconSave' />
+                                            Zapisz
+                                        </button>
+                                    </>
+                                )}
+                                <Link tabIndex='-1' to={'..'}>
                                     <button
-                                        tabIndex='25'
-                                        type='submit'
-                                        disabled={isMode === 'Edit' && isLoaded}>
-                                        Zapisz
+                                        tabIndex='26'
+                                        className='enrollmentsForm-submit__button enrollmentsForm-submit__button--cancelButton'>
+                                        <img src={iconCancel} alt='iconCancel' />
+                                        Anuluj
                                     </button>
-                                    &nbsp;
-                                </>
-                            )}
-                            <Link tabIndex='-1' to={'..'}>
-                                <button>
-                                    Anuluj
-                                </button>
-                            </Link>
-                        </div>
-                    </form>
+                                </Link>
+                            </div>
+                        </form>
                     </>
                 )
             }
-        </>
+        </div>
     );
 };
 

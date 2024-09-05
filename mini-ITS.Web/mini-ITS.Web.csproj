@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\mini-ITS.Core\mini-ITS.Core.csproj" />
+    <ProjectReference Include="..\mini-ITS.EmailService\mini-ITS.EmailService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

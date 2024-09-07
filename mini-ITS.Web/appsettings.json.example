@@ -15,5 +15,15 @@
     "Password": "yourPassword",
     "ConnectTimeout": 10
   },
+  "EmailOptions": {
+    "FromName": "Your Name",
+    "FromAddress": "your-email@example.com",
+    "LocalDomain": "your-domain.com",
+    "MailServerAddress": "smtp.example.com",
+    "MailServerPort": 587,
+    "UserId": "your-email@example.com",
+    "UserPassword": "your-password",
+    "SecureSocketOption": "SslOnConnect"
+  },
   "AllowedHosts": "*"
 }

@@ -10,6 +10,7 @@ using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
 using mini_ITS.Core.Services;
 using mini_ITS.EmailService;
+using mini_ITS.SmsService;
 using mini_ITS.Web.Mapper;
 public class Program
 {
@@ -47,9 +48,14 @@ public class Program
         builder.Services.AddScoped<IEnrollmentsPictureServices, EnrollmentsPictureServices>();
         builder.Services.AddScoped<IEnrollmentsServices, EnrollmentsServices>();
 
-        //mini-ITS.EmailService
+        //mini_ITS.EmailService
         builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));
         builder.Services.AddScoped<IEmailService, EmailService>();
+
+        //mini_ITS.SmsService
+        builder.Services.Configure<SmsOptions>(builder.Configuration.GetSection("SmsOptions"));
+        builder.Services.AddHttpClient<ISmsService, SmsService>();
+        builder.Services.AddScoped<ISmsService, SmsService>();
 
         //mini_ITS.Web.Controllers
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

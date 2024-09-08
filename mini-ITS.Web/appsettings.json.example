@@ -25,5 +25,11 @@
     "UserPassword": "your-password",
     "SecureSocketOption": "SslOnConnect"
   },
+  "SmsOptions": {
+    "ApiUrl": "https://api2.serwersms.pl",
+    "Sender": "mini-ITS",
+    "UserId": "userName",
+    "UserPassword": "password"
+  },
   "AllowedHosts": "*"
 }

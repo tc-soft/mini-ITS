@@ -47,6 +47,7 @@ public class Program
         builder.Services.AddScoped<IEnrollmentsDescriptionServices, EnrollmentsDescriptionServices>();
         builder.Services.AddScoped<IEnrollmentsPictureServices, EnrollmentsPictureServices>();
         builder.Services.AddScoped<IEnrollmentsServices, EnrollmentsServices>();
+        builder.Services.AddScoped<IEnrollmentNotificationService, EnrollmentNotificationService>();
 
         //mini_ITS.EmailService
         builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("EmailOptions"));

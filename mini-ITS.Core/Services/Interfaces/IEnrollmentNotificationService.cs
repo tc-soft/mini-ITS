@@ -6,5 +6,6 @@ namespace mini_ITS.Core.Services
     public interface IEnrollmentNotificationService
     {
         Task EnrollmentEvent1(Enrollments enrollment);
+        Task EnrollmentEvent2(Enrollments oldEnrollment, Enrollments newEnrollment);
     }
 }

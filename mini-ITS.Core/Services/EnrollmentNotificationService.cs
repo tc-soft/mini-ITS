@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using mini_ITS.Core.Models;
 using mini_ITS.Core.Options;
 using mini_ITS.EmailService;
 using mini_ITS.SmsService;
@@ -28,6 +29,20 @@ namespace mini_ITS.Core.Services
             _enrollmentEvent1Options = enrollmentEvent1Options.Value;
             _enrollmentEvent2Options = enrollmentEvent2Options.Value;
             _enrollmentEvent3Options = enrollmentEvent3Options.Value;
+        }
+
+        public string ReplacePlaceholders(string template, Enrollments enrollment)
+        {
+            var properties = typeof(Enrollments).GetProperties();
+
+            foreach (var property in properties)
+            {
+                var placeholder = "{" + property.Name + "}";
+                var value = property.GetValue(enrollment)?.ToString() ?? string.Empty;
+                template = template.Replace(placeholder, value);
+            }
+
+            return template;
         }
     }
 }

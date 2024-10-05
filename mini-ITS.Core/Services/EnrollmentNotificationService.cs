@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Options;
 using mini_ITS.Core.Models;
 using mini_ITS.Core.Options;
 using mini_ITS.EmailService;
@@ -43,6 +44,18 @@ namespace mini_ITS.Core.Services
             }
 
             return template;
+        }
+        public List<string> GenerateMessages(Dictionary<string, string> templates, Enrollments enrollment)
+        {
+            var messages = new List<string>();
+
+            foreach (var template in templates)
+            {
+                var message = ReplacePlaceholders(template.Value, enrollment);
+                messages.Add(message);
+            }
+
+            return messages;
         }
     }
 }

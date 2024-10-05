@@ -7,5 +7,6 @@ namespace mini_ITS.Core.Services
     {
         Task EnrollmentEvent1(Enrollments enrollment);
         Task EnrollmentEvent2(Enrollments oldEnrollment, Enrollments newEnrollment);
+        Task EnrollmentEvent3(Enrollments oldEnrollment, Enrollments newEnrollment);
     }
 }

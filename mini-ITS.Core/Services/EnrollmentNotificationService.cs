@@ -169,5 +169,66 @@ namespace mini_ITS.Core.Services
             }
             else await Task.Delay(1);
         }
+        public async Task EnrollmentEvent3(Enrollments oldEnrollment, Enrollments newEnrollment)
+        {
+            if (_enrollmentEvent3Options.Active && oldEnrollment.ReadyForClose == false && newEnrollment.ReadyForClose == true)
+            {
+                var admins = await _usersServices.GetAsync(null, "Administrator");
+                var departmentManagers = await _usersServices.GetAsync(newEnrollment.Department, "Manager");
+                var departmentUsers = await _usersServices.GetAsync(newEnrollment.Department, "User");
+                var createUser = await _usersServices.GetAsync(newEnrollment.UserAddEnrollment);
+
+                var emailTemplates = new Dictionary<string, string>
+                {
+                    { "Info1", _enrollmentEvent3Options.InfoToSendByEmail1 },
+                    { "Info2", _enrollmentEvent3Options.InfoToSendByEmail2 },
+                    { "Info3", _enrollmentEvent3Options.InfoToSendByEmail3 }
+                };
+
+                var emailMessages = GenerateMessages(emailTemplates, newEnrollment);
+                var messageMail = string.Join("<br />", emailMessages);
+
+                var smsTemplates = new Dictionary<string, string>
+                {
+                    { "Info1", _enrollmentEvent3Options.InfoToSendBySMS1 },
+                    { "Info2", _enrollmentEvent3Options.InfoToSendBySMS2 },
+                    { "Info3", _enrollmentEvent3Options.InfoToSendBySMS3 }
+                };
+
+                var smsMessages = GenerateMessages(smsTemplates, newEnrollment);
+                var messageSMS = string.Join(Environment.NewLine, smsMessages);
+
+                if (_enrollmentEvent3Options.InfoByMail)
+                {
+                    if (_enrollmentEvent3Options.InfoToAdmins)
+                        foreach (var admin in admins) await _emailSerivce.SendEmailAsync(admin.Email, "Informacja", messageMail);
+
+                    if (_enrollmentEvent3Options.InfoToDepartmentManagers)
+                        foreach (var manager in departmentManagers) await _emailSerivce.SendEmailAsync(manager.Email, "Informacja", messageMail);
+
+                    if (_enrollmentEvent3Options.InfoToDepartmentUsers)
+                        foreach (var user in departmentUsers) await _emailSerivce.SendEmailAsync(user.Email, "Informacja", messageMail);
+
+                    if (_enrollmentEvent3Options.InfoToCreateUser)
+                        await _emailSerivce.SendEmailAsync(createUser.Email, "Informacja", messageMail);
+                }
+
+                if (_enrollmentEvent3Options.InfoBySMS)
+                {
+                    if (_enrollmentEvent3Options.InfoToAdmins)
+                        foreach (var admin in admins) await _smsService.SendSmsAsync(admin.Phone, messageSMS);
+
+                    if (_enrollmentEvent3Options.InfoToDepartmentManagers)
+                        foreach (var manager in departmentManagers) await _smsService.SendSmsAsync(manager.Phone, messageSMS);
+
+                    if (_enrollmentEvent3Options.InfoToDepartmentUsers)
+                        foreach (var user in departmentUsers) await _smsService.SendSmsAsync(user.Phone, messageSMS);
+
+                    if (_enrollmentEvent3Options.InfoToCreateUser)
+                        await _smsService.SendSmsAsync(createUser.Phone, messageSMS);
+                }
+            }
+            else await Task.Delay(1);
+        }
     }
 }

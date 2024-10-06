@@ -41,7 +41,7 @@ namespace mini_ITS.Core.Tests.Services
                 cfg.CreateMap<Enrollments, EnrollmentsDto>();
             }).CreateMapper();
             _enrollmentsRepository = new EnrollmentsRepository(_sqlConnectionString);
-            _enrollmentsServices = new EnrollmentsServices(_enrollmentsRepository, _usersRepository, _mapper);
+            _enrollmentsServices = new EnrollmentsServices(_enrollmentsRepository, _usersRepository, _mapper, null);
         }
         [Test]
         public async Task GetAsync_CheckAll()
@@ -147,7 +147,7 @@ namespace mini_ITS.Core.Tests.Services
         {
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
-            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);
+            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login, false);
             var enrollmentDto = await _enrollmentsServices.GetAsync(id);
             EnrollmentsServicesTestsHelper.Check(enrollmentDto, enrollmentsDto);
             EnrollmentsServicesTestsHelper.Print(enrollmentDto);
@@ -162,7 +162,7 @@ namespace mini_ITS.Core.Tests.Services
         {
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
-            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);
+            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login, false);
             var enrollmentDto = await _enrollmentsServices.GetAsync(id);
             EnrollmentsServicesTestsHelper.Check(enrollmentDto, enrollmentsDto);
             EnrollmentsServicesTestsHelper.Print(enrollmentDto);
@@ -170,7 +170,7 @@ namespace mini_ITS.Core.Tests.Services
             TestContext.Out.WriteLine("\nUpdate enrollment by UpdateAsync(enrollmentsDto, username) and check valid...\n");
             var caesarHelper = new CaesarHelper();
             enrollmentDto = EnrollmentsServicesTestsHelper.Encrypt(caesarHelper, enrollmentDto);
-            await _enrollmentsServices.UpdateAsync(enrollmentDto, user.Login);
+            await _enrollmentsServices.UpdateAsync(enrollmentDto, user.Login, false);
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
 
             EnrollmentsServicesTestsHelper.Check(enrollmentDto);
@@ -184,7 +184,7 @@ namespace mini_ITS.Core.Tests.Services
 
             TestContext.Out.WriteLine("\nUpdate enrollment by UpdateAsync(enrollmentsDto, username) and check valid...\n");
             enrollmentDto = EnrollmentsServicesTestsHelper.Decrypt(caesarHelper, enrollmentDto);
-            await _enrollmentsServices.UpdateAsync(enrollmentDto, user.Login);
+            await _enrollmentsServices.UpdateAsync(enrollmentDto, user.Login, false);
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
 
             EnrollmentsServicesTestsHelper.Check(enrollmentDto);
@@ -206,7 +206,7 @@ namespace mini_ITS.Core.Tests.Services
         {
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
             var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
-            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login);
+            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login, false);
             var enrollmentDto = await _enrollmentsServices.GetAsync(id);
             EnrollmentsServicesTestsHelper.Check(enrollmentDto, enrollmentsDto);
             EnrollmentsServicesTestsHelper.Print(enrollmentDto);

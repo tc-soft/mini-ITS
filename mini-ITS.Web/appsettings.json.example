@@ -31,5 +31,57 @@
     "UserId": "userName",
     "UserPassword": "password"
   },
+  "EnrollmentEvents": {
+    "EnrollmentEvent1": {
+      "Description": "Nowe zgłoszenie w systemie",
+      "Active": true,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />zostało utworzone w systemie.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "zostało utworzone w systemie.\nZgłosił(a): {UserAddEnrollmentFullName}\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    },
+    "EnrollmentEvent2": {
+      "Description": "Zmiana statusu zgłoszenia z 'Nowe' na 'W trakcie'",
+      "Active": true,
+
+      "InfoBySMS": true,
+      "InfoByMail": true,
+      "InfoToCreateUser": false,
+      "InfoToDepartmentUsers": false,
+      "InfoToDepartmentManagers": true,
+      "InfoToAdmins": false,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />Nowe zgłoszenie gotowe do rozpoczęcia działania.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "Nowe zgłoszenie gotowe do rozpoczęcia działania.\nZgłosił(a): {UserAddEnrollmentFullName}\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    },
+    "EnrollmentEvent3": {
+      "Description": "Zmiana statusu zgłoszenia z 'W trakcie' na 'Gotowe do zamknięcia'",
+      "Active": true,
+
+      "InfoBySMS": true,
+      "InfoByMail": true,
+      "InfoToCreateUser": false,
+      "InfoToDepartmentUsers": false,
+      "InfoToDepartmentManagers": false,
+      "InfoToAdmins": true,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />jest gotowe do zamknięcia.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "jest gotowe do zamknięcia.\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    }
+  },
   "AllowedHosts": "*"
 }

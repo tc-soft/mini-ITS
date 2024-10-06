@@ -37,6 +37,7 @@ namespace mini_ITS.Web.Mapper
                 .ForMember(m => m.UserAddPictureFullName,
                     opt => opt.Condition((src, dest, srcMember) => string.IsNullOrEmpty(dest.UserAddPictureFullName))
                 );
+            cfg.CreateMap<Enrollments, Enrollments>();
             cfg.CreateMap<Enrollments, EnrollmentsDto>()
                 .ForMember(m => m.Description,
                     c => c.MapFrom(s => WebUtility.HtmlDecode(s.Description))

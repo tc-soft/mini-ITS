@@ -16,15 +16,18 @@ namespace mini_ITS.Core.Services
         private readonly IEnrollmentsRepository _enrollmentsRepository;
         private readonly IUsersRepository _usersRepository;
         private readonly IMapper _mapper;
+        private readonly IEnrollmentNotificationService _enrollmentNotificationService;
 
         public EnrollmentsServices(
             IEnrollmentsRepository enrollmentsRepository,
             IUsersRepository usersRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IEnrollmentNotificationService enrollmentNotificationService)
         {
             _enrollmentsRepository = enrollmentsRepository;
             _usersRepository = usersRepository;
             _mapper = mapper;
+            _enrollmentNotificationService = enrollmentNotificationService;
         }
         public async Task<IEnumerable<EnrollmentsDto>> GetAsync()
         {
@@ -47,7 +50,7 @@ namespace mini_ITS.Core.Services
             var nr = await _enrollmentsRepository.GetMaxNumberAsync(year);
             return nr;
         }
-        public async Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username)
+        public async Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests)
         {
             var user = await _usersRepository.GetAsync(username)
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
@@ -67,9 +70,15 @@ namespace mini_ITS.Core.Services
             enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";
 
             await _enrollmentsRepository.CreateAsync(enrollment);
+
+            if (disableNotificationInTests)
+            {
+                await _enrollmentNotificationService.EnrollmentEvent1(enrollment);
+            }
+
             return enrollment.Id;
         }
-        public async Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username)
+        public async Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests)
         {
             var user = await _usersRepository.GetAsync(username)
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
@@ -80,6 +89,8 @@ namespace mini_ITS.Core.Services
                 throw new Exception("Enrollment not found");
             }
 
+            var oldEnrollment = _mapper.Map<Enrollments>(enrollment);
+
             _mapper.Map(enrollmentsDto, enrollment);
 
             enrollment.DateModEnrollment = DateTime.UtcNow;
@@ -87,6 +98,12 @@ namespace mini_ITS.Core.Services
             enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";
 
             await _enrollmentsRepository.UpdateAsync(enrollment);
+
+            if (disableNotificationInTests)
+            {
+                await _enrollmentNotificationService.EnrollmentEvent2(oldEnrollment, enrollment);
+                await _enrollmentNotificationService.EnrollmentEvent3(oldEnrollment, enrollment);
+            }
         }
         public async Task DeleteAsync(Guid id)
         {

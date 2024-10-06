@@ -13,8 +13,8 @@ namespace mini_ITS.Core.Services
         Task<SqlPagedResult<EnrollmentsDto>> GetAsync(SqlPagedQuery<Enrollments> sqlPagedQuery);
         Task<EnrollmentsDto> GetAsync(Guid guid);
         Task<int> GetMaxNumberAsync(int year);
-        Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username);
-        Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username);
+        Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests = true);
+        Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests = true);
         Task DeleteAsync(Guid guid);
     }
 }

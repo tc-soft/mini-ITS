@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using mini_ITS.SchedulerService.Cron;
 using mini_ITS.SchedulerService.Options;
 
 namespace mini_ITS.SchedulerService.Services
@@ -9,6 +11,8 @@ namespace mini_ITS.SchedulerService.Services
     {
         protected readonly IOptionsMonitor<SchedulerOptionsConfig> _configMonitor;
         protected readonly ILogger _logger;
+        protected CronExpression _cronExpression;
+        protected DateTime? _nextRunTime;
 
         public string TaskName { get; }
 
@@ -17,6 +21,28 @@ namespace mini_ITS.SchedulerService.Services
             TaskName = taskName;
             _configMonitor = configMonitor;
             _logger = logger;
+
+            UpdateCronExpression();
+
+            _configMonitor.OnChange(config =>
+            {
+                UpdateCronExpression();
+            });
+        }
+        protected void UpdateCronExpression()
+        {
+            var taskConfig = _configMonitor.CurrentValue[TaskName];
+            if (taskConfig != null && taskConfig.Active)
+            {
+                _cronExpression = new CronExpression(taskConfig.Schedule);
+                _logger.LogInformation("Updated schedule for {TaskName}: {CronExpression}", TaskName, taskConfig.Schedule);
+            }
+            else
+            {
+                _cronExpression = null;
+                _logger.LogInformation("Task {TaskName} is inactive or does not exist in the configuration.", TaskName);
+            }
+            _nextRunTime = null;
         }
     }
 }

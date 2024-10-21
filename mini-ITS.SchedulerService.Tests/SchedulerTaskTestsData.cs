@@ -34,5 +34,47 @@ namespace mini_ITS.SchedulerService.Tests
                 yield return new TestCaseData("71,69", 0, 59);
             }
         }
+        public static IEnumerable<TestCaseData> ValidCronExpressionTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("* * * * *", "2025-01-12 14:30:00", "2025-01-12 14:31:00");
+                yield return new TestCaseData("15 14 * * 0", "2025-04-15 00:00:00", "2025-04-20 14:15:00");
+                yield return new TestCaseData("0 0 1 2 *", "2025-01-31 23:59:00", "2025-02-01 00:00:00");
+                yield return new TestCaseData("15 21 * 5 3", "2025-01-01 00:00:00", "2025-05-07 21:15:00");
+                yield return new TestCaseData("10 15 * 5 1", "2025-05-23 14:10:00", "2025-05-26 15:10:00");
+                yield return new TestCaseData("10 18 2 2 *", "2025-01-02 23:10:00", "2025-02-02 18:10:00");
+                yield return new TestCaseData("45 19 3 3 *", "2025-01-01 00:00:00", "2025-03-03 19:45:00");
+                yield return new TestCaseData("55 20 8 4 2", "2025-01-01 00:00:00", "2025-04-08 20:55:00");
+            }
+        }
+        public static IEnumerable<TestCaseData> InvalidDateCronExpressionTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("0 0 31 2 *");
+                yield return new TestCaseData("3 8 31 4 5");
+                yield return new TestCaseData("10 20 30 2 *");
+                yield return new TestCaseData("0 0 31 6 1");
+                yield return new TestCaseData("20 23 31 4 *");
+                yield return new TestCaseData("0 0 30 2 *");
+                yield return new TestCaseData("1,10,20 0 31 6 *");
+                yield return new TestCaseData("*/10 0 31 4 *");
+            }
+        }
+        public static IEnumerable<TestCaseData> InvalidCronExpressionTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("61 * * * *");
+                yield return new TestCaseData("71 * * * *");
+                yield return new TestCaseData("66 * * * *");
+                yield return new TestCaseData("99 * * * *");
+                yield return new TestCaseData("* 28 * * *");
+                yield return new TestCaseData("* * 32 * *");
+                yield return new TestCaseData("* * 47 * *");
+                yield return new TestCaseData("* * 51 * *");
+            }
+        }
     }
 }

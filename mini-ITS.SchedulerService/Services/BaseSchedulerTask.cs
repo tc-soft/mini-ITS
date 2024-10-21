@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -44,5 +45,6 @@ namespace mini_ITS.SchedulerService.Services
             }
             _nextRunTime = null;
         }
+        public abstract Task ExecuteAsyncTask();
     }
 }

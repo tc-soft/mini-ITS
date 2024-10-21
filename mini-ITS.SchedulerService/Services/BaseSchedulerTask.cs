@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -46,5 +47,44 @@ namespace mini_ITS.SchedulerService.Services
             _nextRunTime = null;
         }
         public abstract Task ExecuteAsyncTask();
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                if (_cronExpression == null)
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                    continue;
+                }
+
+                _nextRunTime = _cronExpression.GetNextOccurrence(DateTime.Now);
+
+                if (_nextRunTime.HasValue)
+                {
+                    var delay = _nextRunTime.Value - DateTime.Now;
+                    if (delay > TimeSpan.Zero)
+                    {
+                        await Task.Delay(delay, stoppingToken);
+                    }
+
+                    if (stoppingToken.IsCancellationRequested)
+                        break;
+
+                    try
+                    {
+                        await ExecuteAsyncTask();
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "An error occurred while executing the task.");
+
+                    }
+                }
+                else
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                }
+            }
+        }
     }
 }

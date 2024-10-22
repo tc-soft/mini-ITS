@@ -1,4 +1,5 @@
-﻿using mini_ITS.Core.Dto;
+﻿using System.Collections.Generic;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.SchedulerService
@@ -28,6 +29,17 @@ namespace mini_ITS.SchedulerService
             }
 
             return template;
+        }
+        public static List<string> GenerateMessages(Dictionary<string, string> templates, Enrollments enrollment)
+        {
+            var messages = new List<string>();
+            foreach (var template in templates)
+            {
+                var message = ReplacePlaceholders(template.Value, enrollment);
+                messages.Add(message);
+            }
+
+            return messages;
         }
     }
 }

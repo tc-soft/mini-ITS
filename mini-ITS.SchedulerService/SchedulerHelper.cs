@@ -41,5 +41,16 @@ namespace mini_ITS.SchedulerService
 
             return messages;
         }
+        public static List<string> GenerateMessages(Dictionary<string, string> templates, EnrollmentsDto enrollmentDto)
+        {
+            var messages = new List<string>();
+            foreach (var template in templates)
+            {
+                var message = ReplacePlaceholders(template.Value, enrollmentDto);
+                messages.Add(message);
+            }
+
+            return messages;
+        }
     }
 }

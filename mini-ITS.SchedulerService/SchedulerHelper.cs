@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
+using mini_ITS.Core.Services;
+using mini_ITS.EmailService;
 using mini_ITS.SchedulerService.Options;
+using mini_ITS.SmsService;
 
 namespace mini_ITS.SchedulerService
 {
     public class SchedulerHelper
     {
         public enum NotificationType { Email, SMS }
-        public static bool IsPhoneValid(string phone) { return Regex.IsMatch(phone, @"^\d+$")}
+        public static bool IsPhoneValid(string phone) { return Regex.IsMatch(phone, @"^\d+$"); }
 
         public static string ReplacePlaceholders(string template, Enrollments enrollment)
         {
@@ -102,6 +107,84 @@ namespace mini_ITS.SchedulerService
             }
 
             return recipients.Distinct().ToList();
+        }
+        public static async Task ProcessEnrollments(
+            IEnumerable<EnrollmentsDto> enrollments,
+            SchedulerOptions taskConfig,
+            IUsersServices usersServices,
+            IEmailService emailService,
+            ISmsService smsService,
+            ILogger logger,
+            string taskName)
+        {
+            foreach (var enrollment in enrollments)
+            {
+                var createUser = await usersServices.GetAsync(enrollment.UserAddEnrollment);
+                var departmentUsers = (await usersServices.GetAsync(enrollment.Department, "User")) ?? Enumerable.Empty<UsersDto>();
+                var departmentManagers = (await usersServices.GetAsync(enrollment.Department, "Manager")) ?? Enumerable.Empty<UsersDto>();
+                var admins = (await usersServices.GetAsync(null, "Administrator")) ?? Enumerable.Empty<UsersDto>();
+
+                if (createUser == null)
+                {
+                    logger.LogWarning("Failed to retrieve createUser for enrollment {EnrollmentId}", enrollment.Id);
+                    continue;
+                }
+
+                var smsTemplates = new Dictionary<string, string>
+                {
+                    { "Info1", taskConfig.InfoToSendBySMS1 },
+                    { "Info2", taskConfig.InfoToSendBySMS2 },
+                    { "Info3", taskConfig.InfoToSendBySMS3 }
+                };
+
+                var smsMessages = GenerateMessages(smsTemplates, enrollment);
+                var messageSMS = string.Join(Environment.NewLine, smsMessages);
+
+                var emailTemplates = new Dictionary<string, string>
+                {
+                    { "Info1", taskConfig.InfoToSendByEmail1 },
+                    { "Info2", taskConfig.InfoToSendByEmail2 },
+                    { "Info3", taskConfig.InfoToSendByEmail3 }
+                };
+
+                var emailMessages = GenerateMessages(emailTemplates, enrollment);
+                var messageMail = string.Join("<br />", emailMessages);
+
+                var smsRecipients = BuildRecipientsList(taskConfig, createUser, departmentUsers, departmentManagers, admins, NotificationType.SMS);
+                var emailRecipients = BuildRecipientsList(taskConfig, createUser, departmentUsers, departmentManagers, admins, NotificationType.Email);
+
+                if (smsRecipients.Any())
+                {
+                    foreach (var user in smsRecipients)
+                    {
+                        try
+                        {
+                            await smsService.SendSmsAsync(user.Phone, messageSMS);
+                            logger.LogInformation("{TaskName}: SendSmsAsync to {user.Login}, phone: {user.Phone}.", taskName, user.Login, user.Phone);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "Failed to send SMS to {user.Login}, phone: {user.Phone}", user.Login, user.Phone);
+                        }
+                    }
+                }
+
+                if (emailRecipients.Any())
+                {
+                    foreach (var user in emailRecipients)
+                    {
+                        try
+                        {
+                            await emailService.SendEmailAsync(user.Email, "Informacja", messageMail);
+                            logger.LogInformation("{TaskName}: SendEmailAsync to {user.Login}, email: {user.Email}.", taskName, user.Login, user.Email);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, "Failed to send email to {user.Login}, email: {user.Email}", user.Login, user.Email);
+                        }
+                    }
+                }
+            }
         }
     }
 }

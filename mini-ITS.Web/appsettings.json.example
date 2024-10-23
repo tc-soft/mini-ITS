@@ -83,5 +83,73 @@
       "InfoToSendBySMS3": "System mini-ITS"
     }
   },
+  "Scheduling": {
+    "SchedulerTask1": {
+      "Description": "Reakcja na nowe zgłoszenia bez zmiany statusu",
+      "Active": false,
+      "Schedule": "0 0 * * *",
+      "Days": 2,
+
+      "InfoBySMS": false,
+      "InfoByMail": false,
+
+      "InfoToCreateUser": false,
+      "InfoToDepartmentUsers": false,
+      "InfoToDepartmentManagers": false,
+      "InfoToAdmins": false,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />Brak reakcji odbiorcy zgłoszenia.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "Brak reakcji odbiorcy zgłoszenia.\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    },
+    "SchedulerTask2": {
+      "Description": "Reakcja na zgłoszenia o zbliżającym sie terminem zakończenia",
+      "Active": false,
+      "Schedule": "0 0 * * *",
+      "Days": 1,
+
+      "InfoBySMS": false,
+      "InfoByMail": false,
+
+      "InfoToCreateUser": false,
+      "InfoToDepartmentUsers": false,
+      "InfoToDepartmentManagers": false,
+      "InfoToAdmins": false,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />Jutro jest planowany termin zamknięcia zgłoszenia.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "Jutro jest planowany termin zamknięcia zgłoszenia.\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    },
+    "SchedulerTask3": {
+      "Description": "Reakcja na zgłoszenia po terminie",
+      "Active": false,
+      "Schedule": "0 0 * * *",
+      "Days": 1,
+
+      "InfoBySMS": false,
+      "InfoByMail": false,
+
+      "InfoToCreateUser": false,
+      "InfoToDepartmentUsers": false,
+      "InfoToDepartmentManagers": false,
+      "InfoToAdmins": false,
+
+      "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />Zgłoszenie jest po terminie, brak reakcji.<br />",
+      "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
+      "InfoToSendByEmail3": "<p><font color='blue'>System mini-ITS</font></p>",
+
+      "InfoToSendBySMS1": "Zgłoszenie Nr: {Nr}/{Year}",
+      "InfoToSendBySMS2": "Zgłoszenie jest po terminie, brak reakcji.\n",
+      "InfoToSendBySMS3": "System mini-ITS"
+    }
+  },
   "AllowedHosts": "*"
 }

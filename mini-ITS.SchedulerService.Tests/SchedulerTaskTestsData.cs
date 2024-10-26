@@ -76,5 +76,19 @@ namespace mini_ITS.SchedulerService.Tests
                 yield return new TestCaseData("* * 51 * *");
             }
         }
+        public static IEnumerable<TestCaseData> ValidCronScheduleTestCases
+        {
+            get
+            {
+                yield return new TestCaseData("0 0 * * *");
+                yield return new TestCaseData("0 12 * * 1");
+                yield return new TestCaseData("9 21 * * 2");
+                yield return new TestCaseData("*/5 * * * *");
+                yield return new TestCaseData("*/15 * * * *");
+                yield return new TestCaseData("*/32 * * * *");
+                yield return new TestCaseData("1,3,4 * * * 1");
+                yield return new TestCaseData("2,8,10 0 * * 3");
+            }
+        }
     }
 }

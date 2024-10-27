@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using mini_ITS.SchedulerService.Options;
 using mini_ITS.SchedulerService.Services;
 
@@ -26,6 +27,25 @@ namespace mini_ITS.SchedulerService.Tests.Services
             var task = new SchedulerTask2(optionsMonitor, logger, serviceProvider);
 
             Assert.That(task, Is.Not.Null, "SchedulerTask2 should be initialized correctly.");
+        }
+        [TestCaseSource(typeof(SchedulerTaskTestsData), nameof(SchedulerTaskTestsData.InvalidCronScheduleTestCases))]
+        public void InvalidScheduleTest(string schedule)
+        {
+            var scheduleOptionsConfig = new SchedulerOptionsConfig
+            {
+                ["SchedulerTask2"] = new SchedulerOptions
+                {
+                    Active = true,
+                    Schedule = schedule
+                }
+            };
+
+            var optionsMonitor = new MockOptionsMonitor<SchedulerOptionsConfig>(scheduleOptionsConfig);
+            var serviceProvider = new MockServiceProvider();
+            var logger = new MockLogger<SchedulerTask2>();
+
+            Assert.Throws<FormatException>(() => new SchedulerTask2(optionsMonitor, logger, serviceProvider),
+               "ScheduleTask2 should throw FormatException for an invalid schedule.");
         }
     }
 }

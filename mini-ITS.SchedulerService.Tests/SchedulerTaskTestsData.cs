@@ -104,5 +104,15 @@ namespace mini_ITS.SchedulerService.Tests
                 yield return new TestCaseData(null);
             }
         }
+        public static IEnumerable<TestCaseData> ExecuteAsyncTaskTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(true, true);
+                yield return new TestCaseData(false, false);
+                yield return new TestCaseData(true, false);
+                yield return new TestCaseData(false, true);
+            }
+        }
     }
 }

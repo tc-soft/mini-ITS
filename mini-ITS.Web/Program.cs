@@ -10,6 +10,8 @@ using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
 using mini_ITS.Core.Services;
 using mini_ITS.EmailService;
+using mini_ITS.SchedulerService.Options;
+using mini_ITS.SchedulerService.Services;
 using mini_ITS.SmsService;
 using mini_ITS.Web.Mapper;
 public class Program
@@ -60,6 +62,18 @@ public class Program
         builder.Services.Configure<SmsOptions>(builder.Configuration.GetSection("SmsOptions"));
         builder.Services.AddHttpClient<ISmsService, SmsService>();
         builder.Services.AddScoped<ISmsService, SmsService>();
+
+        //mini_ITS.SchedulerService
+        builder.Services.Configure<SchedulerOptionsConfig>(builder.Configuration.GetSection("Scheduling"));
+        builder.Services.AddSingleton<SchedulerTask1>();
+        builder.Services.AddSingleton<SchedulerTask2>();
+        builder.Services.AddSingleton<SchedulerTask3>();
+        builder.Services.AddSingleton<ISchedulerTask>(provider => provider.GetRequiredService<SchedulerTask1>());
+        builder.Services.AddSingleton<ISchedulerTask>(provider => provider.GetRequiredService<SchedulerTask2>());
+        builder.Services.AddSingleton<ISchedulerTask>(provider => provider.GetRequiredService<SchedulerTask3>());
+        builder.Services.AddHostedService(provider => provider.GetRequiredService<SchedulerTask1>());
+        builder.Services.AddHostedService(provider => provider.GetRequiredService<SchedulerTask2>());
+        builder.Services.AddHostedService(provider => provider.GetRequiredService<SchedulerTask3>());
 
         //mini_ITS.Web.Controllers
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

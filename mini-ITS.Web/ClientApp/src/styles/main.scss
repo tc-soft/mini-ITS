@@ -1,6 +1,6 @@
+@use "./variables" as vars;
+@use "./normalize";
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap');
-@import "./normalize";
-@import "./variables";
 
 p, h1, h2, h3, h4, ul, li {
     margin: 0;
@@ -40,7 +40,7 @@ body {
             a {
                 display: inline-block;
                 width: 135px;
-                color: $color00;
+                color: vars.$color00;
                 text-decoration: none;
                 text-align: center;
                 vertical-align: middle;
@@ -68,7 +68,7 @@ body {
             a {
                 display: inline-block;
                 width: 50px;
-                color: $color00;
+                color: vars.$color00;
                 text-decoration: none;
                 text-align: center;
                 vertical-align: middle;
@@ -129,34 +129,34 @@ body {
 
         &--yes {
             color: white;
-            background-color: $modalDialog-buttonYes-background-color;
-            border: 1px solid $modalDialog-buttonYes-background-color;
+            background-color: vars.$modalDialog-buttonYes-background-color;
+            border: 1px solid vars.$modalDialog-buttonYes-background-color;
 
             &:hover {
-                background-color: $modalDialog-buttonYes-background-hover-color;
-                border: 1px solid $modalDialog-buttonYes-background-hover-color;
+                background-color: vars.$modalDialog-buttonYes-background-hover-color;
+                border: 1px solid vars.$modalDialog-buttonYes-background-hover-color;
             }
         }
 
         &--no {
             color: black;
-            background-color: $modalDialog-buttonNo-background-color;
+            background-color: vars.$modalDialog-buttonNo-background-color;
             border: 1px solid #CCD5E9;
 
             &:hover {
-                background-color: $modalDialog-buttonNo-background-hover-color;
+                background-color: vars.$modalDialog-buttonNo-background-hover-color;
                 border: 1px solid #CCD5E9;
             }
         }
 
         &--ok {
             color: white;
-            background-color: $modalDialog-buttonOk-background-color;
-            border: 1px solid $modalDialog-buttonOk-background-color;
+            background-color: vars.$modalDialog-buttonOk-background-color;
+            border: 1px solid vars.$modalDialog-buttonOk-background-color;
 
             &:hover {
-                background-color: $modalDialog-buttonOk-background-hover-color;
-                border: 1px solid $modalDialog-buttonOk-background-hover-color;
+                background-color: vars.$modalDialog-buttonOk-background-hover-color;
+                border: 1px solid vars.$modalDialog-buttonOk-background-hover-color;
             }
         }
     }

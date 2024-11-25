@@ -1,4 +1,4 @@
-@import "../variables";
+@use "../variables" as vars;
 
 .usersList {
     padding: 0 1rem 0 1rem;
@@ -17,7 +17,7 @@
                 margin-right: 1rem;
                 font-size: 1.2rem;
                 font-weight: 600;
-                color: $lists-title-text-color;
+                color: vars.$lists-title-text-color;
             }
 
             a {
@@ -33,14 +33,14 @@
                     padding: 0.5rem 0.9rem;
                     font-size: 0.8rem;
                     color: white;
-                    background-color: $lists-buttonAdd-background-color;
+                    background-color: vars.$lists-buttonAdd-background-color;
                     border: 0;
                     border-radius: 3px;
                     transition: 200ms;
                     cursor: pointer;
 
                     &:hover {
-                        background-color: $lists-buttonAdd-background-hover-color;
+                        background-color: vars.$lists-buttonAdd-background-hover-color;
                     }
 
                     img {
@@ -60,7 +60,7 @@
             div {
                 select {
                     width: 150px;
-                    border: 1px solid $lists-selectFilter-border-color;
+                    border: 1px solid vars.$lists-selectFilter-border-color;
                     border-radius: 3px;
                     outline: none;
 
@@ -72,7 +72,7 @@
 
                     &:focus {
                         border: 1px solid transparent;
-                        outline: 2px solid $lists-selectFilter-border-focus-color;
+                        outline: 2px solid vars.$lists-selectFilter-border-focus-color;
                     }
                 }
 
@@ -98,7 +98,7 @@
         border-collapse: collapse;
 
         thead {
-            color: $lists-table-thead-text-color;
+            color: vars.$lists-table-thead-text-color;
 
             tr {
                 text-align: left;
@@ -106,14 +106,14 @@
                 th {
                     height: 2rem;
                     padding: 8px 8px 8px 20px;
-                    border: 1px solid $lists-table-border-color;
-                    border-bottom: 2px solid $lists-table-border-color;
+                    border: 1px solid vars.$lists-table-border-color;
+                    border-bottom: 2px solid vars.$lists-table-border-color;
                 }
             }
         }
 
         tbody {
-            color: $lists-table-data-text-color;
+            color: vars.$lists-table-data-text-color;
 
             tr {
                 display: table-row;
@@ -123,7 +123,7 @@
                 td {
                     vertical-align: middle;
                     padding: 5px 20px 5px 20px;
-                    border: 1px solid $lists-table-border-color;
+                    border: 1px solid vars.$lists-table-border-color;
 
                     span {
                         display: inline-block;
@@ -145,7 +145,7 @@
                     }
 
                     span:hover {
-                        background-color: $lists-table-icon-hover-color;
+                        background-color: vars.$lists-table-icon-hover-color;
                     }
 
                     img {
@@ -182,8 +182,8 @@
         div {
             padding-left: 10px;
             padding-right: 10px;
-            border-top: 1px solid $lists-paginationIcons-border-color;
-            border-bottom: 1px solid $lists-paginationIcons-border-color;
+            border-top: 1px solid vars.$lists-paginationIcons-border-color;
+            border-bottom: 1px solid vars.$lists-paginationIcons-border-color;
 
             button {
                 width: 2.6rem;
@@ -195,13 +195,13 @@
             }
 
             button:hover {
-                background-color: $lists-paginationIcons-background-hover-color;
+                background-color: vars.$lists-paginationIcons-background-hover-color;
             }
         }
 
         &--buttonActive {
             font-weight: bold;
-            border-color: $lists-paginationIcons-border-active-color !important;
+            border-color: vars.$lists-paginationIcons-border-active-color !important;
         }
     }
 }
@@ -218,7 +218,7 @@
         align-items: center;
         align-content: center;
         padding: 1rem 0rem;
-        border-bottom: 1px solid $forms-title-bottom-color;
+        border-bottom: 1px solid vars.$forms-title-bottom-color;
 
         img {
             margin-right: 0.5rem;
@@ -227,7 +227,7 @@
         p {
             font-size: 1.4rem;
             font-weight: 400;
-            color: $forms-title-text-color;
+            color: vars.$forms-title-text-color;
         }
     }
 
@@ -246,7 +246,7 @@
 
         p {
             font-size: 0.9rem;
-            color: $forms-title-text-color;
+            color: vars.$forms-title-text-color;
 
             span {
                 margin-left: 0.2rem;
@@ -278,7 +278,7 @@
                 align-content: center;
                 font-size: 0.8rem;
                 font-weight: 600;
-                color: $forms-label-color;
+                color: vars.$forms-label-color;
             }
 
             &__input {
@@ -287,17 +287,17 @@
                 padding: 0.5rem;
                 box-sizing: border-box;
                 font-size: 0.9rem;
-                color: $forms-input-color;
-                border: 1px solid $forms-input-border-color;
+                color: vars.$forms-input-color;
+                border: 1px solid vars.$forms-input-border-color;
                 border-radius: 5px;
                 outline: none;
 
                 &:hover {
-                    border-color: $forms-input-hover-color;
+                    border-color: vars.$forms-input-hover-color;
                 }
 
                 &:focus {
-                    border-color: $forms-input-focus-color;
+                    border-color: vars.$forms-input-focus-color;
                 }
             }
 
@@ -307,17 +307,17 @@
                 padding: 0.3rem;
                 box-sizing: border-box;
                 font-size: 0.9rem;
-                color: $forms-input-color;
-                border: 1px solid $forms-input-border-color;
+                color: vars.$forms-input-color;
+                border: 1px solid vars.$forms-input-border-color;
                 border-radius: 5px;
                 outline: none;
 
                 &:hover {
-                    border-color: $forms-input-hover-color;
+                    border-color: vars.$forms-input-hover-color;
                 }
 
                 &:focus {
-                    border-color: $forms-input-focus-color;
+                    border-color: vars.$forms-input-focus-color;
                 }
             }
 
@@ -330,24 +330,24 @@
                 align-content: center;
                 margin-top: 0.4rem;
                 font-size: 0.9rem;
-                border: 1px solid $forms-input-border-color;
+                border: 1px solid vars.$forms-input-border-color;
                 border-radius: 5px;
                 outline: none;
 
                 &--active {
                     &:hover {
-                        border-color: $forms-input-hover-color;
+                        border-color: vars.$forms-input-hover-color;
                     }
                 }
 
                 &--focus {
-                    border-color: $forms-input-hover-color;
+                    border-color: vars.$forms-input-hover-color;
                 }
 
                 input {
                     width: 100%;
                     padding: 0.5rem;
-                    color: $forms-input-color;
+                    color: vars.$forms-input-color;
                     border: none;
                     border-radius: 5px;
                     outline: none;
@@ -355,7 +355,7 @@
 
                 button {
                     align-self: stretch;
-                    background-color: $forms-input-icon-border-color;
+                    background-color: vars.$forms-input-icon-border-color;
                     border: none;
                     border-top-right-radius: 4px;
                     border-bottom-right-radius: 4px;
@@ -388,7 +388,7 @@
         width: 32rem;
         margin: 1rem 2rem;
         padding-bottom: 2rem;
-        border-bottom: 1px solid $forms-submit-border-bottom-color;
+        border-bottom: 1px solid vars.$forms-submit-border-bottom-color;
 
         a {
             text-decoration: none;
@@ -419,23 +419,23 @@
 
             &--saveButton {
                 color: white;
-                background-color: $forms-submit-buttonSave-background-color;
-                border: 1px solid $forms-submit-buttonSave-background-color;
+                background-color: vars.$forms-submit-buttonSave-background-color;
+                border: 1px solid vars.$forms-submit-buttonSave-background-color;
 
                 &:hover {
-                    background-color: $forms-submit-buttonSave-background-hover-color;
-                    border: 1px solid $forms-submit-buttonSave-background-hover-color;
+                    background-color: vars.$forms-submit-buttonSave-background-hover-color;
+                    border: 1px solid vars.$forms-submit-buttonSave-background-hover-color;
                 }
             }
 
             &--cancelButton {
-                color: $forms-submit-buttonCancel-color;
-                background-color: $forms-submit-buttonCancel-background-color;
-                border: 1px solid $forms-submit-buttonCancel-border-color;
+                color: vars.$forms-submit-buttonCancel-color;
+                background-color: vars.$forms-submit-buttonCancel-background-color;
+                border: 1px solid vars.$forms-submit-buttonCancel-border-color;
 
                 &:hover {
-                    background-color: $forms-submit-buttonCancel-background-hover-color;
-                    border: 1px solid $forms-submit-buttonCancel-border-color;
+                    background-color: vars.$forms-submit-buttonCancel-background-hover-color;
+                    border: 1px solid vars.$forms-submit-buttonCancel-border-color;
                 }
             }
         }

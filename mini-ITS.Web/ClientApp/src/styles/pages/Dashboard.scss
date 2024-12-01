@@ -1,0 +1,103 @@
+﻿@use "../variables" as vars;
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0rem 1rem 0 1rem;
+
+    &__panel {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    &__info {
+        display: block;
+    }
+
+    &__image {
+        img {
+            margin-left: -4rem;
+            opacity: 0.85;
+        }
+    }
+
+    &__titleText1 {
+        padding-bottom: 0.5rem;
+        font-size: 1.7rem;
+        font-weight: 600;
+        color: vars.$dashboard-textColor;
+        border-bottom: 1px solid vars.$dashboard-lineColor;
+    }
+
+    &__titleText2 {
+        margin-bottom: 2.5rem;
+        padding-top: 1rem;
+        font-size: 1.1rem;
+        color: vars.$dashboard-textColor;
+    }
+
+    &__text {
+        margin-bottom: 0.3rem;
+        font-size: 1.1rem;
+        color: vars.$dashboard-textColor;
+
+        strong {
+            font-weight: 700;
+        }
+
+        &--red {
+            color: red;
+        }
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    &__button {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding: 0.5rem 1.0rem;
+        font-size: 1.1rem;
+        color: white;
+        background: vars.$dashboard-button-background-color;
+        border: 0;
+        border-radius: 3px;
+        transition: 200ms;
+        cursor: pointer;
+
+        &:hover {
+            background: vars.$dashboard-button-background-color-hover;
+        }
+    }
+
+    &__company {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 10.2rem 0 3.6rem 0;
+    }
+
+    &__companyText {
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+        color: vars.$dashboard-textColor;
+
+        strong {
+            font-weight: 500;
+        }
+    }
+
+    &__logo {
+        padding: 0rem 0 1.4rem 0;
+        text-decoration: none;
+    }
+}

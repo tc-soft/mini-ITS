@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { enrollmentServices } from '../../services/EnrollmentServices';
+import welcomeImage from '../../images/welcomeImage.svg';
+
+import '../../styles/pages/Dashboard.scss';
 
 const Dashboard = () => {
     const { currentUser } = useAuth();
@@ -27,7 +30,8 @@ const Dashboard = () => {
     const [numberOfNewEnrollments, setNumberOfNewEnrollments] = useState(null);
     const [numberOfAssignedEnrollments, setNumberOfAssignedEnrollmrnts] = useState(null);
     const [companyName, setCompanyName] = useState('');
-    
+    const [companyLink, setCompanyLink] = useState('');
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -59,6 +63,7 @@ const Dashboard = () => {
                 }
                 const companyData = await companyResponse.json();
                 setCompanyName(companyData.companyName);
+                setCompanyLink(companyData.companyLink);
             }
             catch (error) {
                 console.error('Error fetching data:', error);
@@ -69,33 +74,41 @@ const Dashboard = () => {
     }, [pagedQuery]);
 
     return (
-        <div>
-            <h3>Witaj {currentUser.firstName}</h3>
-            <p>mini-ITS jest gotowy na Twoje działania.</p>
-            <br />
+        <div className='dashboard'>
+            <div className='dashboard__panel'>
+                <div className='dashboard__info'>
+                    <h3 className='dashboard__titleText1'>Witaj {currentUser.firstName}</h3>
+                    <p className='dashboard__titleText2'>mini-ITS jest gotowy na Twoje działania.</p>
 
-            <p>
-                Nowe zgłoszenia:&nbsp;<strong>{numberOfNewEnrollments}</strong>
-            </p>
-            <p>
-                Otwarte&nbsp;zgłoszenia:&nbsp;<strong>{numberOfAssignedEnrollments}</strong>
-            </p>
-            <br />
+                    <p className="dashboard__text">
+                        Nowe zgłoszenia:&nbsp;<strong className="dashboard__text--red">{numberOfNewEnrollments}</strong>
+                    </p>
+                    <p className="dashboard__text">
+                        Otwarte&nbsp;zgłoszenia:&nbsp;<strong>{numberOfAssignedEnrollments}</strong>
+                    </p>
 
-            <Link to='/Enrollments'
-                state={{
-                    initialDepartmentFilter: currentUser.department,
-                    initialStateFilter: 'New'
-                }}
-            >
-                <button>
-                    Nowe zgłoszenia
-                </button>
-            </Link>
+                    <Link to='/Enrollments'
+                        state={{
+                            initialDepartmentFilter: currentUser.department,
+                            initialStateFilter: 'New'
+                        }}
+                    >
+                        <button className='dashboard__button'>
+                            Nowe zgłoszenia
+                        </button>
+                    </Link>
 
-            <div>
-                <p>{companyName}</p>
-                <p><strong>Dział: {currentUser.department}</strong></p>    
+                    <div className='dashboard__company'>
+                        <a className="dashboard__logo" href={companyLink}>
+                            <img src='/Logo.svg' alt="Welcome image" />
+                        </a>
+                        <p className='dashboard__companyText'>{companyName}</p>
+                        <p className='dashboard__companyText'><strong>Dział: {currentUser.department}</strong></p>    
+                    </div>
+                </div>
+                <div className='dashboard__image'>
+                    <img src={welcomeImage} alt='Welcome image' />
+                </div>
             </div>
         </div>
     );

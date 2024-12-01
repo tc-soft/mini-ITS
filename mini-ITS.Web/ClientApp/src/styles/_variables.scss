@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $color00: black;
 $color01: #666;
 $color02: #777;
@@ -57,3 +59,19 @@ $forms-submit-buttonCancel-border-color: #CCD5E9;
 
 //DatePicker
 $datepicker-header: #F3F8FF;
+
+//Dashboard
+$dashboard-textColor: #7383AC;
+$dashboard-lineColor: #D9DFED;
+$dashboard-button-color1: rgb(126, 192, 225);
+$dashboard-button-color2: rgb(121, 211, 95);
+$dashboard-button-background-color:
+    linear-gradient(45deg,
+        $dashboard-button-color1 0%,
+        $dashboard-button-color2 79%
+    );
+$dashboard-button-background-color-hover:
+    linear-gradient( 45deg,
+    color.scale($dashboard-button-color1, $lightness: 10%) 0%,
+    color.scale($dashboard-button-color2, $lightness: 10%) 79%
+    );

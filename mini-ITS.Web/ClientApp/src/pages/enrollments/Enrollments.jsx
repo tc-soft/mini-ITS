@@ -1,13 +1,26 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import EnrollmentsList from './EnrollmentsList';
 import EnrollmentsForm from './EnrollmentsForm';
-import EnrollmentsDescriptionForm from './EnrollmentsDescriptionForm';
-import EnrollmentsAddDescriptionSetEndDate from './EnrollmentsDescriptionFormSetEndDate';
 
 const Enrollments = () => {
+    const location = useLocation();
+    const initialStateFilter = location.state?.initialStateFilter || '';
+    const initialDepartmentFilter = location.state?.initialDepartmentFilter || '';
+
     const [pagedQuery, setPagedQuery] = useState({
-        filter: null,
+        filter: initialDepartmentFilter ? [
+            {
+                name: 'State',
+                operator: '=',
+                value: initialStateFilter
+            },
+            {
+                name: 'Department',
+                operator: '=',
+                value: initialDepartmentFilter
+            }
+        ] : null,
         sortColumnName: 'DateAddEnrollment',
         sortDirection: 'DESC',
         page: 1,
@@ -20,8 +33,8 @@ const Enrollments = () => {
         page: 1,
         resultsPerPage: 100
     });
-    const [activeStateFilter, setActiveStateFilter] = useState('');
-    const [activeDepartmentFilter, setActiveDepartmentFilter] = useState('');
+    const [activeStateFilter, setActiveStateFilter] = useState(initialStateFilter);
+    const [activeDepartmentFilter, setActiveDepartmentFilter] = useState(initialDepartmentFilter);
 
     return (
         <Routes>

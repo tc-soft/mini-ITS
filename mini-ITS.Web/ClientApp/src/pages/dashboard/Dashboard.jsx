@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 
@@ -80,6 +81,17 @@ const Dashboard = () => {
                 Otwarte&nbsp;zgłoszenia:&nbsp;<strong>{numberOfAssignedEnrollments}</strong>
             </p>
             <br />
+
+            <Link to='/Enrollments'
+                state={{
+                    initialDepartmentFilter: currentUser.department,
+                    initialStateFilter: 'New'
+                }}
+            >
+                <button>
+                    Nowe zgłoszenia
+                </button>
+            </Link>
 
             <div>
                 <p>{companyName}</p>

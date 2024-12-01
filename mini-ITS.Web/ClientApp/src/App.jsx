@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './components/AuthProvider';
 import RequireAuth from './pages/login/RequireAuth';
+import Dashboard from './pages/dashboard/Dashboard';
 import Login from './pages/login/Login';
 import Enrollments from './pages/enrollments/Enrollments';
 import Groups from './pages/groups/Groups';
@@ -44,7 +45,7 @@ const App = () => {
                 <Routes>
                     <Route path='/' element={
                         <RequireAuth>
-                            <p>Strona główna</p>
+                            <Dashboard />
                         </RequireAuth>}
                     />
                     <Route path='/Enrollments/*' element={

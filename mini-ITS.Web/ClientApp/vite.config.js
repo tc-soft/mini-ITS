@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react'
+import { version } from './package.json';
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
@@ -63,5 +64,8 @@ export default defineConfig({
                 api: "modern-compiler"
             }
         }
+    },
+    define: {
+        __APP_VERSION__: JSON.stringify(version),
     }
 })

@@ -68,7 +68,7 @@ const App = () => {
             </section>
 
             <footer className='main-footer'>
-                <p>©2024 mini-ITS</p>
+                <p>©2024 mini-ITS v{__APP_VERSION__}</p>
             </footer>
         </main>
     );

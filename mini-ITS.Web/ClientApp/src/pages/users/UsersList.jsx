@@ -304,12 +304,14 @@ const UsersList = (props) => {
                     <div>
                         Dział : &nbsp;
                         <select value={activeDepartmentFilter} onChange={handleDepartmentFilter}>
+                            <option value=''>-- Wszystkie --</option>
                             {mapDepartment.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
                         </select>
                     </div>
                     <div>
                         Rola : &nbsp;
                         <select value={activeRoleFilter} onChange={handleRoleFilter}>
+                            <option value=''>-- Wszystkie --</option>
                             {mapRole.map((x, y) => <option key={y} value={x.value}>{x.name}</option>)}
                         </select>
                     </div>

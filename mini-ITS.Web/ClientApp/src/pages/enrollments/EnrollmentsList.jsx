@@ -345,14 +345,14 @@ const EnrollmentsList = (props) => {
             <table className='enrollmentsList-table'>
                 <thead>
                     <tr>
-                        <th style={{ width: '07%' }}>Nr</th>
-                        <th style={{ width: '07%' }}>Data wpr.</th>
-                        <th style={{ width: '07%' }}>Data zak.</th>
-                        <th style={{ width: '15%' }}>Opis</th>
+                        <th style={{ width: '05%' }}>Nr</th>
+                        <th style={{ width: '05%' }}>Data wpr.</th>
+                        <th style={{ width: '05%' }}>Data zak.</th>
+                        <th style={{ width: '25%' }}>Opis</th>
                         <th style={{ width: '10%' }}>Zgłaszający</th>
                         <th style={{ width: '10%' }}>Dział docelowy</th>
-                        <th style={{ width: '07%' }}>Priorytet</th>
-                        <th style={{ width: '07%' }}>Status</th>
+                        <th style={{ width: '05%' }}>Priorytet</th>
+                        <th style={{ width: '05%' }}>Status</th>
                         <th style={{ width: '05%' }}>Gotowe</th>
                         <th style={{ width: '25%' }}>Operacje</th>
                     </tr>
@@ -360,7 +360,7 @@ const EnrollmentsList = (props) => {
                 <tbody>
                     {enrollments.results && enrollments.results.map((enrollment, index) => {
                         const dateaddenrollment = enrollment.dateAddEnrollment ? format(new Date(enrollment.dateAddEnrollment), 'dd.MM.yyyy') : '';
-                        const dateendenrollment = enrollment.dateEndEnrollment ? format(new Date(enrollment.dateEndEnrollment), 'dd.MM.yyyy') : '';
+                        const dateendenrollment = enrollment.dateEndDeclareByDepartment ? format(new Date(enrollment.dateEndDeclareByDepartment), 'dd.MM.yyyy') : '';
                         return (
                             <tr key={index} style={{
                                 backgroundColor: enrollment.priority === 2 ? 'lavenderblush' : 'inherit'
@@ -368,7 +368,11 @@ const EnrollmentsList = (props) => {
                                 <td>{enrollment.nr}/{enrollment.year}</td>
                                 <td>{dateaddenrollment}</td>
                                 <td>{dateendenrollment}</td>
-                                <td>{enrollment.description}</td>
+                                <td>
+                                    {enrollment.description.length > 60
+                                        ? `${enrollment.description.substring(0, 60)}...`
+                                        : enrollment.description}
+                                </td>
                                 <td>{enrollment.userAddEnrollmentFullName}</td>
                                 <td>{enrollment.department}</td>
                                 <td>{mapPriority[enrollment.priority] || enrollment.priority}</td>

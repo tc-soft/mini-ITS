@@ -164,7 +164,14 @@ const EnrollmentsForm = (props) => {
                             )
                         ),
 
-                    isReadyForCloseDisabled: isReadMode || data.state === 'New' || data.state === 'Closed' || currentUser.department !== data.department,
+                    isReadyForCloseDisabled: isReadMode || (
+                        currentUser.role !== 'Administrator' &&
+                        (
+                            data.state === 'New' ||
+                            data.state === 'Closed' ||
+                            currentUser.department !== data.department
+                        )
+                    ),
 
                     isStateDisabled: isReadMode || currentUser.role !== 'Administrator',
 
@@ -746,7 +753,6 @@ const EnrollmentsForm = (props) => {
                                                 disabled={true}
                                                 onChange={(date) => field.onChange(date.toISOString())}
                                                 onBlur={field.onBlur}
-                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                                 className='enrollmentsForm-detail-section__datePicker'
                                                 dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                                 locale={pl}
@@ -773,7 +779,6 @@ const EnrollmentsForm = (props) => {
                                                         disabled={true}
                                                         onChange={(date) => field.onChange(date.toISOString())}
                                                         onBlur={field.onBlur}
-                                                        filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                                         className='enrollmentsForm-detail-section__datePicker'
                                                         dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                                         locale={pl}
@@ -913,7 +918,6 @@ const EnrollmentsForm = (props) => {
                                                         disabled={isReadMode}
                                                         onChange={(date) => field.onChange(date.toISOString())}
                                                         onBlur={field.onBlur}
-                                                        filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                                         className='enrollmentsForm-detail-section__datePicker'
                                                         dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                                         locale={pl}
@@ -953,9 +957,22 @@ const EnrollmentsForm = (props) => {
                                                 dateFormat='dd.MM.yyyy'
                                                 placeholderText='Wybierz datę'
                                                 disabled={formControls.isDateEndDeclareByUser}
-                                                onChange={(date) => field.onChange(setEndOfDay(date))}
+                                                onChange={(date) => {
+                                                    if (!date) {
+                                                        field.onChange(null);
+                                                        return;
+                                                    }
+
+                                                    const localEndOfDay = new Date(
+                                                        date.getFullYear(),
+                                                        date.getMonth(),
+                                                        date.getDate(),
+                                                        23, 59, 59, 997
+                                                    );
+
+                                                    field.onChange(localEndOfDay.toISOString());
+                                                }}
                                                 onBlur={field.onBlur}
-                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                                 className='enrollmentsForm-detail-section__datePicker'
                                                 dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                                 locale={pl}
@@ -986,9 +1003,22 @@ const EnrollmentsForm = (props) => {
                                                 dateFormat='dd.MM.yyyy'
                                                 placeholderText='brak'
                                                 disabled={formControls.isDateEndDeclareByDepartmentDisabled}
-                                                onChange={(date) => field.onChange(date.toISOString())}
+                                                onChange={(date) => {
+                                                    if (!date) {
+                                                        field.onChange(null);
+                                                        return;
+                                                    }
+
+                                                    const localEndOfDay = new Date(
+                                                        date.getFullYear(),
+                                                        date.getMonth(),
+                                                        date.getDate(),
+                                                        23, 59, 59, 997
+                                                    );
+
+                                                    field.onChange(localEndOfDay.toISOString());
+                                                }}
                                                 onBlur={field.onBlur}
-                                                filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                                 className='enrollmentsForm-detail-section__datePicker'
                                                 dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                                 locale={pl}

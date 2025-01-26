@@ -104,7 +104,6 @@ const EnrollmentsDescriptionFormSetEndDate = ({ onSubmit, subForm }) => {
                                     disabled={isDisabled}
                                     onChange={(date) => field.onChange(setEndOfDay(date))}
                                     onBlur={field.onBlur}
-                                    filterDate={(date) => date.getDay() !== 0 && date.getDay() !== 6}
                                     className='enrollmentsForm-detail-section__datePicker'
                                     dayClassName={(date) => date.getDay() === 0 ? 'enrollmentsForm-detail-section__datePicker--highlightedSunday' : undefined}
                                     locale={pl}

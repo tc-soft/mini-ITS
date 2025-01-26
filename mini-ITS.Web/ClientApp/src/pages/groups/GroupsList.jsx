@@ -200,7 +200,7 @@ const GroupsList = (props) => {
                         return (
                             <tr key={index}>
                                 <td>{record}</td>
-                                <td style={{ textAlign: 'left' }}>{group.groupName}</td>
+                                <td>{group.groupName}</td>
                                 <td>
                                     <span>
                                         <Link to={`Detail/${group.id}`}>

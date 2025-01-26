@@ -60,7 +60,7 @@
             color: vars.$lists-table-thead-text-color;
 
             tr {
-                text-align: left;
+                text-align: center;
 
                 th {
                     height: 2rem;
@@ -110,6 +110,14 @@
                     img {
                         vertical-align: middle;
                     }
+                }
+
+                td:nth-child(2) {
+                    text-align: left;
+                }
+
+                td:last-child {
+                    text-align: left;
                 }
             }
 

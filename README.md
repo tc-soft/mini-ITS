@@ -1,5 +1,13 @@
-# mini-ITS
-mini-ITS - a small reporting system to your comany.
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+![Backend](https://img.shields.io/badge/backend-.NET%209.x-blueviolet)
+![React](https://img.shields.io/badge/frontend-React-blue)
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/tc-soft/mini-ITS/main/mini-ITS.Web/ClientApp/src/images/mini-ITS.svg" alt="Logo mini-ITS" width="150">
+</p>
+
+### mini-ITS - a small reporting system to your comany.
 
 ### <span style="color:blue">**RestAPI of Users**</span>
 *route : api/Users*

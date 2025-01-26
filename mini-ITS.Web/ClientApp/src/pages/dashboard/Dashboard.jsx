@@ -99,7 +99,7 @@ const Dashboard = () => {
                     </Link>
 
                     <div className='dashboard__company'>
-                        <a className="dashboard__logo" href={companyLink}>
+                        <a className="dashboard__logo" href={companyLink} target="_blank" rel="noopener noreferrer">
                             <img src='/Logo.svg' alt="Welcome image" />
                         </a>
                         <p className='dashboard__companyText'>{companyName}</p>

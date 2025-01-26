@@ -67,19 +67,6 @@ namespace mini_ITS.Web.Controllers
         {
             try
             {
-                if (enrollmentsDto.DateEndDeclareByUser.HasValue)
-                {
-                    var localDateEndDeclareByUser = enrollmentsDto.DateEndDeclareByUser.Value.ToLocalTime();
-
-                    var localEndOfDay = new DateTime(
-                        localDateEndDeclareByUser.Year,
-                        localDateEndDeclareByUser.Month,
-                        localDateEndDeclareByUser.Day,
-                        23, 59, 59, 0, DateTimeKind.Local);
-                    
-                    enrollmentsDto.DateEndDeclareByUser = localEndOfDay.ToUniversalTime();
-                }
-
                 var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, User.Identity.Name);
 
                 return Ok(id);
@@ -126,19 +113,6 @@ namespace mini_ITS.Web.Controllers
                     !(userIdentity.Role == "User" && enrollmentsDto.State == "New" && userIdentity.Department == enrollmentsDto.Department))))
                 {
                     return Forbid("Error: user not authorized to delete this enrollment");
-                }
-
-                if (enrollmentsDto.DateEndDeclareByUser.HasValue)
-                {
-                    var localDateEndDeclareByUser = enrollmentsDto.DateEndDeclareByUser.Value.ToLocalTime();
-
-                    var localEndOfDay = new DateTime(
-                        localDateEndDeclareByUser.Year,
-                        localDateEndDeclareByUser.Month,
-                        localDateEndDeclareByUser.Day,
-                        23, 59, 59, 0, DateTimeKind.Local);
-
-                    enrollmentsDto.DateEndDeclareByUser = localEndOfDay.ToUniversalTime();
                 }
 
                 await _enrollmentsServices.UpdateAsync(enrollmentsDto, User.Identity.Name);

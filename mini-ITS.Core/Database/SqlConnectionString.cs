@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using mini_ITS.Core.Options;
 
 namespace mini_ITS.Core.Database

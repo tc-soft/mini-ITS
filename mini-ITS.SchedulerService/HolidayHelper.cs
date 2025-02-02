@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Options;
 using mini_ITS.Core.Services;
 using mini_ITS.SchedulerService.Options;
@@ -32,6 +33,19 @@ namespace mini_ITS.SchedulerService
             int day = ((h + l - 7 * m + 114) % 31) + 1;
 
             return new DateTime(year, month, day);
+        }
+        public List<(DateTime Date, string Description)> GetHolidays(int year)
+        {
+            var holidays = _holidays
+                .Select(h => (new DateTime(year, h.Month, h.Day), h.Description))
+                .ToList();
+
+            DateTime easterSunday = GetEaster(year);
+            holidays.Add((easterSunday, "Wielkanoc"));
+            holidays.Add((easterSunday.AddDays(1), "Poniedziałek Wielkanocny"));
+            holidays.Add((easterSunday.AddDays(60), "Boże Ciało"));
+
+            return holidays;
         }
     }
 }

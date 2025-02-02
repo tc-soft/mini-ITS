@@ -7,5 +7,6 @@ namespace mini_ITS.Core.Services
     {
         DateTime GetEaster(int year);
         List<(DateTime Date, string Description)> GetHolidays(int year);
+        bool IsHolidayOrWeekend(DateTime date);
     }
 }

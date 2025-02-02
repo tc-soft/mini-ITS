@@ -47,5 +47,15 @@ namespace mini_ITS.SchedulerService
 
             return holidays;
         }
+        public bool IsHolidayOrWeekend(DateTime date)
+        {
+            if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return true;
+            }
+
+            var holidays = GetHolidays(date.Year);
+            return holidays.Any(h => h.Date == date.Date);
+        }
     }
 }

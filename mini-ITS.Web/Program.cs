@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using mini_ITS.Core.Options;
 using mini_ITS.Core.Repository;
 using mini_ITS.Core.Services;
 using mini_ITS.EmailService;
+using mini_ITS.SchedulerService;
 using mini_ITS.SchedulerService.Options;
 using mini_ITS.SchedulerService.Services;
 using mini_ITS.SmsService;
@@ -65,6 +67,8 @@ public class Program
 
         //mini_ITS.SchedulerService
         builder.Services.Configure<SchedulerOptionsConfig>(builder.Configuration.GetSection("Scheduling"));
+        builder.Services.Configure<List<HolidayOptions>>(builder.Configuration.GetSection("Holidays"));
+        builder.Services.AddSingleton<IHolidayHelper, HolidayHelper>();
         builder.Services.AddSingleton<SchedulerTask1>();
         builder.Services.AddSingleton<SchedulerTask2>();
         builder.Services.AddSingleton<SchedulerTask3>();

@@ -23,7 +23,7 @@ namespace mini_ITS.SchedulerService.Services
         {
             _serviceProvider = serviceProvider;
         }
-        public override async Task ExecuteAsyncTask()
+        public override async Task ExecuteAsyncTask(DateTime? executionTime = null)
         {
             _logger.LogInformation("Executing {TaskName} at {Time}", TaskName, DateTime.Now);
 

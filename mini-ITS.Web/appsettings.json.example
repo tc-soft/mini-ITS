@@ -35,6 +35,7 @@
     "EnrollmentEvent1": {
       "Description": "Nowe zgłoszenie w systemie",
       "Active": true,
+      "ActiveOnHolidays": false,
 
       "InfoToSendByEmail1": "Zgłoszenie Nr: <b>{Nr}/{Year}</b><br />zostało utworzone w systemie.<br />",
       "InfoToSendByEmail2": "Dział docelowy : <b>{Department}</b><br />Zgłosił(a): {UserAddEnrollmentFullName}<br />",
@@ -47,6 +48,7 @@
     "EnrollmentEvent2": {
       "Description": "Zmiana statusu zgłoszenia z 'Nowe' na 'W trakcie'",
       "Active": true,
+      "ActiveOnHolidays": false,
 
       "InfoBySMS": true,
       "InfoByMail": true,
@@ -66,6 +68,7 @@
     "EnrollmentEvent3": {
       "Description": "Zmiana statusu zgłoszenia z 'W trakcie' na 'Gotowe do zamknięcia'",
       "Active": true,
+      "ActiveOnHolidays": false,
 
       "InfoBySMS": true,
       "InfoByMail": true,
@@ -87,6 +90,7 @@
     "SchedulerTask1": {
       "Description": "Reakcja na nowe zgłoszenia bez zmiany statusu",
       "Active": false,
+      "ActiveOnHolidays": false,
       "Schedule": "0 0 * * *",
       "Days": 2,
 
@@ -109,6 +113,7 @@
     "SchedulerTask2": {
       "Description": "Reakcja na zgłoszenia o zbliżającym sie terminem zakończenia",
       "Active": false,
+      "ActiveOnHolidays": false,
       "Schedule": "0 0 * * *",
       "Days": 1,
 
@@ -131,6 +136,7 @@
     "SchedulerTask3": {
       "Description": "Reakcja na zgłoszenia po terminie",
       "Active": false,
+      "ActiveOnHolidays": false,
       "Schedule": "0 0 * * *",
       "Days": 1,
 
@@ -151,5 +157,16 @@
       "InfoToSendBySMS3": "System mini-ITS"
     }
   },
+  "Holidays": [
+    { "Month": 1, "Day": 1, "Description": "Nowy Rok" },
+    { "Month": 1, "Day": 6, "Description": "Trzech Króli" },
+    { "Month": 5, "Day": 1, "Description": "Święto Pracy" },
+    { "Month": 5, "Day": 3, "Description": "Święto Konstytucji" },
+    { "Month": 8, "Day": 15, "Description": "Wniebowzięcie NMP" },
+    { "Month": 11, "Day": 1, "Description": "Wszystkich Świętych" },
+    { "Month": 11, "Day": 11, "Description": "Święto Niepodległości" },
+    { "Month": 12, "Day": 25, "Description": "Boże Narodzenie" },
+    { "Month": 12, "Day": 26, "Description": "Drugi dzień Świąt" }
+  ],
   "AllowedHosts": "*"
 }

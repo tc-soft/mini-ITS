@@ -14,6 +14,7 @@ namespace mini_ITS.Core.Services
         private readonly IUsersServices _usersServices;
         private readonly IEmailService _emailSerivce;
         private readonly ISmsService _smsService;
+        private readonly IHolidayHelper _holidayService;
         private readonly EnrollmentEvent1Options _enrollmentEvent1Options;
         private readonly EnrollmentEvent2Options _enrollmentEvent2Options;
         private readonly EnrollmentEvent3Options _enrollmentEvent3Options;
@@ -22,6 +23,7 @@ namespace mini_ITS.Core.Services
             IUsersServices usersServices,
             IEmailService emailSerivce,
             ISmsService smsService,
+            IHolidayHelper holidayService,
             IOptions<EnrollmentEvent1Options> enrollmentEvent1Options,
             IOptions<EnrollmentEvent2Options> enrollmentEvent2Options,
             IOptions<EnrollmentEvent3Options> enrollmentEvent3Options)
@@ -29,6 +31,7 @@ namespace mini_ITS.Core.Services
             _usersServices = usersServices;
             _emailSerivce = emailSerivce;
             _smsService = smsService;
+            _holidayService = holidayService;
             _enrollmentEvent1Options = enrollmentEvent1Options.Value;
             _enrollmentEvent2Options = enrollmentEvent2Options.Value;
             _enrollmentEvent3Options = enrollmentEvent3Options.Value;
@@ -63,6 +66,11 @@ namespace mini_ITS.Core.Services
         {
             if (_enrollmentEvent1Options.Active && enrollment.State == "New")
             {
+                if (!_enrollmentEvent1Options.ActiveOnHolidays && _holidayService.IsHolidayOrWeekend(DateTime.Now))
+                {
+                    return;
+                }
+
                 var managers = await _usersServices.GetAsync(null, "Manager");
                 var departmentManagers = await _usersServices.GetAsync(enrollment.Department, "Manager");
 
@@ -112,6 +120,11 @@ namespace mini_ITS.Core.Services
         {
             if (_enrollmentEvent2Options.Active && oldEnrollment.State == "New" && newEnrollment.State == "Assigned")
             {
+                if (!_enrollmentEvent2Options.ActiveOnHolidays && _holidayService.IsHolidayOrWeekend(DateTime.Now))
+                {
+                    return;
+                }
+
                 var admins = await _usersServices.GetAsync(null, "Administrator");
                 var departmentManagers = await _usersServices.GetAsync(newEnrollment.Department, "Manager");
                 var departmentUsers = await _usersServices.GetAsync(newEnrollment.Department, "User");
@@ -173,6 +186,11 @@ namespace mini_ITS.Core.Services
         {
             if (_enrollmentEvent3Options.Active && oldEnrollment.ReadyForClose == false && newEnrollment.ReadyForClose == true)
             {
+                if (!_enrollmentEvent3Options.ActiveOnHolidays && _holidayService.IsHolidayOrWeekend(DateTime.Now))
+                {
+                    return;
+                }
+
                 var admins = await _usersServices.GetAsync(null, "Administrator");
                 var departmentManagers = await _usersServices.GetAsync(newEnrollment.Department, "Manager");
                 var departmentUsers = await _usersServices.GetAsync(newEnrollment.Department, "User");

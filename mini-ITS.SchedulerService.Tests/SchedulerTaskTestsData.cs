@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -102,6 +103,83 @@ namespace mini_ITS.SchedulerService.Tests
                 yield return new TestCaseData("$ $ $ $ ");
                 yield return new TestCaseData("");
                 yield return new TestCaseData(null);
+            }
+        }
+        public static IEnumerable<TestCaseData> HolidayTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(new DateTime(2025, 1, 1), true);
+                yield return new TestCaseData(new DateTime(2025, 1, 6), true);
+                yield return new TestCaseData(new DateTime(2025, 5, 1), true);
+                yield return new TestCaseData(new DateTime(2025, 5, 3), true);
+                yield return new TestCaseData(new DateTime(2025, 8, 15), true);
+                yield return new TestCaseData(new DateTime(2025, 11, 1), true);
+                yield return new TestCaseData(new DateTime(2025, 11, 11), true);
+                yield return new TestCaseData(new DateTime(2025, 12, 25), true);
+                yield return new TestCaseData(new DateTime(2025, 12, 26), true);
+                yield return new TestCaseData(new DateTime(2025, 1, 4), true);
+                yield return new TestCaseData(new DateTime(2025, 1, 5), true);
+                yield return new TestCaseData(new DateTime(2025, 2, 1), true);
+                yield return new TestCaseData(new DateTime(2025, 2, 2), true);
+                yield return new TestCaseData(new DateTime(2025, 3, 1), true);
+                yield return new TestCaseData(new DateTime(2025, 3, 2), true);
+                yield return new TestCaseData(new DateTime(2025, 4, 5), true);
+
+                yield return new TestCaseData(new DateTime(2025, 4, 20), true);
+                yield return new TestCaseData(new DateTime(2025, 4, 21), true);
+                yield return new TestCaseData(new DateTime(2025, 6, 19), true);
+                yield return new TestCaseData(new DateTime(2026, 4, 5), true);
+                yield return new TestCaseData(new DateTime(2026, 4, 6), true);
+                yield return new TestCaseData(new DateTime(2026, 6, 4), true);
+                yield return new TestCaseData(new DateTime(2027, 3, 28), true);
+                yield return new TestCaseData(new DateTime(2027, 3, 29), true);
+                yield return new TestCaseData(new DateTime(2027, 5, 27), true);
+                yield return new TestCaseData(new DateTime(2028, 4, 16), true);
+                yield return new TestCaseData(new DateTime(2028, 4, 17), true);
+                yield return new TestCaseData(new DateTime(2028, 6, 15), true);
+                yield return new TestCaseData(new DateTime(2029, 4, 1), true);
+                yield return new TestCaseData(new DateTime(2029, 4, 2), true);
+                yield return new TestCaseData(new DateTime(2029, 5, 31), true);
+                yield return new TestCaseData(new DateTime(2030, 4, 21), true);
+
+                yield return new TestCaseData(new DateTime(2025, 1, 2), false);
+                yield return new TestCaseData(new DateTime(2025, 1, 7), false);
+                yield return new TestCaseData(new DateTime(2025, 5, 2), false);
+                yield return new TestCaseData(new DateTime(2025, 5, 4), false);
+                yield return new TestCaseData(new DateTime(2025, 8, 16), false);
+                yield return new TestCaseData(new DateTime(2025, 11, 2), false);
+                yield return new TestCaseData(new DateTime(2025, 11, 12), false);
+                yield return new TestCaseData(new DateTime(2025, 12, 27), false);
+                yield return new TestCaseData(new DateTime(2025, 2, 3), false);
+                yield return new TestCaseData(new DateTime(2025, 2, 4), false);
+                yield return new TestCaseData(new DateTime(2025, 3, 3), false);
+                yield return new TestCaseData(new DateTime(2025, 4, 7), false);
+                yield return new TestCaseData(new DateTime(2025, 6, 2), false);
+                yield return new TestCaseData(new DateTime(2025, 7, 1), false);
+                yield return new TestCaseData(new DateTime(2025, 9, 1), false);
+                yield return new TestCaseData(new DateTime(2025, 10, 1), false);
+
+                yield return new TestCaseData(new DateTime(2025, 4, 19), false);
+                yield return new TestCaseData(new DateTime(2025, 4, 22), false);
+                yield return new TestCaseData(new DateTime(2025, 6, 18), false);
+                yield return new TestCaseData(new DateTime(2025, 6, 20), false);
+                yield return new TestCaseData(new DateTime(2026, 4, 4), false);
+                yield return new TestCaseData(new DateTime(2026, 4, 7), false);
+                yield return new TestCaseData(new DateTime(2026, 6, 7), false);
+                yield return new TestCaseData(new DateTime(2026, 6, 9), false);
+                yield return new TestCaseData(new DateTime(2027, 3, 27), false);
+                yield return new TestCaseData(new DateTime(2027, 3, 30), false);
+                yield return new TestCaseData(new DateTime(2027, 6, 27), false);
+                yield return new TestCaseData(new DateTime(2027, 6, 29), false);
+                yield return new TestCaseData(new DateTime(2028, 4, 15), false);
+                yield return new TestCaseData(new DateTime(2028, 4, 18), false);
+                yield return new TestCaseData(new DateTime(2028, 6, 15), false);
+                yield return new TestCaseData(new DateTime(2028, 6, 17), false);
+                yield return new TestCaseData(new DateTime(2029, 3, 31), false);
+                yield return new TestCaseData(new DateTime(2029, 4, 3), false);
+                yield return new TestCaseData(new DateTime(2029, 5, 30), false);
+                yield return new TestCaseData(new DateTime(2029, 6, 1), false);
             }
         }
         public static IEnumerable<TestCaseData> ExecuteAsyncTaskTestCases

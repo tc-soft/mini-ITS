@@ -14,17 +14,21 @@ namespace mini_ITS.SchedulerService.Services
     public class SchedulerTask1 : BaseSchedulerTask
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IHolidayHelper _holidayHelper;
 
         public SchedulerTask1(
             IOptionsMonitor<SchedulerOptionsConfig> configMonitor,
             ILogger<SchedulerTask1> logger,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHolidayHelper holidayHelper)
             : base("SchedulerTask1", configMonitor, logger)
         {
             _serviceProvider = serviceProvider;
+            _holidayHelper = holidayHelper;
         }
         public override async Task ExecuteAsyncTask(DateTime? executionTime = null)
         {
+            DateTime currentTime = executionTime ?? DateTime.Now;
             _logger.LogInformation("Executing {TaskName} at {Time}", TaskName, DateTime.Now);
 
             using (var scope = _serviceProvider.CreateScope())
@@ -39,6 +43,12 @@ namespace mini_ITS.SchedulerService.Services
                 if (taskConfig == null || !taskConfig.Active)
                 {
                     _logger.LogInformation("{TaskName} is not executing the task because it is inactive or null.", TaskName);
+                    return;
+                }
+
+                if (!taskConfig.ActiveOnHolidays && _holidayHelper.IsHolidayOrWeekend(currentTime))
+                {
+                    _logger.LogInformation("{TaskName} is not executing the task because today is a holiday or weekend.", TaskName);
                     return;
                 }
 

@@ -4,6 +4,7 @@
     {
         public string Description { get; set; }
         public bool Active { get; set; }
+        public bool ActiveOnHolidays { get; set; }
 
         public bool InfoBySMS { get; set; }
         public bool InfoByMail { get; set; }

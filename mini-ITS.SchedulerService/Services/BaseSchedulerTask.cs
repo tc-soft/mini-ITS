@@ -46,7 +46,7 @@ namespace mini_ITS.SchedulerService.Services
             }
             _nextRunTime = null;
         }
-        public abstract Task ExecuteAsyncTask();
+        public abstract Task ExecuteAsyncTask(DateTime? executionTime = null);
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)

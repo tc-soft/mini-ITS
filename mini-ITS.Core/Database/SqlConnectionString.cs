@@ -24,7 +24,9 @@ namespace mini_ITS.Core.Database
                 IntegratedSecurity = _databaseOptions.IntegratedSecurity,
                 UserID = _databaseOptions.UserId,
                 Password = _databaseOptions.Password,
-                ConnectTimeout = _databaseOptions.ConnectTimeout
+                ConnectTimeout = _databaseOptions.ConnectTimeout,
+                Encrypt = true,
+                TrustServerCertificate = true
             };
 
             _connectionString = builder.ToString();

@@ -49,7 +49,7 @@ const EnrollmentsForm = (props) => {
     const isLoaded = isEnrollmentLoaded || isEnrollmentPicturesLoaded || isEnrollmentDescriptionsLoaded;
     const [isReady, setIsReady] = useState(false);
 
-    const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors } } = useForm();
+    const { handleSubmit, register, reset, setValue, setFocus, control, watch, formState: { errors, isSubmitting } } = useForm();
     const [formControls, setFormControls] = useState({
         isDateEndDeclareByUser: isMode === 'Create' ? false : true,
         isDateEndDeclareByDepartmentDisabled: true,
@@ -476,6 +476,8 @@ const EnrollmentsForm = (props) => {
 
     const onSubmit = async (values) => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             const updateEnrollmentPictures = async (enrollmentId) => {
                 const picturesFromApiResponse = await enrollmentPictureServices.index({ id: enrollmentId });
                 const picturesFromApi = picturesFromApiResponse.ok ? await picturesFromApiResponse.json() : [];
@@ -720,6 +722,9 @@ const EnrollmentsForm = (props) => {
                 handleModalConfirm={handleModalConfirm}
                 handleModalClose={handleModalClose}
             />
+
+            {isSubmitting && <div className="overlay">Zapisywanie...</div>}
+
             {subForm.isSubForm
                 ? renderSubForm()
                 : (
@@ -1339,7 +1344,7 @@ const EnrollmentsForm = (props) => {
                                         <button
                                             tabIndex='25'
                                             type='submit'
-                                            disabled={isMode === 'Edit' && isLoaded}
+                                            disabled={(isMode === 'Edit' && isLoaded) || isSubmitting}
                                             className='enrollmentsForm-submit__button enrollmentsForm-submit__button--saveButton'>
                                             <img src={iconSave} alt='iconSave' />
                                             Zapisz

@@ -21,7 +21,7 @@ const UsersForm = (props) => {
 
     const [mapDepartment, setMapDepartment] = useState([]);
     const [mapRole, setMapRole] = useState([]);
-    const { handleSubmit, register, reset, getValues, setValue, setFocus, clearErrors, formState: { errors } } = useForm();
+    const { handleSubmit, register, reset, getValues, setValue, setFocus, clearErrors, formState: { errors, isSubmitting } } = useForm();
     const title = { Create: 'Dodaj użytkownika', Detail: 'Szczegóły użytkownika', Edit: 'Edycja' };
     const [activePassword, setActivePassword] = useState(false);
     const [showPassword, setShowPassword] = useState([false, false, false]);
@@ -52,6 +52,8 @@ const UsersForm = (props) => {
 
     const onSubmit = async (values) => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             if (isMode === 'Edit') {
                 if (activePassword) {
                     if ((userId !== currentUser.id) && (currentUser.role === 'Administrator')) {
@@ -129,6 +131,8 @@ const UsersForm = (props) => {
                 <img src={iconUser} alt='iconUser' />
                 <p>Użytkownik:<span>{getValues('login')}</span></p>
             </div>
+
+            {isSubmitting && <div className="overlay">Zapisywanie...</div>}
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className='usersForm-detail'>
@@ -440,8 +444,9 @@ const UsersForm = (props) => {
                         <>
                             <button
                                 tabIndex='12'
-                                className='usersForm-submit__button usersForm-submit__button--saveButton'
-                                type='submit'>
+                                type='submit'
+                                disabled={isSubmitting}
+                                className='usersForm-submit__button usersForm-submit__button--saveButton'>
                                 <img src={iconSave} alt='iconSave' />
                                 Zapisz
                             </button>

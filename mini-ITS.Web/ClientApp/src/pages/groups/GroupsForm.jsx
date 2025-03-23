@@ -15,7 +15,7 @@ const GroupsForm = (props) => {
     const navigate = useNavigate();
     const { groupId } = useParams();
 
-    const { handleSubmit, register, reset, getValues, setFocus, formState: { errors } } = useForm();
+    const { handleSubmit, register, reset, getValues, setFocus, formState: { errors, isSubmitting } } = useForm();
     const title = { Create: 'Dodaj grupę', Detail: 'Szczegóły grupy', Edit: 'Edycja' };
 
     const resetAsyncForm = useCallback(async () => {
@@ -41,6 +41,8 @@ const GroupsForm = (props) => {
 
     const onSubmit = async (values) => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+
             if (isMode === 'Edit') {
                 handleErrorResponse(
                     await groupsServices.update(values.id, values),
@@ -90,6 +92,8 @@ const GroupsForm = (props) => {
                 <p>Grupa:<span>{getValues('groupName')}</span></p>
             </div>
 
+            {isSubmitting && <div className="overlay">Zapisywanie...</div>}
+
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className='groupsForm-detail'>
                     <div className='groupsForm-detail-section'>
@@ -119,8 +123,9 @@ const GroupsForm = (props) => {
                         <>
                             <button
                                 tabIndex='2'
-                                className='groupsForm-submit__button groupsForm-submit__button--saveButton'
-                                type='submit'>
+                                type='submit'
+                                disabled={isSubmitting}
+                                className='groupsForm-submit__button groupsForm-submit__button--saveButton'>
                                 <img src={iconSave} alt='iconSave' />
                                 Zapisz
                             </button>

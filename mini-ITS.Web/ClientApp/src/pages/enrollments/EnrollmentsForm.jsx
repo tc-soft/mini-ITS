@@ -402,6 +402,7 @@ const EnrollmentsForm = (props) => {
             const newPicture = {
                 id: uuidv4(),
                 file,
+                userAddPicture: currentUser.id,
                 pictureBytes: null,
                 picturePath: file.name
             };
@@ -638,6 +639,7 @@ const EnrollmentsForm = (props) => {
                                 return {
                                     id: enrollmentPictureData.id,
                                     file: null,
+                                    userAddPicture: enrollmentPictureData.userAddPicture,
                                     pictureBytes: enrollmentPictureData.pictureBytes,
                                     picturePath: enrollmentPictureData.picturePath
                                 };
@@ -1088,11 +1090,8 @@ const EnrollmentsForm = (props) => {
                                                 </PhotoView>
 
                                                 {
-                                                    !isReadMode && (isMode === 'Create' || currentUser.role === 'Administrator' ||
-                                                        (
-                                                            watch('userAddEnrollment') !== undefined &&
-                                                            watch('userAddEnrollment') === currentUser.id)
-                                                    ) &&
+                                                    !isReadMode && watch('state') !== 'Closed' &&
+                                                    (currentUser.role === 'Administrator' || enrollmentsPicture.userAddPicture === currentUser.id) &&
                                                     (
                                                         <span
                                                             title='Usuń'

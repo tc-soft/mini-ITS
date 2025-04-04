@@ -1,7 +1,7 @@
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License: MIT](https://img.shields.io/badge/license-MIT-green)
-![Backend](https://img.shields.io/badge/backend-.NET%209.x-blueviolet)
-![React](https://img.shields.io/badge/frontend-React-blue)
+![Version](https://badgen.net/badge/version/1.0.1/blue)
+![License: MIT](https://badgen.net/badge/license/MIT/green)
+![Backend](https://badgen.net/badge/backend/.NET%209.x/blueviolet)
+![React](https://badgen.net/badge/frontend/React/blue)
 
 <p align="left">
   <img src="https://raw.githubusercontent.com/tc-soft/mini-ITS/main/mini-ITS.Web/ClientApp/src/images/mini-ITS.svg" alt="Logo mini-ITS" width="150">

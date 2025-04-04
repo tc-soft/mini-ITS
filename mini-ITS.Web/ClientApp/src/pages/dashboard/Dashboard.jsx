@@ -24,7 +24,9 @@ const Dashboard = () => {
             }
         ],
         sortColumnName: 'DateAddEnrollment',
-        sortDirection: 'DESC'
+        sortDirection: 'DESC',
+        page: 1,
+        resultsPerPage: 100
     }));
 
     const [numberOfNewEnrollments, setNumberOfNewEnrollments] = useState(null);

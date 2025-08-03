@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -46,7 +47,6 @@ namespace mini_ITS.Web.Mapper
                 .ForMember(m => m.DateAddEnrollment,
                     opt => opt.Condition((src, dest, srcMember) => dest.DateAddEnrollment == DateTime.MinValue)
                 );
-        }
-        ).CreateMapper();
+        }, NullLoggerFactory.Instance).CreateMapper();
     }
 }

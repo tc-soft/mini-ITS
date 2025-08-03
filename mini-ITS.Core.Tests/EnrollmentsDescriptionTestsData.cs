@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
@@ -73,7 +74,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return EnrollmentsDescriptionCases.Select(item => _mapper.Map<EnrollmentsDescriptionDto>(item));
@@ -141,7 +142,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return CRUDCases.Select(item => _mapper.Map<EnrollmentsDescriptionDto>(item));

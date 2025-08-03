@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
@@ -40,7 +41,7 @@ namespace mini_ITS.Core.Tests.Services
             {
                 cfg.CreateMap<EnrollmentsDescriptionDto, EnrollmentsDescription>();
                 cfg.CreateMap<EnrollmentsDescription, EnrollmentsDescriptionDto>();
-            }).CreateMapper();
+            }, NullLoggerFactory.Instance).CreateMapper();
             _enrollmentsDescriptionServices = new EnrollmentsDescriptionServices(_enrollmentsDescriptionRepository, _usersRepository, _mapper);
         }
         [Test]

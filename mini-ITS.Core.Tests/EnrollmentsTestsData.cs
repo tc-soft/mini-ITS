@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -86,7 +87,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Enrollments>, SqlPagedQuery<EnrollmentsDto>>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Enrollments>, SqlPagedQuery<EnrollmentsDto>>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return SqlPagedQueryCases.Select(item => _mapper.Map<SqlPagedQuery<EnrollmentsDto>>(item));
@@ -242,7 +243,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return EnrollmentsCases.Select(item => _mapper.Map<EnrollmentsDto>(item));
@@ -398,7 +399,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Enrollments, EnrollmentsDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return CRUDCases.Select(item => _mapper.Map<EnrollmentsDto>(item));

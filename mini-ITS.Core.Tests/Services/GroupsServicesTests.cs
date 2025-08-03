@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
@@ -38,7 +39,7 @@ namespace mini_ITS.Core.Tests.Services
             {
                 cfg.CreateMap<GroupsDto, Groups>();
                 cfg.CreateMap<Groups, GroupsDto>();
-            }).CreateMapper();
+            }, NullLoggerFactory.Instance).CreateMapper();
             _groupsRepository = new GroupsRepository(_sqlConnectionString);
             _groupsServices = new GroupsServices(_groupsRepository, _usersRepository, _mapper);
         }

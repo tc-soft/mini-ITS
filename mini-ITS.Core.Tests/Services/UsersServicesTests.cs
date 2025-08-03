@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using NUnit.Framework;
 using mini_ITS.Core.Database;
@@ -39,7 +40,7 @@ namespace mini_ITS.Core.Tests.Services
             {
                 cfg.CreateMap<UsersDto, Users>();
                 cfg.CreateMap<Users, UsersDto>();
-            }).CreateMapper();
+            }, NullLoggerFactory.Instance).CreateMapper();
             _passwordHasher = new PasswordHasher<Users>();
             _usersServices = new UsersServices(_usersRepository, _mapper, _passwordHasher);
         }

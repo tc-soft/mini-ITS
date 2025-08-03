@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using AutoMapper;
 using mini_ITS.Core.Database;
 using mini_ITS.Core.Dto;
@@ -86,7 +87,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Groups>, SqlPagedQuery<GroupsDto>>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<SqlPagedQuery<Groups>, SqlPagedQuery<GroupsDto>>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return SqlPagedQueryCases.Select(item => _mapper.Map<SqlPagedQuery<GroupsDto>>(item));
@@ -146,7 +147,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return GroupsCases.Select(item => _mapper.Map<GroupsDto>(item));
@@ -206,7 +207,7 @@ namespace mini_ITS.Core.Tests
         {
             get
             {
-                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>());
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<Groups, GroupsDto>(), NullLoggerFactory.Instance);
                 _mapper = config.CreateMapper();
 
                 return CRUDCases.Select(item => _mapper.Map<GroupsDto>(item));

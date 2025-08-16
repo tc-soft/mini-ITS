@@ -7,7 +7,7 @@ const UsersFormPassword = () => {
     const navigate = useNavigate();
     const returnTo = location.state?.from || '/';
 
-    const { handleSubmit, register, formState: { isSubmitting } } = useForm();
+    const { handleSubmit, register, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = async (values) => {
         try {
@@ -37,6 +37,7 @@ const UsersFormPassword = () => {
                             <input
                                 tabIndex='1'
                                 type='password'
+                                error={errors.oldPassword}
                                 {...register('oldPassword',
                                     {
                                         required: 'Hasło jest wymagane.'
@@ -45,12 +46,18 @@ const UsersFormPassword = () => {
                                 }
                             />
                         </div>
+                        {errors.oldPassword ?
+                            <p style={{ color: 'red' }}>{errors.oldPassword?.message}</p>
+                            :
+                            <p>&nbsp;</p>
+                        }
 
                         <label>Nowe hasło:</label>
                         <div>
                             <input
                                 tabIndex='2'
                                 type='password'
+                                error={errors.passwordHash}
                                 {...register('passwordHash',
                                     {
                                         required: 'Hasło jest wymagane.'
@@ -59,12 +66,18 @@ const UsersFormPassword = () => {
                                 }
                             />
                         </div>
+                        {errors.passwordHash ?
+                            <p style={{ color: 'red' }}>{errors.passwordHash?.message}</p>
+                            :
+                            <p>&nbsp;</p>
+                        }
 
                         <label>Powtórz hasło:</label>
                         <div>
                             <input
                                 tabIndex='3'
                                 type='password'
+                                error={errors.confirmPasswordHash}
                                 {...register('confirmPasswordHash',
                                     {
                                         required: 'Hasło jest wymagane.'
@@ -73,6 +86,11 @@ const UsersFormPassword = () => {
                                 }
                             />
                         </div>
+                        {errors.confirmPasswordHash ?
+                            <p style={{ color: 'red' }}>{errors.confirmPasswordHash?.message}</p>
+                            :
+                            <p>&nbsp;</p>
+                        }
                     </div>
                 </div>
                 <br />

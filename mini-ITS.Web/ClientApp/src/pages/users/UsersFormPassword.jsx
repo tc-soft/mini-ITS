@@ -7,7 +7,7 @@ const UsersFormPassword = () => {
     const navigate = useNavigate();
     const returnTo = location.state?.from || '/';
 
-    const { handleSubmit, register, formState: { errors, isSubmitting } } = useForm();
+    const { handleSubmit, register, getValues, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = async (values) => {
         try {
@@ -58,12 +58,17 @@ const UsersFormPassword = () => {
                                 tabIndex='2'
                                 type='password'
                                 error={errors.passwordHash}
-                                {...register('passwordHash',
-                                    {
-                                        required: 'Hasło jest wymagane.'
+                                {...register('passwordHash', {
+                                    required: 'Hasło jest wymagane.',
+                                    minLength: { value: 8, message: 'Hasło musi zawierać min. 8 znaków.' },
+                                    pattern: { value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{1,}$/g, message: 'Hasło nie spełnia wymogów.' },
+                                    validate: value => {
+                                        if (getValues('oldPassword') !== '') {
+                                            return value !== getValues('oldPassword') || 'Hasło musi być inne niż poprzednio.';
+                                        }
+                                        return true
                                     }
-                                )
-                                }
+                                })}
                             />
                         </div>
                         {errors.passwordHash ?
@@ -78,12 +83,10 @@ const UsersFormPassword = () => {
                                 tabIndex='3'
                                 type='password'
                                 error={errors.confirmPasswordHash}
-                                {...register('confirmPasswordHash',
-                                    {
-                                        required: 'Hasło jest wymagane.'
-                                    }
-                                )
-                                }
+                                {...register('confirmPasswordHash', {
+                                    required: 'Hasło jest wymagane.',
+                                    validate: value => value === getValues('passwordHash') || 'Hasła muszą być zgodne.'
+                                })}
                             />
                         </div>
                         {errors.confirmPasswordHash ?

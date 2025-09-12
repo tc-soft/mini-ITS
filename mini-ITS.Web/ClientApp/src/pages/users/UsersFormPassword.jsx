@@ -1,17 +1,29 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../components/AuthProvider';
 import { useForm } from 'react-hook-form';
+import { usersServices } from '../../services/UsersServices';
 
 const UsersFormPassword = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const returnTo = location.state?.from || '/';
+    const { currentUser } = useAuth();
 
     const { handleSubmit, register, getValues, formState: { errors, isSubmitting } } = useForm();
+
+    const handleErrorResponse = (response, errorMessage) => {
+        if (!response.ok) throw errorMessage;
+    };
 
     const onSubmit = async (values) => {
         try {
             await new Promise(resolve => setTimeout(resolve, 100));
+
+            handleErrorResponse(
+                await usersServices.changePassword({ login: currentUser.login, oldPassword: values.oldPassword, newPassword: values.passwordHash }),
+                'Zmiana hasła nie powiodła się!');
+
             navigate(returnTo);
         }
         catch (error) {

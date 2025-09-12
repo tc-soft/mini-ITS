@@ -276,7 +276,7 @@ namespace mini_ITS.Web.Tests
         public static IEnumerable<LoginData> LoginAuthorizedDeleteUserCases =>
             LoginAuthorizedADMCases;
         public static IEnumerable<LoginData> LoginAuthorizedChangePasswordUserCases =>
-            LoginAuthorizedADMCases;
+            LoginAuthorizedCases;
         public static IEnumerable<LoginData> LoginAuthorizedSetPasswordUserCases =>
             LoginAuthorizedADMCases;
         public static IEnumerable<TestCaseData> LoginUnauthorizedIndexUserCases
@@ -404,22 +404,6 @@ namespace mini_ITS.Web.Tests
                     foreach (var usersDto in UsersTestsData.UsersCasesDto)
                     {
                         yield return new TestCaseData(loginUnauthorizedCases, null, usersDto);
-                    }
-                }
-
-                foreach (var loginAuthorizedUSRCases in LoginAuthorizedUSRCases)
-                {
-                    foreach (var usersDto in UsersTestsData.UsersCasesDto)
-                    {
-                        yield return new TestCaseData(null, loginAuthorizedUSRCases, usersDto);
-                    }
-                }
-
-                foreach (var loginAuthorizedMGRCases in LoginAuthorizedMNGCases)
-                {
-                    foreach (var usersDto in UsersTestsData.UsersCasesDto)
-                    {
-                        yield return new TestCaseData(null, loginAuthorizedMGRCases, usersDto);
                     }
                 }
             }

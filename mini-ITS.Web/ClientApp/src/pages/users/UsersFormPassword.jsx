@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm } from 'react-hook-form';
 import { usersServices } from '../../services/UsersServices';
+import ModalDialog from '../../components/Modal';
 import iconEdit from '../../images/iconEdit.svg';
 import iconUser from '../../images/iconUser.svg';
 import iconSave from '../../images/iconSave.svg';
@@ -22,7 +23,46 @@ const UsersFormPassword = () => {
     const [showPassword, setShowPassword] = useState([false, false, false]);
 
     const handleErrorResponse = (response, errorMessage) => {
-        if (!response.ok) throw errorMessage;
+        if (!response.ok) {
+            handlePasswordChangeErrorStage1(errorMessage);
+            throw errorMessage;
+        }
+    };
+
+    const [modalDialogOpen, setModalDialogOpen] = useState(false);
+    const [modalDialogType, setModalDialogType] = useState('');
+    const [modalDialogTitle, setModalDialogTitle] = useState('');
+    const [modalDialogMessage, setModalDialogMessage] = useState('');
+
+    const handleModalClose = () => {
+        setModalDialogType('');
+        setModalDialogTitle('');
+        setModalDialogMessage('');
+        setModalDialogOpen(false);
+    };
+
+    const handleModalConfirm = async () => {
+        switch (modalDialogType) {
+            case 'Dialog':
+                setModalDialogOpen(false);
+                break;
+            case 'Information':
+                handleModalClose();
+                navigate(returnTo);
+                break;
+            case 'Error':
+                handleModalClose();
+                break;
+            default:
+                break;
+        };
+    };
+
+    const handlePasswordChangeErrorStage1 = (errorMessage) => {
+        setModalDialogType('Error');
+        setModalDialogTitle('Zmiana hasła');
+        setModalDialogMessage(errorMessage);
+        setModalDialogOpen(true);
     };
 
     const onSubmit = async (values) => {
@@ -33,15 +73,29 @@ const UsersFormPassword = () => {
                 await usersServices.changePassword({ login: currentUser.login, oldPassword: values.oldPassword, newPassword: values.passwordHash }),
                 'Zmiana hasła nie powiodła się!');
 
-            navigate(returnTo);
+            setModalDialogType('Information');
+            setModalDialogTitle('Zmiana hasła');
+            setModalDialogMessage('Hasło zostało pomyślnie zmienione.');
+            setModalDialogOpen(true);
         }
         catch (error) {
             console.error(error);
+            handlePasswordChangeErrorStage1(error?.toString() ?? 'Wystąpił nieznany błąd.');
         };
     };
 
     return (
         <div className='usersFormPassword'>
+            <ModalDialog
+                modalDialogOpen={modalDialogOpen}
+                modalDialogType={modalDialogType}
+                modalDialogTitle={modalDialogTitle}
+                modalDialogMessage={modalDialogMessage}
+
+                handleModalConfirm={handleModalConfirm}
+                handleModalClose={handleModalClose}
+            />
+
             <div className='usersFormPassword-title'>
                 <img src={iconEdit} height='17px' alt='iconEdit' />
                 <p>Zmiana hasła</p>

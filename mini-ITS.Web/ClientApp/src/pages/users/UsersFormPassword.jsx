@@ -3,6 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm } from 'react-hook-form';
 import { usersServices } from '../../services/UsersServices';
+import iconEdit from '../../images/iconEdit.svg';
+import iconUser from '../../images/iconUser.svg';
+import iconSave from '../../images/iconSave.svg';
+import iconCancel from '../../images/iconCancel.svg';
+
+import '../../styles/pages/Users.scss';
 
 const UsersFormPassword = () => {
     const location = useLocation();
@@ -32,102 +38,96 @@ const UsersFormPassword = () => {
     };
 
     return (
-        <>
-            <div>
-                <p>Zmiana hasła</p><br />
+        <div className='usersFormPassword'>
+            <div className='usersFormPassword-title'>
+                <img src={iconEdit} height='17px' alt='iconEdit' />
+                <p>Zmiana hasła</p>
             </div>
 
-            <div>
-                <p>Użytkownik:</p><br />
+            <div className='usersFormPassword-userInfo'>
+                <img src={iconUser} alt='iconUser' />
+                <p>Użytkownik:<span>{currentUser.login}</span></p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
-                <div>
-                    <div>
-                        <label>Stare hasło:</label>
-                        <div>
-                            <input
-                                tabIndex='1'
-                                type='password'
-                                error={errors.oldPassword}
-                                {...register('oldPassword',
-                                    {
-                                        required: 'Hasło jest wymagane.'
-                                    }
-                                )
-                                }
-                            />
-                        </div>
+                <div className='usersFormPassword-detail'>
+                    <div className='usersFormPassword-detail-section'>
+                        <label className='usersFormPassword-detail-section__label'>Stare hasło:</label>
+                        <input className='usersFormPassword-detail-section__input'
+                            tabIndex='1'
+                            type='password'
+                            error={errors.oldPassword}
+                            {...register('oldPassword', { required: 'Hasło jest wymagane.' })}
+                        />
                         {errors.oldPassword ?
-                            <p style={{ color: 'red' }}>{errors.oldPassword?.message}</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>{errors.oldPassword?.message}</p>
                             :
-                            <p>&nbsp;</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>&nbsp;</p>
                         }
 
-                        <label>Nowe hasło:</label>
-                        <div>
-                            <input
-                                tabIndex='2'
-                                type='password'
-                                error={errors.passwordHash}
-                                {...register('passwordHash', {
-                                    required: 'Hasło jest wymagane.',
-                                    minLength: { value: 8, message: 'Hasło musi zawierać min. 8 znaków.' },
-                                    pattern: { value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{1,}$/g, message: 'Hasło nie spełnia wymogów.' },
-                                    validate: value => {
-                                        if (getValues('oldPassword') !== '') {
-                                            return value !== getValues('oldPassword') || 'Hasło musi być inne niż poprzednio.';
-                                        }
-                                        return true
+                        <label className='usersFormPassword-detail-section__label'>Nowe hasło:</label>
+                        <input className='usersFormPassword-detail-section__input'
+                            tabIndex='2'
+                            type='password'
+                            error={errors.passwordHash}
+                            {...register('passwordHash', {
+                                required: 'Hasło jest wymagane.',
+                                minLength: { value: 8, message: 'Hasło musi zawierać min. 8 znaków.' },
+                                pattern: { value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{1,}$/g, message: 'Hasło nie spełnia wymogów.' },
+                                validate: value => {
+                                    if (getValues('oldPassword') !== '') {
+                                        return value !== getValues('oldPassword') || 'Hasło musi być inne niż poprzednio.';
                                     }
-                                })}
-                            />
-                        </div>
+                                    return true
+                                }
+                            })}
+                        />
                         {errors.passwordHash ?
-                            <p style={{ color: 'red' }}>{errors.passwordHash?.message}</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>{errors.passwordHash?.message}</p>
                             :
-                            <p>&nbsp;</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>&nbsp;</p>
                         }
 
-                        <label>Powtórz hasło:</label>
-                        <div>
-                            <input
-                                tabIndex='3'
-                                type='password'
-                                error={errors.confirmPasswordHash}
-                                {...register('confirmPasswordHash', {
-                                    required: 'Hasło jest wymagane.',
-                                    validate: value => value === getValues('passwordHash') || 'Hasła muszą być zgodne.'
-                                })}
-                            />
-                        </div>
+                        <label className='usersFormPassword-detail-section__label'>Powtórz hasło:</label>
+                        <input className='usersFormPassword-detail-section__input'
+                            tabIndex='3'
+                            type='password'
+                            error={errors.confirmPasswordHash}
+                            {...register('confirmPasswordHash', {
+                                required: 'Hasło jest wymagane.',
+                                validate: value => value === getValues('passwordHash') || 'Hasła muszą być zgodne.'
+                            })}
+                        />
                         {errors.confirmPasswordHash ?
-                            <p style={{ color: 'red' }}>{errors.confirmPasswordHash?.message}</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>{errors.confirmPasswordHash?.message}</p>
                             :
-                            <p>&nbsp;</p>
+                            <p className='usersFormPassword-detail-section__errorMessage'>&nbsp;</p>
                         }
+
                     </div>
                 </div>
-                <br />
-                <div>
+                <div className='usersFormPassword-submit'>
                     <>
                         <button
                             tabIndex='4'
                             type='submit'
-                            disabled={isSubmitting}>
+                            disabled={isSubmitting}
+                            className='usersFormPassword-submit__button usersFormPassword-submit__button--saveButton'>
+                            <img src={iconSave} alt='iconSave' />
                             Zapisz
                         </button>
                     </>
-                    &nbsp;
                     <Link tabIndex='-1' to={returnTo}>
                         <button
-                            tabIndex='5'>
+                            tabIndex='5'
+                            className='usersFormPassword-submit__button usersFormPassword-submit__button--cancelButton'>
+                            <img src={iconCancel} alt='iconCancel' />
                             Anuluj
                         </button>
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 

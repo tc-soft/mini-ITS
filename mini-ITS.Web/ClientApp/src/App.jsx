@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { useAuth } from './components/AuthProvider';
 import RequireAuth from './pages/login/RequireAuth';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -12,6 +12,7 @@ import logOut from './images/LogOut.svg';
 import './styles/main.scss';
 
 const App = () => {
+    const location = useLocation();
     const { currentUser, handleLogout } = useAuth();
 
     return (
@@ -31,6 +32,15 @@ const App = () => {
                         </li>
                         <li className='main-header__link'>
                             {currentUser && (currentUser.role === 'Administrator') && <Link to='/Users'>Użytkownicy</Link>}
+                        </li>
+                        <li className='main-header__link'>
+                            {currentUser &&
+                                <Link
+                                    to='/Users/ChangePassword'
+                                    state={{ from: location.pathname + location.search }}
+                                >
+                                    Zmiana hasła
+                                </Link>}
                         </li>
                         <li className='main-header__icon'>
                             {currentUser && <Link to='/' onClick={handleLogout}>

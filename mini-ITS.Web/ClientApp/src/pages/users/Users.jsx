@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import UsersList from './UsersList';
 import UsersForm from './UsersForm';
+import UsersFormPassword from './UsersFormPassword';
 
 const Users = () => {
     const [pagedQuery, setPagedQuery] = useState({
@@ -28,6 +29,7 @@ const Users = () => {
             <Route path='/Detail/:userId' element={<UsersForm isMode={'Detail'} />} />
             <Route path='/Edit/:userId' element={<UsersForm isMode={'Edit'} />} />
             <Route path='/Create' element={<UsersForm isMode={'Create'} />} />
+            <Route path='/ChangePassword' element={<UsersFormPassword/>} />
         </Routes>
     );
 };

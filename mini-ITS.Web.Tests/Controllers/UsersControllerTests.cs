@@ -393,17 +393,22 @@ namespace mini_ITS.Web.Tests.Controllers
         }
         [Test, Combinatorial]
         public async Task ChangePasswordAsync_Authorized(
-                 [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedChangePasswordUserCases))] LoginData loginData,
-                 [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedADMCases))] LoginData loginData,
+            [ValueSource(typeof(UsersTestsData), nameof(UsersTestsData.CRUDCasesDto))] UsersDto usersDto)
         {
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
 
+            usersDto.PasswordHash = char.ToUpper(usersDto.Login[0]) + usersDto.Login.Substring(1, 3).ToLower() + "1234$%";
             response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 500 after CreateAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), "ERROR - respons status code is not 200 after CreateAsync");
             UsersControllerTestsHelper.Print(usersDto, "\nCreate user");
+            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             var id = await response.Content.ReadFromJsonAsync<Guid>();
             Assert.That(id, Is.Not.Null, $"ERROR - id is null");
-            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}\n");
+
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(new LoginData { Login = usersDto.Login, Password = usersDto.PasswordHash }));
 
             var caesarHelper = new CaesarHelper();
             var changePassword = new ChangePassword()
@@ -434,7 +439,7 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine();
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUserData));
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
-            
+
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
             UsersControllerTestsHelper.CheckDeleteUserAuthorizedCase(await DeleteAsync(id));
 

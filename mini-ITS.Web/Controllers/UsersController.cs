@@ -219,7 +219,6 @@ namespace mini_ITS.Web.Controllers
         }
         [HttpPatch]
         [CookieAuth]
-        [Authorize("Admin")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePassword changePassword)
         {
             try

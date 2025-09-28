@@ -203,6 +203,61 @@ namespace mini_ITS.Core.Tests.Services
             Assert.That(enrollmentDto, Is.Null, "ERROR - delete enrollment");
         }
         [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCasesDto))]
+        public async Task UpdateAsync_StateFlow(EnrollmentsDto enrollmentsDto)
+        {
+            TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");
+            var user = await _usersRepository.GetAsync(enrollmentsDto.UserAddEnrollment);
+            enrollmentsDto.State = "ReadyForClose";
+            var id = await _enrollmentsServices.CreateAsync(enrollmentsDto, user.Login, false);
+            var enrollmentDto = await _enrollmentsServices.GetAsync(id);
+            EnrollmentsServicesTestsHelper.Check(enrollmentDto, enrollmentsDto);
+            EnrollmentsServicesTestsHelper.Print(enrollmentDto);
+
+            TestContext.Out.WriteLine("\nUpdate enrollment by UpdateAsync(enrollmentsDto, username) / State ReadyForClose->Closed and check valid...\n");
+            enrollmentDto.State = "Closed";
+            await _enrollmentsServices.UpdateAsync(enrollmentDto, user.Login, false);
+            var afterClosed = await _enrollmentsServices.GetAsync(id);
+
+            Assert.That(afterClosed.State, Is.EqualTo("Closed"), $"ERROR - {nameof(afterClosed.State)} is not 'Closed'");
+            Assert.That(afterClosed.DateEndEnrollment, Is.Not.Null, $"ERROR - {nameof(afterClosed.DateEndEnrollment)} is null after 'Closed'");
+            Assert.That(afterClosed.UserEndEnrollment, Is.EqualTo(user.Id), $"ERROR - {nameof(afterClosed.UserEndEnrollment)} is not user id after 'Closed'");
+            Assert.That(afterClosed.UserEndEnrollmentFullName, Is.EqualTo($"{user.FirstName} {user.LastName}"),
+                $"ERROR - {nameof(afterClosed.UserEndEnrollmentFullName)} is not user full name after 'Closed'");
+            Assert.That(afterClosed.DateModEnrollment, Is.Not.Null, $"ERROR - {nameof(afterClosed.DateModEnrollment)} is null after 'Closed'");
+            Assert.That(afterClosed.UserModEnrollment, Is.EqualTo(user.Id), $"ERROR - {nameof(afterClosed.UserModEnrollment)} is not user id after 'Closed'");
+            Assert.That(afterClosed.UserModEnrollmentFullName, Is.EqualTo($"{user.FirstName} {user.LastName}"),
+                $"ERROR - {nameof(afterClosed.UserModEnrollmentFullName)} is not user full name after 'Closed'");
+
+            EnrollmentsServicesTestsHelper.Print(afterClosed);
+
+            TestContext.Out.WriteLine("\nUpdate enrollment by UpdateAsync(enrollmentsDto, username) / State Closed->ReOpened and check valid...\n");
+            afterClosed.State = "ReOpened";
+            await _enrollmentsServices.UpdateAsync(afterClosed, user.Login, false);
+            var afterReOpened = await _enrollmentsServices.GetAsync(id);
+
+            Assert.That(afterReOpened.State, Is.EqualTo("ReOpened"), $"ERROR - {nameof(afterReOpened.State)} is not 'ReOpened'");
+            Assert.That(afterReOpened.DateReeEnrollment, Is.Not.Null, $"ERROR - {nameof(afterReOpened.DateReeEnrollment)} is null after 'ReOpened'");
+            Assert.That(afterReOpened.UserReeEnrollment, Is.EqualTo(user.Id), $"ERROR - {nameof(afterReOpened.UserReeEnrollment)} is not user id after 'ReOpened'");
+            Assert.That(afterReOpened.UserReeEnrollmentFullName, Is.EqualTo($"{user.FirstName} {user.LastName}"),
+                $"ERROR - {nameof(afterReOpened.UserReeEnrollmentFullName)} is not user full name after 'ReOpened'");
+
+            Assert.That(afterReOpened.DateEndEnrollment, Is.Null, $"ERROR - {nameof(afterReOpened.DateEndEnrollment)} is not null after 'ReOpened'");
+            Assert.That(afterReOpened.UserEndEnrollment, Is.EqualTo(Guid.Empty), $"ERROR - {nameof(afterReOpened.UserEndEnrollment)} is not null user id after 'ReOpened'");
+            Assert.That(afterReOpened.UserEndEnrollmentFullName, Is.Null, $"ERROR - {nameof(afterReOpened.UserEndEnrollmentFullName)} is not null user full name after 'ReOpened'");
+
+            Assert.That(afterReOpened.DateModEnrollment, Is.Not.Null, $"ERROR - {nameof(afterReOpened.DateModEnrollment)} is null after 'ReOpened'");
+            Assert.That(afterReOpened.UserModEnrollment, Is.EqualTo(user.Id), $"ERROR - {nameof(afterReOpened.UserModEnrollment)} is not user id after 'ReOpened'");
+            Assert.That(afterReOpened.UserModEnrollmentFullName, Is.EqualTo($"{user.FirstName} {user.LastName}"),
+                $"ERROR - {nameof(afterReOpened.UserModEnrollmentFullName)} is not user full name after 'ReOpened'");
+
+            EnrollmentsServicesTestsHelper.Print(afterReOpened);
+
+            TestContext.Out.WriteLine("\nDelete enrollment by DeleteAsync(id) and check valid...");
+            await _enrollmentsServices.DeleteAsync(id);
+            var deleted = await _enrollmentsServices.GetAsync(id);
+            Assert.That(deleted, Is.Null, "ERROR - delete enrollment");
+        }
+        [TestCaseSource(typeof(EnrollmentsTestsData), nameof(EnrollmentsTestsData.CRUDCasesDto))]
         public async Task DeleteAsync(EnrollmentsDto enrollmentsDto)
         {
             TestContext.Out.WriteLine("Create enrollment by CreateAsync(enrollmentsDto, username) and check valid...\n");

@@ -83,19 +83,37 @@ namespace mini_ITS.Core.Services
             var user = await _usersRepository.GetAsync(username)
                 ?? throw new Exception($"UsersServices: '{username}' not exist.");
 
-            var enrollment = await _enrollmentsRepository.GetAsync(enrollmentsDto.Id);
-            if (enrollment == null)
+            var oldEnrollment = await _enrollmentsRepository.GetAsync(enrollmentsDto.Id)
+                ?? throw new Exception("Enrollment not found");
+
+            var enrollment = _mapper.Map<Enrollments>(enrollmentsDto);
+
+            var nowUtc = DateTime.UtcNow;
+            var userFullName = $"{user.FirstName} {user.LastName}";
+
+            enrollment.DateModEnrollment = nowUtc;
+            enrollment.UserModEnrollment = user.Id;
+            enrollment.UserModEnrollmentFullName = userFullName;
+
+            if (oldEnrollment.State != "Closed" && enrollment.State == "Closed")
             {
-                throw new Exception("Enrollment not found");
+                enrollment.DateEndEnrollment = nowUtc;
+                enrollment.UserEndEnrollment = user.Id;
+                enrollment.UserEndEnrollmentFullName = userFullName;
+            }
+            else if (oldEnrollment.State == "Closed" && enrollment.State != "Closed")
+            {
+                enrollment.DateEndEnrollment = null;
+                enrollment.UserEndEnrollment = Guid.Empty;
+                enrollment.UserEndEnrollmentFullName = null;
             }
 
-            var oldEnrollment = _mapper.Map<Enrollments>(enrollment);
-
-            _mapper.Map(enrollmentsDto, enrollment);
-
-            enrollment.DateModEnrollment = DateTime.UtcNow;
-            enrollment.UserModEnrollment = user.Id;
-            enrollment.UserModEnrollmentFullName = $"{user.FirstName} {user.LastName}";
+            if (oldEnrollment.State != "ReOpened" && enrollment.State == "ReOpened")
+            {
+                enrollment.DateReeEnrollment = nowUtc;
+                enrollment.UserReeEnrollment = user.Id;
+                enrollment.UserReeEnrollmentFullName = userFullName;
+            }
 
             await _enrollmentsRepository.UpdateAsync(enrollment);
 

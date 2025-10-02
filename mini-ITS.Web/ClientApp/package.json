@@ -10,25 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-router-dom": "^7.7.1",
-    "react-hook-form": "^7.62.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.3",
+    "react-hook-form": "^7.63.0",
     "react-modal": "^3.16.3",
-    "react-datepicker": "^8.4.0",
+    "react-datepicker": "^8.7.0",
     "react-photo-view": "^1.2.7",
     "date-fns": "^4.1.0",
-    "uuid": "^11.1.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^4.7.0",
-    "eslint": "^9.32.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.36.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^6.0.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "sass": "^1.89.2",
-    "vite": "^7.0.6"
+    "eslint-plugin-react-hooks": "^6.1.0",
+    "eslint-plugin-react-refresh": "^0.4.23",
+    "sass": "^1.93.2",
+    "vite": "^7.1.8"
   }
 }

@@ -1,4 +1,4 @@
-![Version](https://badgen.net/badge/version/1.0.1/blue)
+![Version](https://badgen.net/badge/version/1.0.2/blue)
 ![License: MIT](https://badgen.net/badge/license/MIT/green)
 ![Backend](https://badgen.net/badge/backend/.NET%209.x/blueviolet)
 ![React](https://badgen.net/badge/frontend/React/blue)

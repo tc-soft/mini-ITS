@@ -1,11 +1,11 @@
 # Stage 1: Build the .NET application (with Node.js)
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-backend
 
-# Install Node.js v22.14.0
+# Install Node.js v22.20.0
 RUN apt-get update && \
     apt-get install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs=22.14.0-* && \
+    apt-get install -y nodejs=22.20.0-* && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Vite globally

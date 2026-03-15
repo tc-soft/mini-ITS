@@ -22,7 +22,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await IndexAsync(sqlPagedQuery);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after check IndexAsync");
             TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -125,15 +125,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginUnauthorizedCreateCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await CreateAsync(groupsDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after CreateAsync");
+                TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedCreateCases));
+                response = await CreateAsync(groupsDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after CreateAsync");
+                TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
             }
-
-            response = await CreateAsync(groupsDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after CreateAsync");
-            TestContext.Out.WriteLine($"Response after create group: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task CreateAsync_Authorized(
@@ -163,15 +165,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginUnauthorizedEditCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await EditGetAsync(groupsDto.Id);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after EditGetAsync");
+                TestContext.Out.WriteLine($"Response after EditGetAsync of test group: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+                response = await EditGetAsync(groupsDto.Id);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after EditGetAsync");
+                TestContext.Out.WriteLine($"Response after EditGetAsync of test group: {response.StatusCode}");
             }
-
-            response = await EditGetAsync(groupsDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditGetAsync");
-            TestContext.Out.WriteLine($"Response after EditGetAsync of test group: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Authorized(
@@ -200,15 +204,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginUnauthorizedEditCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await EditPutAsync(groupsDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after EditPutAsync");
+                TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedEditCases));
+                response = await EditPutAsync(groupsDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after EditPutAsync");
+                TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
             }
-
-            response = await EditPutAsync(groupsDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditPutAsync");
-            TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task EditPutAsync_Authorized(
@@ -273,14 +279,15 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginUnauthorizedDeleteCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before delete");
+                GroupsControllerTestsHelper.CheckDeleteGroupUnauthorizedCaseForUnauthorized(await DeleteAsync(groupsDto.Id));
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginUnauthorizedDeleteCases));
+                GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before delete");
+                GroupsControllerTestsHelper.CheckDeleteGroupUnauthorizedCaseForForbidden(await DeleteAsync(groupsDto.Id));
             }
-
-            GroupsControllerTestsHelper.Print(groupsDto, $"\nGroup before delete");
-            GroupsControllerTestsHelper.CheckDeleteGroupUnauthorizedCase(await DeleteAsync(groupsDto.Id));
         }
         [Test, Combinatorial]
         public async Task DeleteAsync_Authorized(

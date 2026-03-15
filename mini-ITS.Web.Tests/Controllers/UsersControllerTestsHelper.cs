@@ -92,9 +92,14 @@ namespace mini_ITS.Web.Tests.Controllers
                 "ERROR - header has mini-ITS.SessionCookie value after logout");
             TestContext.Out.WriteLine($"Checking if the cookie name mini-ITS.SessionCookie value is null: OK\n");
         }
-        public static void CheckDeleteUserUnauthorizedCase(HttpResponseMessage httpResponseMessage)
+        public static void CheckDeleteUserUnauthorizedCaseForUnauthorized(HttpResponseMessage httpResponseMessage)
         {
-            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test user");
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after delete test user");
+            TestContext.Out.WriteLine($"Response after delete user: {httpResponseMessage.StatusCode}");
+        }
+        public static void CheckDeleteUserUnauthorizedCaseForForbidden(HttpResponseMessage httpResponseMessage)
+        {
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after delete test user");
             TestContext.Out.WriteLine($"Response after delete user: {httpResponseMessage.StatusCode}");
         }
         public static void CheckDeleteUserAuthorizedCase(HttpResponseMessage httpResponseMessage)

@@ -37,7 +37,7 @@ namespace mini_ITS.Web.Tests.Controllers
             UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
 
             response = await LoginStatusAsync();
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check login status");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after check login status");
             TestContext.Out.WriteLine($"Response after check login status: {response.StatusCode}");
         }
         [TestCaseSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedCases))]
@@ -64,15 +64,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginAuthorizedCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await IndexAsync(sqlPagedQueryDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after check IndexAsync");
+                TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                response = await IndexAsync(sqlPagedQueryDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after check IndexAsync");
+                TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
             }
-
-            response = await IndexAsync(sqlPagedQueryDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after check IndexAsync");
-            TestContext.Out.WriteLine($"Response after IndexAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task IndexAsync_Authorized(
@@ -174,15 +176,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginAuthorizedCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await CreateAsync(usersDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after CreateAsync");
+                TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                response = await CreateAsync(usersDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after CreateAsync");
+                TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
             }
-
-            response = await CreateAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after CreateAsync");
-            TestContext.Out.WriteLine($"Response after create user: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task CreateAsync_Authorized(
@@ -216,15 +220,17 @@ namespace mini_ITS.Web.Tests.Controllers
             if (loginAuthorizedCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await EditGetAsync(usersDto.Id);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after EditGetAsync");
+                TestContext.Out.WriteLine($"Response after EditGetAsync of test user: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                response = await EditGetAsync(usersDto.Id);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after EditGetAsync");
+                TestContext.Out.WriteLine($"Response after EditGetAsync of test user: {response.StatusCode}");
             }
-
-            response = await EditGetAsync(usersDto.Id);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditGetAsync");
-            TestContext.Out.WriteLine($"Response after EditGetAsync of test user: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task EditGetAsync_Authorized(
@@ -250,20 +256,22 @@ namespace mini_ITS.Web.Tests.Controllers
             LoginData loginAuthorizedCases,
             UsersDto usersDto)
         {
+            UsersControllerTestsHelper.Print(usersDto, "\nUser before update");
+
             if (loginAuthorizedCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await EditPutAsync(usersDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after EditPutAsync");
+                TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                response = await EditPutAsync(usersDto);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after EditPutAsync");
+                TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
             }
-
-            UsersControllerTestsHelper.Print(usersDto, "\nUser before update");
-            
-            response = await EditPutAsync(usersDto);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after EditPutAsync");
-            TestContext.Out.WriteLine($"Response after EditPutAsync: {response.StatusCode}");
         }
         [Test, Combinatorial]
         public async Task EditPutAsync_Authorized(
@@ -325,17 +333,18 @@ namespace mini_ITS.Web.Tests.Controllers
             LoginData loginAuthorizedCases,
             UsersDto usersDto)
         {
+            UsersControllerTestsHelper.Print(usersDto, "\nUser before delete");
+
             if (loginAuthorizedCases == null)
             {
                 UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                UsersControllerTestsHelper.CheckDeleteUserUnauthorizedCaseForUnauthorized(await DeleteAsync(usersDto.Id));
             }
             else
             {
                 UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                UsersControllerTestsHelper.CheckDeleteUserUnauthorizedCaseForForbidden(await DeleteAsync(usersDto.Id));
             }
-
-            UsersControllerTestsHelper.Print(usersDto, "\nUser before delete");
-            UsersControllerTestsHelper.CheckDeleteUserUnauthorizedCase(await DeleteAsync(usersDto.Id));
         }
         [Test, Combinatorial]
         public async Task DeleteAsync_Authorized(
@@ -388,7 +397,7 @@ namespace mini_ITS.Web.Tests.Controllers
             };
             
             response = await ChangePasswordAsync(changePassword);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after ChangePasswordAsync");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after ChangePasswordAsync");
             TestContext.Out.WriteLine($"Response after change password: {response.StatusCode}");
         }
         [Test, Combinatorial]
@@ -460,17 +469,6 @@ namespace mini_ITS.Web.Tests.Controllers
             var id = await response.Content.ReadFromJsonAsync<Guid>();
             Assert.That(id, Is.Not.Null, $"ERROR - id is null");
 
-            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
-
-            if (loginAuthorizedCases == null)
-            {
-                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
-            }
-            else
-            {
-                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
-            }
-
             var caesarHelper = new CaesarHelper();
             var setPassword = new SetPassword()
             {
@@ -482,9 +480,22 @@ namespace mini_ITS.Web.Tests.Controllers
             TestContext.Out.WriteLine($"Old password : {usersDto.PasswordHash}");
             TestContext.Out.WriteLine($"New password : {setPassword.NewPassword}\n");
 
-            response = await SetPasswordAsync(setPassword);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after change password");
-            TestContext.Out.WriteLine($"Response after set password: {response.StatusCode}");
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+
+            if (loginAuthorizedCases == null)
+            {
+                UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginUnauthorizedCases));
+                response = await SetPasswordAsync(setPassword);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after change password");
+                TestContext.Out.WriteLine($"Response after set password: {response.StatusCode}");
+            }
+            else
+            {
+                UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginAuthorizedCases));
+                response = await SetPasswordAsync(setPassword);
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after change password");
+                TestContext.Out.WriteLine($"Response after set password: {response.StatusCode}");
+            }
 
             if (loginAuthorizedCases is not null) UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
             UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(new LoginData { Login = "admin", Password = "admin" }));

@@ -62,9 +62,14 @@ namespace mini_ITS.Web.Tests.Controllers
                 $"| {groupsDto.UserModGroupFullName,-25}" +
                 $"| {groupsDto.GroupName,-29}|");
         }
-        public static void CheckDeleteGroupUnauthorizedCase(HttpResponseMessage httpResponseMessage)
+        public static void CheckDeleteGroupUnauthorizedCaseForUnauthorized(HttpResponseMessage httpResponseMessage)
         {
-            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.NotFound), "ERROR - respons status code is not 500 after delete test group");
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized), "ERROR - respons status code is not 500 after delete test group");
+            TestContext.Out.WriteLine($"Response after DeleteAsync: {httpResponseMessage.StatusCode}");
+        }
+        public static void CheckDeleteGroupUnauthorizedCaseForForbidden(HttpResponseMessage httpResponseMessage)
+        {
+            Assert.That(httpResponseMessage.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden), "ERROR - respons status code is not 500 after delete test group");
             TestContext.Out.WriteLine($"Response after DeleteAsync: {httpResponseMessage.StatusCode}");
         }
         public static void CheckDeleteGroupAuthorizedCase(HttpResponseMessage httpResponseMessage)

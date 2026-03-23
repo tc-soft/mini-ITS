@@ -32,5 +32,12 @@ namespace mini_ITS.Core
                     " END COLLATE Polish_CI_AS"
             }
         };
+        public static readonly Dictionary<string, Dictionary<string, string>> CompositeSortTemplatesByTable = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Enrollments"] = new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["NrDisplay"] = "[Year] {dir}, [Nr] {dir}"
+            }
+        };
     }
 }

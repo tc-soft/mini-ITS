@@ -9,25 +9,63 @@ namespace mini_ITS.Core.Database
     {
         private readonly string _tableName;
         private string[] _columnNames;
+        private readonly HashSet<string> _validColumns;
         private readonly List<SqlQueryCondition> _filters = new List<SqlQueryCondition>();
         private string _sortColumnName, _sortDirection;
         private int? _offset, _count;
+
         public SqlQueryBuilder()
         {
             Type type = typeof(T);
             _tableName = type.Name ?? throw new ArgumentNullException(type.Name);
+            _validColumns = type.GetProperties()
+                .Select(p => p.Name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
         }
         public SqlQueryBuilder(SqlPagedQuery<T> sqlPagedQuery)
         {
             Type type = typeof(T);
             _tableName = type.Name ?? throw new ArgumentNullException(type.Name);
+            _validColumns = type.GetProperties()
+                .Select(p => p.Name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
             _ = sqlPagedQuery.Filter is not null ? _filters = sqlPagedQuery.Filter : null;
             _filters.RemoveAll(item => item.Value is null);
 
             WithSort(sqlPagedQuery.SortColumnName, sqlPagedQuery.SortDirection);
             WithPaging(sqlPagedQuery.Offset, sqlPagedQuery.ResultsPerPage);
         }
+        private string BuildOrderByClause(string columnName, string direction)
+        {
+            var dir = string.Equals(direction, "DESC", StringComparison.OrdinalIgnoreCase) ? "DESC" : "ASC";
 
+            if (!string.IsNullOrWhiteSpace(columnName) &&
+                _validColumns.Contains(columnName) &&
+                SqlSortProfile.NullsLastColumnsByTable.TryGetValue(_tableName, out var nullsLastSet) &&
+                nullsLastSet.Contains(columnName))
+            {
+                return $"ORDER BY CASE WHEN [{columnName}] IS NULL THEN 1 ELSE 0 END, [{columnName}] {dir}, [Id] ASC";
+            }
+
+            if (SqlSortProfile.SpecialSortExpressionsByTable.TryGetValue(_tableName, out var tableExprs) &&
+                tableExprs.TryGetValue(columnName ?? string.Empty, out var expr))
+            {
+                return $"ORDER BY CASE WHEN ({expr}) IS NULL THEN 1 ELSE 0 END, {expr} {dir}, [Id] ASC";
+            }
+
+            if (SqlSortProfile.CompositeSortTemplatesByTable.TryGetValue(_tableName, out var tableTpls) &&
+                tableTpls.TryGetValue(columnName ?? string.Empty, out var tpl))
+            {
+                return $"ORDER BY {tpl.Replace("{dir}", dir)}, [Id] ASC";
+            }
+
+            if (!string.IsNullOrWhiteSpace(columnName) && _validColumns.Contains(columnName))
+            {
+                return $"ORDER BY [{columnName}] {dir}, [Id] ASC";
+            }
+
+            return null;
+        }
         public string GetSelectQuery()
         {
             StringBuilder queryBuilder = new StringBuilder("SELECT ");
@@ -41,7 +79,7 @@ namespace mini_ITS.Core.Database
                 queryBuilder.Append("*");
             }
 
-            queryBuilder.Append($" FROM {_tableName}");
+            queryBuilder.Append($" FROM [{_tableName}]");
 
             if (_filters.Count > 0)
             {
@@ -61,9 +99,14 @@ namespace mini_ITS.Core.Database
                 queryBuilder.Append($" WHERE {String.Join(" AND ", filters)}");
             }
 
-            if (!String.IsNullOrWhiteSpace(_sortColumnName) && !String.IsNullOrWhiteSpace(_sortDirection))
+            if (!string.IsNullOrWhiteSpace(_sortColumnName) && !string.IsNullOrWhiteSpace(_sortDirection))
             {
-                queryBuilder.AppendFormat(" ORDER BY {0} {1}", _sortColumnName, _sortDirection);
+                var orderBy = BuildOrderByClause(_sortColumnName, _sortDirection);
+                
+                if (!string.IsNullOrWhiteSpace(orderBy))
+                {
+                    queryBuilder.Append(' ').Append(orderBy);
+                }
             }
 
             if (_offset.HasValue && _count.HasValue)

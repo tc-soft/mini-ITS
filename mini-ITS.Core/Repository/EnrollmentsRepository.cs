@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Dapper;
 using mini_ITS.Core.Database;
+using mini_ITS.Core.Dto;
 using mini_ITS.Core.Models;
 
 namespace mini_ITS.Core.Repository
@@ -87,6 +88,23 @@ namespace mini_ITS.Core.Repository
             {
                 var sqlQueryBuilder = new SqlQueryBuilder<Enrollments>().GetDeleteQuery();
                 await sqlConnection.ExecuteAsync(sqlQueryBuilder, new { Id = id });
+            }
+        }
+        public async Task<IEnumerable<UsersAddEnrollmentsDto>> GetUsersAddEnrollmentsAsync()
+        {
+            using (var sqlConnection = new SqlConnection(_connectionString))
+            {
+                var query = @"
+                    SELECT 
+                        e.UserAddEnrollment AS UserAddEnrollment,
+                        MAX(e.UserAddEnrollmentFullName) AS UserAddEnrollmentFullName
+                    FROM dbo.Enrollments e
+                    WHERE e.UserAddEnrollment IS NOT NULL
+                    GROUP BY e.UserAddEnrollment
+                    ORDER BY MAX(e.UserAddEnrollmentFullName);";
+
+                var usersAddEnrollments = await sqlConnection.QueryAsync<UsersAddEnrollmentsDto>(query);
+                return usersAddEnrollments;
             }
         }
     }

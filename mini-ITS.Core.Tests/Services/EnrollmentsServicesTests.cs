@@ -272,5 +272,37 @@ namespace mini_ITS.Core.Tests.Services
             enrollmentDto = await _enrollmentsServices.GetAsync(id);
             Assert.That(enrollmentDto, Is.Null, "ERROR - delete enrollment");
         }
+        [Test]
+        public async Task GetUsersAddEnrollmentsAsync_Check()
+        {
+            TestContext.Out.WriteLine("Get usersAddEnrollments by GetUsersAddEnrollmentsAsync() and check valid...\n");
+            var usersAddEnrollments = await _enrollmentsServices.GetUsersAddEnrollmentsAsync();
+
+            Assert.That(usersAddEnrollments, Is.Not.Null,
+                "ERROR - usersAddEnrollments is null");
+            Assert.That(usersAddEnrollments, Is.All.Not.Null,
+                "ERROR - some usersAddEnrollments items are null");
+            Assert.That(usersAddEnrollments, Is.All.InstanceOf<UsersAddEnrollmentsDto>(),
+                "ERROR - all instance is not of <UsersAddEnrollmentsDto>()");
+
+            foreach (var item in usersAddEnrollments)
+            {
+                Assert.That(item.UserAddEnrollment, Is.Not.EqualTo(Guid.Empty),
+                    "ERROR - UserAddEnrollment is empty Guid");
+                Assert.That(item.UserAddEnrollmentFullName, Is.Not.Null.Or.Empty,
+                    "ERROR - UserAddEnrollmentFullName is null or empty");
+
+                TestContext.Out.WriteLine(
+                    $"UserAddEnrollment: {item.UserAddEnrollment}\tFullName: {item.UserAddEnrollmentFullName}");
+            }
+
+            Assert.That(usersAddEnrollments.Select(x => x.UserAddEnrollment), Is.Unique,
+                "ERROR - UserAddEnrollment is not unique");
+            Assert.That(usersAddEnrollments,
+                Is.Ordered.Ascending.By(nameof(UsersAddEnrollmentsDto.UserAddEnrollmentFullName)),
+                "ERROR - usersAddEnrollments is not ordered by UserAddEnrollmentFullName ASC");
+
+            TestContext.Out.WriteLine($"\nNumber of usersAddEnrollments: {usersAddEnrollments.Count()}");
+        }
     }
 }

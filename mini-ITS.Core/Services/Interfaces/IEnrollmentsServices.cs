@@ -16,5 +16,6 @@ namespace mini_ITS.Core.Services
         Task<Guid> CreateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests = true);
         Task UpdateAsync(EnrollmentsDto enrollmentsDto, string username, bool disableNotificationInTests = true);
         Task DeleteAsync(Guid guid);
+        Task<IEnumerable<UsersAddEnrollmentsDto>> GetUsersAddEnrollmentsAsync();
     }
 }

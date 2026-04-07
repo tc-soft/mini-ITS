@@ -8,6 +8,7 @@ const edit = (id) => fetchWrapper.get(`${baseUrl}/Edit/${id}`);
 const update = (id, values) => fetchWrapper.put(`${baseUrl}/Edit/${id}`, values);
 const _delete = (id) => fetchWrapper.delete(`${baseUrl}/Delete/${id}`);
 const getMaxNumber = (value) => fetchWrapper.get(`${baseUrl}/GetMaxNumber`, { year: value });
+const getUsersAddEnrollments = () => fetchWrapper.get(`${baseUrl}/GetUsersAddEnrollments`);
 
 export const enrollmentServices = {
     index,
@@ -15,5 +16,6 @@ export const enrollmentServices = {
     edit,
     update,
     delete: _delete, 
-    getMaxNumber
+    getMaxNumber,
+    getUsersAddEnrollments
 };

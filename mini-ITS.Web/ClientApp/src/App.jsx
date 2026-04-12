@@ -28,6 +28,9 @@ const App = () => {
                             {currentUser && <Link to="/Enrollments">Zgłoszenia</Link>}
                         </li>
                         <li className='main-header__link'>
+                            {currentUser && <Link to="/Enrollments/Report">Raport</Link>}
+                        </li>
+                        <li className='main-header__link'>
                             {(currentUser && (currentUser.role === 'Administrator' || currentUser.role === 'Manager')) && <Link to='/Groups'>Grupy</Link>}
                         </li>
                         <li className='main-header__link'>

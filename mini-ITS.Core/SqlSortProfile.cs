@@ -9,7 +9,8 @@ namespace mini_ITS.Core
         {
             ["Enrollments"] = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "DateEndEnrollment"
+                "DateAddEnrollment",
+                "DateEndDeclareByDepartment"
             }
         };
         public static readonly Dictionary<string, Dictionary<string, string>> SpecialSortExpressionsByTable = new(StringComparer.OrdinalIgnoreCase)

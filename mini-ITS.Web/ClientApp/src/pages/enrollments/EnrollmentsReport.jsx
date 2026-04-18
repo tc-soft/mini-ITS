@@ -76,6 +76,19 @@ const EnrollmentsReport = (props) => {
         };
     };
 
+    const handleSort = (columnName) => {
+        setPagedQuery(prev => {
+            const same = prev.sortColumnName === columnName;
+            const nextDir = same ? (prev.sortDirection === 'ASC' ? 'DESC' : 'ASC') : 'ASC';
+            return { ...prev, page: 1, sortColumnName: columnName, sortDirection: nextDir };
+        });
+    };
+
+    const sortIndicator = (col) => {
+        if (!pagedQuery || pagedQuery.sortColumnName !== col) return '';
+        return pagedQuery.sortDirection === 'ASC' ? ' ▲' : ' ▼';
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -100,15 +113,42 @@ const EnrollmentsReport = (props) => {
             <table>
                 <thead>
                     <tr>
-                        <th style={{ width: '05%' }}>Nr</th>
-                        <th style={{ width: '05%' }}>Data wpr.</th>
-                        <th style={{ width: '05%' }}>Data zak.</th>
-                        <th style={{ width: '25%' }}>Opis</th>
-                        <th style={{ width: '10%' }}>Zgłaszający</th>
-                        <th style={{ width: '10%' }}>Dział docelowy</th>
-                        <th style={{ width: '06%' }}>Priorytet</th>
-                        <th style={{ width: '05%' }}>Status</th>
-                        <th style={{ width: '06%' }}>Gotowe</th>
+                        <th style={{ width: '05%', cursor: 'pointer' }} onClick={() => handleSort('NrDisplay')}>
+                            Nr{sortIndicator('NrDisplay')}
+                        </th>
+
+                        <th style={{ width: '05%', cursor: 'pointer' }} onClick={() => handleSort('DateAddEnrollment')}>
+                            Data wpr.{sortIndicator('DateAddEnrollment')}
+                        </th>
+
+                        <th style={{ width: '05%', cursor: 'pointer' }} onClick={() => handleSort('DateEndDeclareByDepartment')}>
+                            Data zak.{sortIndicator('DateEndDeclareByDepartment')}
+                        </th>
+
+                        <th style={{ width: '25%', cursor: 'pointer' }} onClick={() => handleSort('Description')}>
+                            Opis{sortIndicator('Description')}
+                        </th>
+
+                        <th style={{ width: '10%', cursor: 'pointer' }} onClick={() => handleSort('UserAddEnrollmentFullName')}>
+                            Zgłaszający{sortIndicator('UserAddEnrollmentFullName')}
+                        </th>
+
+                        <th style={{ width: '10%', cursor: 'pointer' }} onClick={() => handleSort('Department')}>
+                            Dział docelowy{sortIndicator('Department')}
+                        </th>
+
+                        <th style={{ width: '06%', cursor: 'pointer' }} onClick={() => handleSort('Priority')}>
+                            Priorytet{sortIndicator('Priority')}
+                        </th>
+
+                        <th style={{ width: '05%', cursor: 'pointer' }} onClick={() => handleSort('State')}>
+                            Status{sortIndicator('State')}
+                        </th>
+
+                        <th style={{ width: '06%', cursor: 'pointer' }} onClick={() => handleSort('ReadyForClose')}>
+                            Gotowe{sortIndicator('ReadyForClose')}
+                        </th>
+
                         <th style={{ width: '23%' }}>Operacje</th>
                     </tr>
                 </thead>

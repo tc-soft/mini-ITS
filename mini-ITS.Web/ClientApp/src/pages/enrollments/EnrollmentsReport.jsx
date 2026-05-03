@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import DatePicker from 'react-datepicker';
 import { enrollmentServices } from '../../services/EnrollmentServices';
+import pl from 'date-fns/locale/pl';
 import iconDetail from '../../images/iconDetail.svg';
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 const EnrollmentsReport = (props) => {
     const {
@@ -31,6 +35,9 @@ const EnrollmentsReport = (props) => {
         'Closed': 'Zamknięte',
         'ReOpened': 'Otwarte ponownie'
     };
+
+    const [dateFromFilter, setDateFromFilter] = useState(null);
+    const [dateToFilter, setDateToFilter] = useState(null);
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -89,6 +96,53 @@ const EnrollmentsReport = (props) => {
         return pagedQuery.sortDirection === 'ASC' ? ' ▲' : ' ▼';
     };
 
+    const upsertFilter = (name, operator, valueOrNull) => {
+        setPagedQuery(prev => {
+            const next = { ...prev };
+            const current = Array.isArray(prev.filter) ? prev.filter : [];
+            const filtered = current.filter(f => !(f.name === name && f.operator === operator));
+            if (valueOrNull == null) {
+                next.filter = filtered;
+            } else {
+                next.filter = [...filtered, { name, operator, value: valueOrNull }];
+            }
+            next.page = 1;
+            return next;
+        });
+    };
+
+    const handleDateFromFilterChange = (date) => {
+        setDateFromFilter(date);
+        if (!date) {
+            upsertFilter('DateAddEnrollment', '>=', null);
+            return;
+        }
+
+        const isoStart = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            0, 0, 0, 0
+        ).toISOString();
+        upsertFilter('DateAddEnrollment', '>=', isoStart);
+    };
+
+    const handleDateToFilterChange = (date) => {
+        setDateToFilter(date);
+        if (!date) {
+            upsertFilter('DateAddEnrollment', '<=', null);
+            return;
+        }
+
+        const isoEnd = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            23, 59, 59, 999
+        ).toISOString();
+        upsertFilter('DateAddEnrollment', '<=', isoEnd);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -110,6 +164,48 @@ const EnrollmentsReport = (props) => {
     return (
         <>
             <p>Lista zgłoszeń</p>
+            <div>
+                <span>Data dodania: </span>
+                <DatePicker
+                    tabIndex='1'
+                    selected={dateFromFilter}
+
+                    dateFormat='dd.MM.yyyy'
+                    showMonthDropdown
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={15}
+
+                    selectsStart
+                    startDate={dateFromFilter}
+                    endDate={dateToFilter}
+
+                    placeholderText='Data od'
+                    onChange={handleDateFromFilterChange}
+                    isClearable
+                    locale={pl}
+                />
+                <DatePicker
+                    tabIndex='2'
+                    selected={dateToFilter}
+
+                    dateFormat='dd.MM.yyyy'
+                    showMonthDropdown
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={15}
+
+                    selectsEnd
+                    startDate={dateFromFilter}
+                    endDate={dateToFilter}
+                    minDate={dateFromFilter}
+
+                    placeholderText='Data do'
+                    onChange={handleDateToFilterChange}
+                    isClearable
+                    locale={pl}
+                />
+            </div>
             <table>
                 <thead>
                     <tr>

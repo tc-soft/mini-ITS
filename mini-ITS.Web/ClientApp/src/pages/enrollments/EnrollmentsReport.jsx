@@ -143,6 +143,106 @@ const EnrollmentsReport = (props) => {
         upsertFilter('DateAddEnrollment', '<=', isoEnd);
     };
 
+    const setCurrentMonthRange = () => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        const from = new Date(currentYear, currentMonth, 1, 0, 0, 0, 0);
+        const to = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
+    const setPreviousMonthRange = () => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+        const yearOfPrevMonth = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+        const from = new Date(yearOfPrevMonth, prevMonth, 1, 0, 0, 0, 0);
+        const to = new Date(yearOfPrevMonth, prevMonth + 1, 0, 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
+    const setCurrentQuarterRange = () => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentQuarter = Math.floor(currentMonth / 3);
+        const quarterStartMonth = currentQuarter * 3;
+
+        const from = new Date(currentYear, quarterStartMonth, 1, 0, 0, 0, 0);
+        const to = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
+    const setPreviousQuarterRange = () => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentQuarter = Math.floor(currentMonth / 3);
+
+        const prevQuarter = currentQuarter === 0 ? 3 : currentQuarter - 1;
+        const yearOfPrevQuarter = currentQuarter === 0 ? currentYear - 1 : currentYear;
+
+        const quarterStartMonth = prevQuarter * 3;
+        const quarterEndMonth = quarterStartMonth + 2;
+
+        const from = new Date(yearOfPrevQuarter, quarterStartMonth, 1, 0, 0, 0, 0);
+        const to = new Date(yearOfPrevQuarter, quarterEndMonth + 1, 0, 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
+    const setCurrentYearRange = () => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        const from = new Date(currentYear, 0, 1, 0, 0, 0, 0);
+        const to = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
+    const setPreviousYearRange = () => {
+        const now = new Date();
+        const lastYear = now.getFullYear() - 1;
+
+        const from = new Date(lastYear, 0, 1, 0, 0, 0, 0);
+        const to = new Date(lastYear, 11, 31, 23, 59, 59, 999);
+
+        setDateFromFilter(from);
+        setDateToFilter(to);
+
+        upsertFilter('DateAddEnrollment', '>=', from.toISOString());
+        upsertFilter('DateAddEnrollment', '<=', to.toISOString());
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -206,6 +306,53 @@ const EnrollmentsReport = (props) => {
                     locale={pl}
                 />
             </div>
+            <br/>
+            <div>
+                <button
+                    tabIndex='3'
+                    type='button'
+                    onClick={setCurrentMonthRange}>
+                    Bieżący miesiąc
+                </button>
+                &nbsp;
+                <button
+                    tabIndex='4'
+                    type='button'
+                    onClick={setPreviousMonthRange}>
+                    Poprzedni miesiąc
+                </button>
+                &nbsp;
+                <button
+                    tabIndex='5'
+                    type='button'
+                    onClick={setCurrentQuarterRange}>
+                    Bieżący kwartał
+                </button>
+            </div>
+            <br />
+            <div>
+                <button
+                    tabIndex='6'
+                    type='button'
+                    onClick={setPreviousQuarterRange}>
+                    Poprzedni kwartał
+                </button>
+                &nbsp;
+                <button
+                    tabIndex='7'
+                    type='button'
+                    onClick={setCurrentYearRange}>
+                    Bieżący rok
+                </button>
+                &nbsp;
+                <button
+                    tabIndex='8'
+                    type='button'
+                    onClick={setPreviousYearRange}>
+                    Poprzedni rok
+                </button>
+            </div>
+            <br />
             <table>
                 <thead>
                     <tr>

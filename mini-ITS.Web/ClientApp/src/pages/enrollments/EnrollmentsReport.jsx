@@ -38,6 +38,7 @@ const EnrollmentsReport = (props) => {
 
     const [dateFromFilter, setDateFromFilter] = useState(null);
     const [dateToFilter, setDateToFilter] = useState(null);
+    const [searchDescription, setSearchDescription] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -244,6 +245,20 @@ const EnrollmentsReport = (props) => {
     };
 
     useEffect(() => {
+        const id = setTimeout(() => {
+            const t = (searchDescription || '').trim();
+            if (t.length === 0) {
+                upsertFilter('Description', 'LIKE', null);
+            } else {
+                const escaped = t.replace(/'/g, "''");
+                upsertFilter('Description', 'LIKE', `%${escaped}%`);
+            }
+        }, 1000);
+
+        return () => clearTimeout(id);
+    }, [searchDescription]);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const enrollmentResponse = await enrollmentServices.index(pagedQuery);
@@ -352,7 +367,18 @@ const EnrollmentsReport = (props) => {
                     Poprzedni rok
                 </button>
             </div>
-            <br />
+            <div>
+                <br />
+                <span>Opis:</span>
+                &nbsp;
+                <input
+                    tabIndex='9'
+                    type='text'
+                    placeholder='szukaj w opisie...'
+                    value={searchDescription}
+                    onChange={(e) => setSearchDescription(e.target.value)}
+                />
+            </div>
             <table>
                 <thead>
                     <tr>

@@ -39,6 +39,8 @@ const EnrollmentsReport = (props) => {
     const [dateFromFilter, setDateFromFilter] = useState(null);
     const [dateToFilter, setDateToFilter] = useState(null);
     const [searchDescription, setSearchDescription] = useState('');
+    const [usersAddEnrollments, setUsersAddEnrollments] = useState([]);
+    const [selectedUserAddEnrollment, setSelectedUserAddEnrollment] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -142,6 +144,14 @@ const EnrollmentsReport = (props) => {
             23, 59, 59, 999
         ).toISOString();
         upsertFilter('DateAddEnrollment', '<=', isoEnd);
+    };
+
+    const handleUserAddEnrollmentChange = (e) => {
+        const val = e.target.value || '';
+        setSelectedUserAddEnrollment(val);
+        upsertFilter('UserAddEnrollment', '=', val === '' ? null : val);
+
+        setPagedQuery(prev => ({ ...prev, page: 1 }));
     };
 
     const setCurrentMonthRange = () => {
@@ -257,6 +267,32 @@ const EnrollmentsReport = (props) => {
 
         return () => clearTimeout(id);
     }, [searchDescription]);
+
+    useEffect(() => {
+        let aborted = false;
+
+        const loadUsersAddEnrollments = async () => {
+            try {
+                const usersAddEnrollmentsResponse = await enrollmentServices.getUsersAddEnrollments();
+                if (!usersAddEnrollmentsResponse.ok) throw new Error('Failed to fetch usersAddEnrollments');
+                const data = await usersAddEnrollmentsResponse.json();
+
+                const mapped = Array.isArray(data)
+                    ? data.map(x => ({
+                        userAddEnrollment: x.userAddEnrollment ?? x.UserAddEnrollment,
+                        userAddEnrollmentFullName: x.userAddEnrollmentFullName ?? x.UserAddEnrollmentFullName
+                    }))
+                    : [];
+
+                if (!aborted) setUsersAddEnrollments(mapped);
+            } catch (error) {
+                console.error('Error loading usersAddEnrollments:', error);
+            }
+        };
+
+        loadUsersAddEnrollments();
+        return () => { aborted = true; };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -378,6 +414,23 @@ const EnrollmentsReport = (props) => {
                     value={searchDescription}
                     onChange={(e) => setSearchDescription(e.target.value)}
                 />
+            </div>
+            <div>
+                <br />
+                <label style={{ marginRight: 6 }}>Zgłaszający:</label>
+                <select
+                    tabIndex='10'
+                    value={selectedUserAddEnrollment}
+                    onChange={handleUserAddEnrollmentChange}
+                    disabled={usersAddEnrollments.length === 0}
+                >
+                    <option value=''>-- wszyscy --</option>
+                    {(usersAddEnrollments ?? usersAddEnrollments).map(u => (
+                        <option key={u.userAddEnrollment} value={u.userAddEnrollment}>
+                            {u.userAddEnrollmentFullName}
+                        </option>
+                    ))}
+                </select>
             </div>
             <table>
                 <thead>

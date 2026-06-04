@@ -44,6 +44,7 @@ const EnrollmentsReport = (props) => {
     const [departments, setDepartments] = useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [priority, setPriority] = useState('');
+    const [state, setState] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -171,6 +172,14 @@ const EnrollmentsReport = (props) => {
         upsertFilter('Priority', '=', val === '' ? null : val);
 
         setPagedQuery(prev => ({ ...prev, page: 1 }));
+    };
+
+    const handleStateChange = (e) => {
+        const val = e.target.value || '';
+        setState(val);
+        upsertFilter('State', '=', val === '' ? null : val);
+
+        setPagedQuery(prev => ({ ...prev, page: 1 }))
     };
 
     const setCurrentMonthRange = () => {
@@ -493,6 +502,22 @@ const EnrollmentsReport = (props) => {
                     {Object.entries(mapPriority).map(([value, label]) => (
                         <option key={value} value={value}>
                             {label}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <br />
+                <label style={{ marginRight: 6 }}>Filtruj według statusu:</label>
+                <select
+                    tabIndex='13'
+                    value={state}
+                    onChange={handleStateChange}
+                >
+                    <option value=''>-- Wszystkie --</option>
+                    {Object.entries(mapState).map(([value, name], index) => (
+                        <option key={index} value={value}>
+                            {name}
                         </option>
                     ))}
                 </select>

@@ -41,6 +41,8 @@ const EnrollmentsReport = (props) => {
     const [searchDescription, setSearchDescription] = useState('');
     const [usersAddEnrollments, setUsersAddEnrollments] = useState([]);
     const [selectedUserAddEnrollment, setSelectedUserAddEnrollment] = useState('');
+    const [departments, setDepartments] = useState([]);
+    const [selectedDepartment, setSelectedDepartment] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -150,6 +152,14 @@ const EnrollmentsReport = (props) => {
         const val = e.target.value || '';
         setSelectedUserAddEnrollment(val);
         upsertFilter('UserAddEnrollment', '=', val === '' ? null : val);
+
+        setPagedQuery(prev => ({ ...prev, page: 1 }));
+    };
+
+    const handleDepartmentChange = (e) => {
+        const val = e.target.value || '';
+        setSelectedDepartment(val);
+        upsertFilter('Department', '=', val === '' ? null : val);
 
         setPagedQuery(prev => ({ ...prev, page: 1 }));
     };
@@ -276,21 +286,35 @@ const EnrollmentsReport = (props) => {
                 const usersAddEnrollmentsResponse = await enrollmentServices.getUsersAddEnrollments();
                 if (!usersAddEnrollmentsResponse.ok) throw new Error('Failed to fetch usersAddEnrollments');
                 const data = await usersAddEnrollmentsResponse.json();
-
                 const mapped = Array.isArray(data)
                     ? data.map(x => ({
                         userAddEnrollment: x.userAddEnrollment ?? x.UserAddEnrollment,
                         userAddEnrollmentFullName: x.userAddEnrollmentFullName ?? x.UserAddEnrollmentFullName
                     }))
                     : [];
-
                 if (!aborted) setUsersAddEnrollments(mapped);
             } catch (error) {
                 console.error('Error loading usersAddEnrollments:', error);
             }
         };
 
+        const loadDepartments = async () => {
+            try {
+                const departmentsResponse = await fetch('/Department.json');
+                if (!departmentsResponse.ok) throw new Error('Failed to fetch departments');
+                const departmentData = await departmentsResponse.json();
+                const mapped = Array.isArray(departmentData)
+                    ? departmentData.map(item => item.value === '' ? { ...item, name: 'Wszyscy' } : item)
+                    : [];
+                if (!aborted) setDepartments(mapped);
+            } catch (error) {
+                console.error('Error loading departments:', error);
+            }
+        };
+
         loadUsersAddEnrollments();
+        loadDepartments();
+
         return () => { aborted = true; };
     }, []);
 
@@ -428,6 +452,22 @@ const EnrollmentsReport = (props) => {
                     {(usersAddEnrollments ?? usersAddEnrollments).map(u => (
                         <option key={u.userAddEnrollment} value={u.userAddEnrollment}>
                             {u.userAddEnrollmentFullName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <br />
+                <label style={{ marginRight: 6 }}>Filtruj według działu docelowego:</label>
+                <select
+                    tabIndex='11'
+                    value={selectedDepartment}
+                    onChange={handleDepartmentChange}
+                >
+                    <option value=''>-- Wszystkie --</option>
+                    {departments.map((department, index) => (
+                        <option key={index} value={department.value}>
+                            {department.name}
                         </option>
                     ))}
                 </select>

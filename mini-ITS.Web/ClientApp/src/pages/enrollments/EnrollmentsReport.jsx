@@ -43,6 +43,7 @@ const EnrollmentsReport = (props) => {
     const [selectedUserAddEnrollment, setSelectedUserAddEnrollment] = useState('');
     const [departments, setDepartments] = useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState('');
+    const [priority, setPriority] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -160,6 +161,14 @@ const EnrollmentsReport = (props) => {
         const val = e.target.value || '';
         setSelectedDepartment(val);
         upsertFilter('Department', '=', val === '' ? null : val);
+
+        setPagedQuery(prev => ({ ...prev, page: 1 }));
+    };
+
+    const handlePriorityChange = (e) => {
+        const val = e.target.value || '';
+        setPriority(val);
+        upsertFilter('Priority', '=', val === '' ? null : val);
 
         setPagedQuery(prev => ({ ...prev, page: 1 }));
     };
@@ -468,6 +477,22 @@ const EnrollmentsReport = (props) => {
                     {departments.map((department, index) => (
                         <option key={index} value={department.value}>
                             {department.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <br />
+                <label style={{ marginRight: 6 }}>Filtruj według priorytetu:</label>
+                <select
+                    tabIndex='12'
+                    value={priority}
+                    onChange={handlePriorityChange}
+                >
+                    <option value=''>-- Wszystkie --</option>
+                    {Object.entries(mapPriority).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
                         </option>
                     ))}
                 </select>

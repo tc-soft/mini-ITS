@@ -45,6 +45,7 @@ const EnrollmentsReport = (props) => {
     const [selectedDepartment, setSelectedDepartment] = useState('');
     const [priority, setPriority] = useState('');
     const [state, setState] = useState('');
+    const [readyForClose, setReadyForClose] = useState('');
 
     const handleSetResultsPerPage = (number) => {
         setPagedQuery(prevState => ({
@@ -178,6 +179,21 @@ const EnrollmentsReport = (props) => {
         const val = e.target.value || '';
         setState(val);
         upsertFilter('State', '=', val === '' ? null : val);
+
+        setPagedQuery(prev => ({ ...prev, page: 1 }))
+    };
+
+    const handleReadyForCloseChange = (e) => {
+        const val = e.target.value;
+        setReadyForClose(val);
+
+        if (val === '') {
+            upsertFilter('ReadyForClose', '=', null);
+        } else if (val === 'true') {
+            upsertFilter('ReadyForClose', '=', '1');
+        } else if (val === 'false') {
+            upsertFilter('ReadyForClose', '=', '0');
+        }
 
         setPagedQuery(prev => ({ ...prev, page: 1 }))
     };
@@ -520,6 +536,19 @@ const EnrollmentsReport = (props) => {
                             {name}
                         </option>
                     ))}
+                </select>
+            </div>
+            <div>
+                <br />
+                <label style={{ marginRight: 6 }}>Filtruj według gotowości:</label>
+                <select
+                    tabIndex='14'
+                    value={readyForClose}
+                    onChange={handleReadyForCloseChange}
+                >
+                    <option value=''>-- Wszystkie --</option>
+                    <option value='true'>Gotowe</option>
+                    <option value='false'>Niegotowe</option>
                 </select>
             </div>
             <table>

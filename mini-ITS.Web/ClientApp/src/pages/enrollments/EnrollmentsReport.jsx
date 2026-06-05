@@ -298,6 +298,19 @@ const EnrollmentsReport = (props) => {
         upsertFilter('DateAddEnrollment', '<=', to.toISOString());
     };
 
+    const handleResetFilters = () => {
+        setDateFromFilter(null);
+        setDateToFilter(null);
+        setSearchDescription('');
+        setSelectedUserAddEnrollment('');
+        setSelectedDepartment('');
+        setPriority('');
+        setState('');
+        setReadyForClose('');
+
+        setPagedQuery(prev => ({ ...prev, page: 1, filter: [] }));
+    };
+
     useEffect(() => {
         const id = setTimeout(() => {
             const t = (searchDescription || '').trim();
@@ -550,6 +563,17 @@ const EnrollmentsReport = (props) => {
                     <option value='true'>Gotowe</option>
                     <option value='false'>Niegotowe</option>
                 </select>
+            </div>
+            <div>
+                <br />
+                <button
+                    tabIndex='15'
+                    type="button"
+                    onClick={handleResetFilters}
+                    style={{ marginLeft: 12 }}
+                >
+                    Reset filtrów
+                </button>
             </div>
             <table>
                 <thead>

@@ -4,9 +4,17 @@ import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { enrollmentServices } from '../../services/EnrollmentServices';
 import pl from 'date-fns/locale/pl';
+import iconClearFilters from '../../images/iconClearFilters.svg';
 import iconDetail from '../../images/iconDetail.svg';
+import iconEdit from '../../images/iconEdit.svg';
+import iconDelete from '../../images/iconDelete.svg';
+import iconFirstPage from '../../images/iconFirstPage.svg';
+import iconPrevPage from '../../images/iconPrevPage.svg';
+import iconNextPage from '../../images/iconNextPage.svg';
+import iconLastPage from '../../images/iconLastPage.svg';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import '../../styles/pages/Enrollments.scss';
 
 const EnrollmentsReport = (props) => {
     const {
@@ -29,7 +37,6 @@ const EnrollmentsReport = (props) => {
     };
 
     const mapState = {
-        '': 'Wszystkie',
         'New': 'Nowy',
         'Assigned': 'W trakcie',
         'Closed': 'Zamknięte',
@@ -384,198 +391,228 @@ const EnrollmentsReport = (props) => {
     }, [pagedQuery]);
 
     return (
-        <>
-            <p>Lista zgłoszeń</p>
-            <div>
-                <span>Data dodania: </span>
-                <DatePicker
-                    tabIndex='1'
-                    selected={dateFromFilter}
+        <div className='enrollmentsReport'>
+            <div className='enrollmentsReportHeader'>
+                <div className='enrollmentsReportHeader__title'>
+                    <p>Raport</p>
+                </div>
+                <div className='enrollmentsReportHeader__actions'>
+                    <button
+                        className='enrollmentsReportHeader__button enrollmentsReportHeader__button--clearFilters'
+                        title='Wyczyść filtry'
+                        onClick={handleResetFilters}                    >
+                        <img src={iconClearFilters} alt='iconClearFilters' />
+                        <span>Wyczyść filtry</span>
+                    </button>
+                </div>
+            </div>
 
-                    dateFormat='dd.MM.yyyy'
-                    showMonthDropdown
-                    showYearDropdown
-                    scrollableYearDropdown
-                    yearDropdownItemNumber={15}
-
-                    selectsStart
-                    startDate={dateFromFilter}
-                    endDate={dateToFilter}
-
-                    placeholderText='Data od'
-                    onChange={handleDateFromFilterChange}
-                    isClearable
-                    locale={pl}
-                />
-                <DatePicker
-                    tabIndex='2'
-                    selected={dateToFilter}
-
-                    dateFormat='dd.MM.yyyy'
-                    showMonthDropdown
-                    showYearDropdown
-                    scrollableYearDropdown
-                    yearDropdownItemNumber={15}
-
-                    selectsEnd
-                    startDate={dateFromFilter}
-                    endDate={dateToFilter}
-                    minDate={dateFromFilter}
-
-                    placeholderText='Data do'
-                    onChange={handleDateToFilterChange}
-                    isClearable
-                    locale={pl}
-                />
+            <div className='enrollmentsReportFilters'>
+                <div className='enrollmentsReportFilters__sectionDate'>
+                    <div className='enrollmentsReportFilters__col'>
+                        <label>
+                            Filtruj według daty dodania
+                        </label>
+                        <div className='enrollmentsReportFilters__dateRange'>
+                            <DatePicker
+                                selected={dateFromFilter}
+                                dateFormat='dd.MM.yyyy'
+                                showMonthDropdown
+                                showYearDropdown
+                                scrollableYearDropdown
+                                yearDropdownItemNumber={15}
+                                selectsStart
+                                startDate={dateFromFilter}
+                                endDate={dateToFilter}
+                                placeholderText='Data od'
+                                onChange={handleDateFromFilterChange}
+                                isClearable
+                                dayClassName={(date) => date.getDay() === 0 ? 'react-datepicker__day--sunday' : undefined}
+                                locale={pl}
+                                showIcon
+                                icon={
+                                    <svg
+                                        height='16'
+                                        viewBox='0 0 50 50'
+                                        stroke='currentColor'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        fill='none'
+                                        xmlns='http://www.w3.org/2000/svg'>
+                                        <rect x='6.25' y='8.33' width='37.5' height='37.5' rx='4.17' ry='4.17' />
+                                        <line x1='33.33' y1='4.17' x2='33.33' y2='12.5' />
+                                        <line x1='16.67' y1='4.17' x2='16.67' y2='12.5' />
+                                        <line x1='6.25' y1='20.83' x2='43.75' y2='20.83' />
+                                    </svg>
+                                }
+                            />
+                            <DatePicker
+                                selected={dateToFilter}
+                                dateFormat='dd.MM.yyyy'
+                                showMonthDropdown
+                                showYearDropdown
+                                scrollableYearDropdown
+                                yearDropdownItemNumber={15}
+                                selectsEnd
+                                startDate={dateFromFilter}
+                                endDate={dateToFilter}
+                                minDate={dateFromFilter}
+                                placeholderText='Data do'
+                                onChange={handleDateToFilterChange}
+                                isClearable
+                                dayClassName={(date) => date.getDay() === 0 ? 'react-datepicker__day--sunday' : undefined}
+                                locale={pl}
+                                showIcon
+                                icon={
+                                    <svg
+                                        height='16'
+                                        viewBox='0 0 50 50'
+                                        stroke='currentColor'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        fill='none'
+                                        xmlns='http://www.w3.org/2000/svg'>
+                                        <rect x='6.25' y='8.33' width='37.5' height='37.5' rx='4.17' ry='4.17' />
+                                        <line x1='33.33' y1='4.17' x2='33.33' y2='12.5' />
+                                        <line x1='16.67' y1='4.17' x2='16.67' y2='12.5' />
+                                        <line x1='6.25' y1='20.83' x2='43.75' y2='20.83' />
+                                    </svg>
+                                }
+                            />
+                        </div>
+                        <div className='enrollmentsReportFilters__dateActions'>
+                            <button
+                                type='button'
+                                onClick={setCurrentMonthRange}>
+                                Bieżący miesiąc
+                            </button>
+                            <button
+                                type='button'
+                                onClick={setPreviousMonthRange}>
+                                Poprzedni miesiąc
+                            </button>
+                            <button
+                                type='button'
+                                onClick={setCurrentQuarterRange}>
+                                Bieżący kwartał
+                            </button>
+                        </div>
+                        <div className='enrollmentsReportFilters__dateActions'>
+                            <button
+                                type='button'
+                                onClick={setPreviousQuarterRange}>
+                                Poprzedni kwartał
+                            </button>
+                            <button
+                                type='button'
+                                onClick={setCurrentYearRange}>
+                                Bieżący rok
+                            </button>
+                            <button
+                                type='button'
+                                onClick={setPreviousYearRange}>
+                                Poprzedni rok
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div className='enrollmentsReportFilters__sectionCriteria'>
+                    <div className='enrollmentsReportFilters__filterRow'>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według opisu
+                            </label>
+                            <input
+                                type='text'
+                                placeholder='szukaj w opisie...'
+                                value={searchDescription}
+                                onChange={(e) => setSearchDescription(e.target.value)}
+                            />
+                        </div>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według działu docelowego
+                            </label>
+                            <select
+                                value={selectedDepartment}
+                                onChange={handleDepartmentChange}
+                            >
+                                <option value=''>-- wszystkie --</option>
+                                {departments.map((department, index) => (
+                                    <option key={index} value={department.value}>
+                                        {department.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według statusu
+                            </label>
+                            <select
+                                value={state}
+                                onChange={handleStateChange}
+                            >
+                                <option value=''>-- wszystkie --</option>
+                                {Object.entries(mapState).map(([value, name], index) => (
+                                    <option key={index} value={value}>
+                                        {name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className='enrollmentsReportFilters__filterRow'>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według zgłaszającego
+                            </label>
+                            <select
+                                value={selectedUserAddEnrollment}
+                                onChange={handleUserAddEnrollmentChange}
+                                disabled={usersAddEnrollments.length === 0}
+                            >
+                                <option value=''>-- wszyscy --</option>
+                                {usersAddEnrollments.map(u => (
+                                    <option key={u.userAddEnrollment} value={u.userAddEnrollment}>
+                                        {u.userAddEnrollmentFullName}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według priorytetu
+                            </label>
+                            <select
+                                value={priority}
+                                onChange={handlePriorityChange}
+                            >
+                                <option value=''>-- wszystkie --</option>
+                                {Object.entries(mapPriority).map(([value, label]) => (
+                                    <option key={value} value={value}>
+                                        {label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className='enrollmentsReportFilters__col'>
+                            <label>
+                                Filtruj według gotowości
+                            </label>
+                            <select
+                                value={readyForClose}
+                                onChange={handleReadyForCloseChange}
+                            >
+                                <option value=''>-- wszystkie --</option>
+                                <option value='true'>Gotowe</option>
+                                <option value='false'>Niegotowe</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <br/>
-            <div>
-                <button
-                    tabIndex='3'
-                    type='button'
-                    onClick={setCurrentMonthRange}>
-                    Bieżący miesiąc
-                </button>
-                &nbsp;
-                <button
-                    tabIndex='4'
-                    type='button'
-                    onClick={setPreviousMonthRange}>
-                    Poprzedni miesiąc
-                </button>
-                &nbsp;
-                <button
-                    tabIndex='5'
-                    type='button'
-                    onClick={setCurrentQuarterRange}>
-                    Bieżący kwartał
-                </button>
-            </div>
-            <br />
-            <div>
-                <button
-                    tabIndex='6'
-                    type='button'
-                    onClick={setPreviousQuarterRange}>
-                    Poprzedni kwartał
-                </button>
-                &nbsp;
-                <button
-                    tabIndex='7'
-                    type='button'
-                    onClick={setCurrentYearRange}>
-                    Bieżący rok
-                </button>
-                &nbsp;
-                <button
-                    tabIndex='8'
-                    type='button'
-                    onClick={setPreviousYearRange}>
-                    Poprzedni rok
-                </button>
-            </div>
-            <div>
-                <br />
-                <span>Opis:</span>
-                &nbsp;
-                <input
-                    tabIndex='9'
-                    type='text'
-                    placeholder='szukaj w opisie...'
-                    value={searchDescription}
-                    onChange={(e) => setSearchDescription(e.target.value)}
-                />
-            </div>
-            <div>
-                <br />
-                <label style={{ marginRight: 6 }}>Zgłaszający:</label>
-                <select
-                    tabIndex='10'
-                    value={selectedUserAddEnrollment}
-                    onChange={handleUserAddEnrollmentChange}
-                    disabled={usersAddEnrollments.length === 0}
-                >
-                    <option value=''>-- wszyscy --</option>
-                    {(usersAddEnrollments ?? usersAddEnrollments).map(u => (
-                        <option key={u.userAddEnrollment} value={u.userAddEnrollment}>
-                            {u.userAddEnrollmentFullName}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <br />
-                <label style={{ marginRight: 6 }}>Filtruj według działu docelowego:</label>
-                <select
-                    tabIndex='11'
-                    value={selectedDepartment}
-                    onChange={handleDepartmentChange}
-                >
-                    <option value=''>-- Wszystkie --</option>
-                    {departments.map((department, index) => (
-                        <option key={index} value={department.value}>
-                            {department.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <br />
-                <label style={{ marginRight: 6 }}>Filtruj według priorytetu:</label>
-                <select
-                    tabIndex='12'
-                    value={priority}
-                    onChange={handlePriorityChange}
-                >
-                    <option value=''>-- Wszystkie --</option>
-                    {Object.entries(mapPriority).map(([value, label]) => (
-                        <option key={value} value={value}>
-                            {label}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <br />
-                <label style={{ marginRight: 6 }}>Filtruj według statusu:</label>
-                <select
-                    tabIndex='13'
-                    value={state}
-                    onChange={handleStateChange}
-                >
-                    <option value=''>-- Wszystkie --</option>
-                    {Object.entries(mapState).map(([value, name], index) => (
-                        <option key={index} value={value}>
-                            {name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <br />
-                <label style={{ marginRight: 6 }}>Filtruj według gotowości:</label>
-                <select
-                    tabIndex='14'
-                    value={readyForClose}
-                    onChange={handleReadyForCloseChange}
-                >
-                    <option value=''>-- Wszystkie --</option>
-                    <option value='true'>Gotowe</option>
-                    <option value='false'>Niegotowe</option>
-                </select>
-            </div>
-            <div>
-                <br />
-                <button
-                    tabIndex='15'
-                    type="button"
-                    onClick={handleResetFilters}
-                    style={{ marginLeft: 12 }}
-                >
-                    Reset filtrów
-                </button>
-            </div>
-            <table>
+            <table className='enrollmentsList-table'>
                 <thead>
                     <tr>
                         <th style={{ width: '05%', cursor: 'pointer' }} onClick={() => handleSort('NrDisplay')}>
@@ -648,6 +685,7 @@ const EnrollmentsReport = (props) => {
                                     }}
                                 >
                                     <input
+                                        tabIndex='-1'
                                         type='checkbox'
                                         checked={enrollment.readyForClose}
                                         readOnly
@@ -655,7 +693,7 @@ const EnrollmentsReport = (props) => {
                                 </td>
                                 <td>
                                     <span>
-                                        <Link to={`../${enrollment.id}`}>
+                                        <Link to={`../${enrollment.id}`} tabIndex='-1'>
                                             <img src={iconDetail} alt='Szczegóły' title='Szczegóły' />
                                         </Link>
                                     </span>
@@ -674,23 +712,22 @@ const EnrollmentsReport = (props) => {
                     }
                 </tbody>
             </table>
-            <br />
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className='enrollmentsList-paginationPanel'>
                 <div>Ilość wyników na stronie : &nbsp;
                     <button
-                        style={enrollments.resultsPerPage === 10 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 10 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(10) }}
                     >
                         10
                     </button>
                     <button
-                        style={enrollments.resultsPerPage === 20 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 20 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(20) }}
                     >
                         20
                     </button>
                     <button
-                        style={enrollments.resultsPerPage === 50 ? { backgroundColor: 'lightblue' } : {}}
+                        className={enrollments.resultsPerPage === 50 ? 'enrollmentsList-paginationPanel--buttonActive' : ''}
                         onClick={() => { handleSetResultsPerPage(50) }}
                     >
                         50
@@ -700,26 +737,26 @@ const EnrollmentsReport = (props) => {
                     <button
                         onClick={() => { handleFirstPage() }}
                     >
-                        &#60;&#60;
+                        <img src={iconFirstPage} alt='Początek' title='Początek' />
                     </button>
                     <button
                         onClick={() => { handlePrevPage() }}
                     >
-                        &#60;
+                        <img src={iconPrevPage} alt='Wstecz' title='Wstecz' />
                     </button>
                     <button
                         onClick={() => { handleNextPage() }}
                     >
-                        &#62;
+                        <img src={iconNextPage} alt='Następna' title='Następna' />
                     </button>
                     <button
                         onClick={() => { handleLastPage() }}
                     >
-                        &#62;&#62;
+                        <img src={iconLastPage} alt='Koniec' title='Koniec' />
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

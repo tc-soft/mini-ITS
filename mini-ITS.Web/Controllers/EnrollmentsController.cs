@@ -233,5 +233,19 @@ namespace mini_ITS.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+        [HttpGet]
+        [CookieAuth]
+        public async Task<IActionResult> GetUsersAddEnrollmentsAsync()
+        {
+            try
+            {
+                var users = await _enrollmentsServices.GetUsersAddEnrollmentsAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
     }
 }

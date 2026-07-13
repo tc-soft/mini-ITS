@@ -80,4 +80,6 @@ namespace mini_ITS.Core.Dto
         public int ActionExecuted { get; set; }
         public bool ActionFinished { get; set; }
     }
+
+    public sealed record UsersAddEnrollmentsDto(Guid UserAddEnrollment, string UserAddEnrollmentFullName);
 }

@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthProvider';
 import { useForm, Controller } from 'react-hook-form';
 import { addDays, getYear, parseISO, format, isValid } from 'date-fns';
@@ -1350,14 +1350,14 @@ const EnrollmentsForm = (props) => {
                                         </button>
                                     </>
                                 )}
-                                <Link tabIndex='-1' to={'..'}>
-                                    <button
-                                        tabIndex='26'
-                                        className='enrollmentsForm-submit__button enrollmentsForm-submit__button--cancelButton'>
-                                        <img src={iconCancel} alt='iconCancel' />
-                                        Anuluj
-                                    </button>
-                                </Link>
+                                <button
+                                    tabIndex='26'
+                                    type='button'
+                                    onClick={() => navigate(-1)}
+                                    className='enrollmentsForm-submit__button enrollmentsForm-submit__button--cancelButton'>
+                                    <img src={iconCancel} alt='iconCancel' />
+                                    Anuluj
+                                </button>
                             </div>
                         </form>
                     </>

@@ -127,5 +127,10 @@ namespace mini_ITS.Core.Services
         {
             await _enrollmentsRepository.DeleteAsync(id);
         }
+        public async Task<IEnumerable<UsersAddEnrollmentsDto>> GetUsersAddEnrollmentsAsync()
+        {
+            var usersAddEnrollments = await _enrollmentsRepository.GetUsersAddEnrollmentsAsync();
+            return usersAddEnrollments ?? Enumerable.Empty<UsersAddEnrollmentsDto>();
+        }
     }
 }

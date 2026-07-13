@@ -308,5 +308,58 @@ namespace mini_ITS.Web.Tests.Controllers
 
             UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
         }
+        [Test, Combinatorial]
+        public async Task GetUsersAddEnrollmentsAsync_Unauthorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginUnauthorizedIndexEnrollmentCases))] LoginData loginData)
+        {
+            UsersControllerTestsHelper.CheckLoginUnauthorizedCase(await LoginAsync(loginData));
+
+            response = await GetUsersAddEnrollmentsAsync();
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized),
+                "ERROR - respons status code is not 404 after GetUsersAddEnrollmentsAsync");
+            TestContext.Out.WriteLine($"Response after GetUsersAddEnrollmentsAsync: {response.StatusCode}");
+        }
+        [Test, Combinatorial]
+        public async Task GetUsersAddEnrollmentsAsync_Authorized(
+            [ValueSource(typeof(LoginTestDataCollection), nameof(LoginTestDataCollection.LoginAuthorizedIndexEnrollmentCases))] LoginData loginData)
+        {
+            UsersControllerTestsHelper.CheckLoginAuthorizedCase(await LoginAsync(loginData));
+
+            response = await GetUsersAddEnrollmentsAsync();
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK),
+                "ERROR - respons status code is not 200 after GetUsersAddEnrollmentsAsync");
+            TestContext.Out.WriteLine($"Response after run API GetUsersAddEnrollmentsAsync: {response.StatusCode}");
+
+            var results = await response.Content.ReadFromJsonAsync<UsersAddEnrollmentsDto[]>();
+            Assert.That(results, Is.Not.Null, "ERROR - UsersAddEnrollmentsDto is null");
+            TestContext.Out.WriteLine("Response after load Json data: OK\n");
+
+            if (!results.Any())
+            {
+                TestContext.Out.WriteLine("usersAddEnrollments is empty - no Enrollments with UserAddEnrollment set.");
+            }
+            else
+            {
+                Assert.That(results, Is.All.InstanceOf<UsersAddEnrollmentsDto>(),
+                    "ERROR - all instance is not of <UsersAddEnrollmentsDto>()");
+
+                Assert.That(results.Select(x => x.UserAddEnrollment), Is.Unique,
+                    "ERROR - UserAddEnrollment is not unique");
+
+                Assert.That(results,
+                    Is.Ordered.Ascending.By(nameof(UsersAddEnrollmentsDto.UserAddEnrollmentFullName)),
+                    "ERROR - usersAddEnrollments is not ordered by UserAddEnrollmentFullName ASC");
+
+                foreach (var item in results)
+                {
+                    TestContext.Out.WriteLine(
+                        $"UserAddEnrollment: {item.UserAddEnrollment}\tFullName: {item.UserAddEnrollmentFullName}");
+                }
+            }
+
+            TestContext.Out.WriteLine("");
+            UsersControllerTestsHelper.CheckLogout(await LogoutAsync());
+        }
     }
 }

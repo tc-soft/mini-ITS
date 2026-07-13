@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import EnrollmentsList from './EnrollmentsList';
 import EnrollmentsForm from './EnrollmentsForm';
+import EnrollmentsReport from './EnrollmentsReport';
 
 const Enrollments = () => {
     const location = useLocation();
@@ -40,6 +41,15 @@ const Enrollments = () => {
         <Routes>
             <Route path='/' element={<EnrollmentsList />} />
             <Route index element={<EnrollmentsList
+                pagedQuery={pagedQuery}
+                setPagedQuery={setPagedQuery}
+                activeStateFilter={activeStateFilter}
+                setActiveStateFilter={setActiveStateFilter}
+                activeDepartmentFilter={activeDepartmentFilter}
+                setActiveDepartmentFilter={setActiveDepartmentFilter}
+            />}
+            />
+            <Route path="/Report" element={<EnrollmentsReport
                 pagedQuery={pagedQuery}
                 setPagedQuery={setPagedQuery}
                 activeStateFilter={activeStateFilter}

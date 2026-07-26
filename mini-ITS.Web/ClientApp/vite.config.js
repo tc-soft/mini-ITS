@@ -10,6 +10,10 @@ const isDocker = process.env.IS_DOCKER === 'true';
 
 let serverConfig = {
     port: 5001,
+    watch: {
+        usePolling: true,
+        interval: 500
+    },
     proxy: {
         '/api': {
             target: 'https://localhost:44375/',

@@ -102,10 +102,10 @@ const Dashboard = () => {
 
                     <div className='dashboard__company'>
                         <a className="dashboard__logo" href={companyLink} target="_blank" rel="noopener noreferrer">
-                            <img src='/Logo.svg' alt="Welcome image" />
+                            <img src='/Logo.svg' alt="Logo" />
                         </a>
                         <p className='dashboard__companyText'>{companyName}</p>
-                        <p className='dashboard__companyText'><strong>Dział: {currentUser.department}</strong></p>    
+                        <p className='dashboard__companyText'><strong>Dział: {currentUser.department}</strong></p>
                     </div>
                 </div>
                 <div className='dashboard__image'>

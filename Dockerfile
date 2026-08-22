@@ -1,11 +1,11 @@
 # Stage 1: Build the .NET application (with Node.js)
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-backend
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-backend
 
-# Install Node.js v22.20.0
+# Install Node.js v24.19.0
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs=22.20.0-* && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
+    apt-get install -y nodejs=24.19.0-* && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Vite globally
@@ -33,7 +33,7 @@ RUN dotnet publish mini-ITS.Web/mini-ITS.Web.csproj -c Release -o /app/publish
 
 
 # Stage 2: Create the final image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 WORKDIR /app
 

@@ -1,6 +1,6 @@
-![Version](https://badgen.net/badge/version/1.0.2/blue)
+![Version](https://badgen.net/badge/version/1.0.3/blue)
 ![License: MIT](https://badgen.net/badge/license/MIT/green)
-![Backend](https://badgen.net/badge/backend/.NET%209.x/blueviolet)
+![Backend](https://badgen.net/badge/backend/.NET%2010.x/blueviolet)
 ![React](https://badgen.net/badge/frontend/React/blue)
 
 <p align="left">
